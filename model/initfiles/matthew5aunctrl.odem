@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+matthew5aunctrl
+
+Description
+full model
+
+Variable
+state::K,V
+
+Dynamics
+ode::DK=u*(b*K-C+m*K^2-a*(b*K-C+m*K^2)^2)+(1-u)*Imin-delta*K
+ode::DV=exp(-r*t)*(m*K^2+b*K-(u*(b*K-C+m*K^2-a*(b*K-C+m*K^2)^2)+(1-u)*Imin)+h*K)
+
+Parameter
+r::0.03
+m::0.2
+b::0.1
+delta::0.2
+h::0.1
+a::0.2
+Imin::0
+C::0
+u::1

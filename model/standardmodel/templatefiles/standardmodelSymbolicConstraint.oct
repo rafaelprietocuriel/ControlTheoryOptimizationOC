@@ -1,0 +1,9 @@
+//
+// standardmodelSymbolicConstraint.oct
+//
+
+function out=$MODELNAME$SymbolicConstraint($ARCVAR$)
+% returns the symbolic value of the exogenously given functions
+$INFODETAILS$
+	
+$SYMBOLICCONSTRAINTTERM$

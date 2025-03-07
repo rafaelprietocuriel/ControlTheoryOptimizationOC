@@ -1,0 +1,52 @@
+Type
+standardmodel
+
+Modelname
+seirpop
+
+Description
+Global analysis of an SEIR model with varying population size and vaccination, sunhsieh2010
+
+Variable
+state::S,E,I,R
+control::a
+
+Statedynamics
+ode::DS=b*(S+E+I+R)-l*(1-a)*S*I/((S+E+I+R))-(1-sigma)*a*l*S*I/(S+E+I+R)-(sigma*a+d)*S
+ode::DE=l*(1-a)*S*I/(S+E+I+R)+(1-sigma)*a*l*S*I/(S+E+I+R)-(d+epsilon+dE)*E
+ode::DI=epsilon*E-(alpha+beta+d)*I
+ode::DR=sigma*a*S+beta*I-d*R
+
+
+Objective
+int::-kappaI*I-kappaE*E-tau/2*a^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::a>=amin
+CC2::ineq::a<=amax
+CC3::ineq::c*a*S<=B
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+
+Parameter
+r::0
+b::0.03507
+beta:: 0.0859
+d::0.03507
+dE::0.0003366
+alpha::0.0031
+tau::0.02
+l:: 0.299
+epsilon:: 0.034
+kappaI::1
+kappaE::0
+sigma::0.8
+amin::0
+amax::0.9
+c::1
+B::inf

@@ -1,0 +1,23 @@
+Type
+odemodel
+
+Modelname
+demvsdespsymdes
+
+Description
+democracy versus despotism
+
+Variable
+state::x,s
+
+Dynamics
+ode::Dx=tau+a*x^2/(c+x^2)*(1-b*s^2/(c+s^2))-d*x
+ode::Ds=tau+u*a*s^2/(c+s^2)*(1-b*x^2/(c+x^2))-d*s
+
+Parameter
+a::0.5
+b::0.01
+c::1.4
+d::0.4
+tau::1e-5
+u::1

@@ -1,0 +1,66 @@
+Type
+standardmodel
+
+Description
+terror model, with two different types of counter terror actions
+
+Modelname
+fireorwaterQ
+
+Variable
+independent::t
+state::x
+control::u,v
+endtime::T
+costate::lambda
+lagrangemultcc::lm % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::Dx=tau+k*(a+rho*v)*x^alpha-mu*x-beta*log(1+u)*x^theta-gamma*log(1+v)*x
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::-c*x^2-u^2-v^2
+
+Salvagevalue
+
+Optimizationtype
+max
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::v>=lb
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]_1
+%1::[]_2
+%2::[]_3
+%3::[]_4
+1::CC_1
+%5::CC_2
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% note that these properties may depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+*::*::explicit
+*::*::nonlinear
+
+Parameter
+r::0.05
+a::1
+alpha::0.75
+beta::0.01
+c::1
+k::0.05
+mu::0.05
+gamma::0.1
+tau::1e-5
+theta::0.1
+rho::1
+lb::0

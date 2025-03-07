@@ -1,0 +1,36 @@
+Type
+standardmodel
+
+Modelname
+nerlovearrow
+
+Description
+Deviant quality model 
+
+Variable
+state::A
+control::a,p
+
+Statedynamics
+ode::DA=a-delta*A
+
+Objective
+int::k*p^(1-eta)*A^beta-gamma*p^(-eta)*A^beta-a-tau*a^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::a>=amin
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+r::0.03
+k::1
+eta::0.5
+gamma::1
+beta::0.5
+amin::0
+delta::0.1
+tau::1e-3

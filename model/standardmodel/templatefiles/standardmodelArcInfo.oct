@@ -1,0 +1,23 @@
+function arcinfo=$MODELNAME$ArcInfo($ARCVAR$)
+% contains general arc information of the actual model
+$INFODETAILS$
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIER$
+		arcinfo.ArcIdentifier=$ARCIDENTIFIER$; % unique identifier for the specific arc
+	
+		% information about the canonical system 
+		arcinfo.statecoord=$STATECOORD$;
+		arcinfo.costatecoord=$COSTATECOORD$;
+		arcinfo.implicitcontrolcoord=$IMPLICITCONTROLCOORD$; % coordinate of the implicitly determined control values
+		arcinfo.implicitcontrolindex=$IMPLICITCONTROLINDEX$; % index of the implicitly determined control values
+	
+		% the following information is redundant and has to be consistent
+		% with the above definitions
+		arcinfo.odedim=$ODEDIM$; % dimension of the odes 
+		arcinfo.aedim=$AEDIM$; % dimension of the algebraic equations
+		arcinfo.daeorder=$DAEORDER$; % order of the DAEs
+	
+!ENDADDARCCASE!
+end

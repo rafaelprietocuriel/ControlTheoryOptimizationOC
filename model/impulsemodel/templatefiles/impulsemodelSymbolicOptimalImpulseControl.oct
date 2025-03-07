@@ -1,0 +1,19 @@
+//
+// impulsemodelSymbolicOptimalImpulseControl.oct
+//
+function out=$MODELNAME$SymbolicOptimalImpulseControl($JUMPVAR$)
+% returns the optimal impulse control values for $MODELNAME$
+$INFODETAILS$
+	
+
+!IF $NUMBEROFJUMPIDS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$SYMBOLICOPTIMALIMPULSECONTROLVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFJUMPIDS$!
+$SYMBOLICOPTIMALIMPULSECONTROLVALUE$
+!ENDIF!

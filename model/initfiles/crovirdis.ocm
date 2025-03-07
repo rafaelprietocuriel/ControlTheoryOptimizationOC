@@ -1,0 +1,87 @@
+Type
+standardmodel
+
+Description
+Cost-effective control of chronic viral diseases: Finding the optimal level of screening and contact tracing, article 'armbrusterbrandeau2010'
+
+Modelname
+crovirdis
+
+Variable
+state::S,IU,IT,R
+control::u,kappa
+costate::phi1:phi4
+lagrangemultcc::sigma1:sigma4
+
+Statedynamics
+ ode::DS=etaS-muS*S-S*(betaIU*IU+betaIT*IT)/(S+IU+IT+R)
+ ode::DIU=etaIU-muIU*IU-rho*IU+S*(betaIU*IU+betaIT*IT)/(S+IU+IT+R)-u
+ ode::DIT=etaIT-muIT*IT-omega*IT+u
+ ode::DR=etaR-muR*R+rho*IU+omega*IT
+
+Objective
+int::nuS*S+nuIU*IU+nuIT*IT+nuR*R-(S+IU+R)*(u/(IU*(kappa+1))-gamma)*cs-u/(kappa+1)*cc*((kappa+1)^2-1)-u*ct-epsilon*u^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::kappa>=kappalow
+CC2::ineq::u<=ubar
+CC3::ineq::u>=IU*gamma*(kappa+1)
+CC4::ineq::kappa<=ubar/IU/gamma-1
+
+ArcDefinition
+0::[]_1
+1::CC1
+2::CC2_1
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+6::CC2,CC4
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% these properties can depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+0::u::implicit
+0::kappa::explicit
+1::u::implicit
+1::kappa::explicit
+
+Parameter
+r::0.03 
+cs::27
+cc::400
+ct::0
+nuS::50000
+nuIU::49250
+nuIT::48000
+nuR::50000
+ubar::50000
+gamma::0.1
+betaIU::3e-4
+betaIT::1.5e-4
+rho::0
+omega::0
+muS::0.025
+muIU::0.02875
+muIT::0.025
+muR::0.025
+etaS::129500
+etaIU::22000
+etaIT::0
+etaR::151500
+epsilon::0
+kappalow::0
+
+
+% @Article{armbrusterbrandeau2010,
+  % Title                    = {Cost-effective control of chronic viral diseases: Finding the optimal level of screening and contact tracing },
+  % Author                   = {B.~Armbruster and M.L.~Brandeau},
+  % Journal                  = {Mathematical Biosciences },
+  % Year                     = {2010},
+  % Number                   = {1},
+  % Pages                    = {35--42},
+  % Volume                   = {224},
+
+  % Abstract                 = {Chronic viral diseases such as human immunodeficiency virus (HIV) and hepatitis B virus (HBV) afflict millions of people worldwide. A key public health challenge in managing such diseases is identifying infected, asymptomatic individuals so that they can receive antiviral treatment. Such treatment can benefit both the treated individual (by improving quality and length of life) and the population as a whole (through reduced transmission). We develop a compartmental model of a chronic, treatable infectious disease and use it to evaluate the cost and effectiveness of different levels of screening and contact tracing. We show that: (1) the optimal strategy is to get infected individuals into treatment at the maximal rate until the incremental health benefits balance the incremental cost of controlling the disease; (2) as one reduces the disease prevalence by moving people into treatment (which decreases the chance that they will infect others), one should increase the level of contact tracing to compensate for the decreased effectiveness of screening; (3) as the disease becomes less prevalent, it is optimal to spend more per case identified; and (4) the relative mix of screening and contact tracing at any level of disease prevalence is such that the marginal efficiency of contact tracing (cost per infected person found) equals that of screening if possible (e.g., when capacity limitations are not binding). We also show how to determine the cost-effective equilibrium level of disease prevalence (among untreated individuals), and we develop an approximation of the path of the optimal prevalence over time. Using this, one can obtain a close approximation of the optimal solution without having to solve an optimal control problem. We apply our methods to an example of hepatitis B virus. },
+  % Doi                      = {http://dx.doi.org/10.1016/j.mbs.2009.12.006}
+  % }

@@ -1,0 +1,18 @@
+//
+// standardmodelImplicitGPNumerical.oct
+//
+function out=$MODELNAME$ImplicitGP($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$CONTROLDYNAMICSVAR$)
+%
+% returns the derivative of the function G with respect to the state and costate variables. Function G
+% is defined as the total time derivative of the Lagrange function L with respect to the implicit controls.	
+% The input argument $CONTROLDYNAMICSVAR$ denotes the value of the control dynamics of the implicit controls.
+	
+dim=$IMPLICITCONTROLNUM$; % number of implicit controls
+	
+if dim(arcid+1)>0
+	numJacOpt.diffvar=3;
+	numJacOpt.vectvars=[];
+	out=numjaccsd(@$MODELNAME$ImplicitG,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$(:),$ARCVAR$,$CONTROLDYNAMICSVAR$},dim($ARCVAR$+1),numJacOpt);
+else
+	out=[];
+end

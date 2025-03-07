@@ -1,0 +1,14 @@
+//
+// standardmodelCanonicalSystemGeneralizedParameterJacobian.oct
+//
+function J=$MODELNAME$CanonicalSystemGeneralizedParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$CANONICALSYSTEMGENERALIZEDPARAMETERJACOBIAN() returns the jacobian
+% of the generalized canonical system, i.e. together with the control dynamics for
+% implicitly given controls, with respect to the parameter values.
+$INFODETAILS$
+	
+J=$MODELNAME$CanonicalSystemParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+JU=$MODELNAME$ImplicitControlDynamicsParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+J=[J;JU];

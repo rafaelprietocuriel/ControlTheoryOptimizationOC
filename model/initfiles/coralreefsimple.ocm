@@ -1,0 +1,55 @@
+Type
+standardmodel
+
+Modelname
+coralreefsimple
+
+Description
+fishery model with fish, algae and coral as state variables
+
+Variable
+independent::t
+state::F,A,C
+control::h
+
+Statedynamics
+ode::DF=(F*(Fmax-F/A)-1/(C+tau)*(F^2/(1+F^2))-h*F)
+ode::DA=(n-d*A-e*A*F)
+ode::DC=psi*C/(kappa*C+s*A+w+g*F)-l*C
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*h*F-phi*h^2+mu*C
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=hlow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands
+% for the unconstrained case.
+% underscores indicate that multiple solutions of the maximizing
+% Hamiltonian exist for a specific constraint combination 
+ArcDefinition
+0::[]
+1::CC
+
+
+Parameter
+r::0.02
+d::0.05
+e::0.1
+n::2
+p::1
+phi::1
+tau::1e-5
+hlow::0
+l::0.05
+mu::1
+psi::1
+s::1
+w::1
+kappa::1
+g::0
+Fmax::1

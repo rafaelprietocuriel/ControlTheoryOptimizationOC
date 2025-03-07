@@ -1,0 +1,24 @@
+//
+// standardmodelComplementarySlacknessParameterJacobianDAE.oct
+//
+function out=$MODELNAME$ComplementarySlacknessParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the Jacobian with respect to the parameter values of the Burmeister-Fischer function for $MODELNAME$
+$INFODETAILS$
+	
+!IF $CONTROLCONSTRAINTNUM$!
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$);
+$LAGRANGEMULTCC$=$DEPENDENTVAR$($LAGRANGEMULTCCCOORDINATE$,:);
+	
+$CONTROLCONSTRAINTPARAMETERJACOBIANDAE$
+	
+cstr=$MODELNAME$ConstraintDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+out=burmeisterfischergenderivative(cstr,$LAGRANGEMULTCC$,$BURMEISTERFISCHEREPSILON$,$BURMEISTERFISCHERMU$);
+	
+out=out(:,$ONESPARAMETERNUMBER$).*Jc;
+!ENDIF!
+!IF ~$CONTROLCONSTRAINTNUM$!
+out=[];
+!ENDIF!

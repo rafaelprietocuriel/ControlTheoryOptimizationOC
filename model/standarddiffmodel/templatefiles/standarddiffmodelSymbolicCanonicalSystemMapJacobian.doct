@@ -1,0 +1,18 @@
+//
+// standarddiffmodelSymbolicCanonicalSystemJacobian
+//
+function out=$MODELNAME$SymbolicCanonicalSystemMapJacobian($ARCVAR$)
+% returns the symbolic expression for the Jacobian of the canonical systems map.
+$INFODETAILS$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICCANONICALSYSTEMMAPJACOBIAN$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$SYMBOLICCANONICALSYSTEMMAPJACOBIAN$
+!ENDIF!

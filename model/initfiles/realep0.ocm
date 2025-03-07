@@ -1,0 +1,65 @@
+Type
+standardmodel
+
+Description
+Resource allocation for optimal control of epidemics: Can treatment compete?
+
+Modelname
+realep0
+
+Variable
+state::S,I,T
+control::pr,tr
+
+Statedynamics
+ ode::DS=etaS+b*(S+I+T)-(beta0-Cbeta*pr)*(I+gamma*T)*S/(S+I+T)-dS*S
+ ode::DI=etaI+(beta0-Cbeta*pr)*(I+gamma*T)*S/(S+I+T)-(nu0+Cnu*tr)-dI*I
+ ode::DT=etaT+(nu0+Cnu*tr)-dT*T
+ 
+Objective
+int::-(beta0-Cbeta*pr)*(I+gamma*T)*S/(S+I+T)-epr*pr^2-etr*tr^2
+%int::-(I+T)/(S+I+T)-epr*pr^2-etr*tr^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::pr>=prlow
+CC2::ineq::tr>=trlow
+CC3::ineq::tr+pr<=B
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+6::CC2,CC3
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% these properties can depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+% Control
+% 0::pr,tr::implicit
+% 1::tr::implicit
+% 1::pr::explicit
+% 2::pr::implicit
+% 2::tr::explicit
+
+Parameter
+r::0.03 
+b::0.015
+beta0::0.018
+Cbeta::1e-4
+dS::0.03
+dI::0.04
+dT::0.02
+nu0::1e3
+Cnu::12
+gamma::0.05
+epr::0
+etr::0
+prlow::0
+trlow::0
+B::1.6e8
+etaS::129500
+etaI::22000
+etaT::0

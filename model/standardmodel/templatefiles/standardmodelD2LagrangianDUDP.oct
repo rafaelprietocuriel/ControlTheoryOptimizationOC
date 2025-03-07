@@ -1,0 +1,31 @@
+//
+// standardmodelD2LagrangianDUDP.oct
+//
+function [out,coord]=$MODELNAME$D2LagrangianDUDP($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$D2LAGRANGIANDUDP returns the second order derivative of the Lagrangefunction with respect
+% to the implicit controls and parameter name.
+%
+% LUP=$UPPERMODELNAME$D2LAGRANGIANDUDP($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) let m=#implicit controls,
+% k=#parameter and n=#time grid, then LUP is of size m*k x n.
+%
+% [LUP,COORD]=$UPPERMODELNAME$D2LAGRANGIANDUDP($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) argument COORD returns the
+% index of the implicit control.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$D2LAGRANGIANDUDP$
+		coord=$IMPLICITINDEX$;
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$D2LAGRANGIANDUDP$
+coord=$IMPLICITINDEX$;
+!ENDIF!

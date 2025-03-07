@@ -1,0 +1,65 @@
+Type
+standardmodel
+
+Description
+Behrens, D.A., Caulkins, J.P., Tragler, G., & Feichtinger, G. (2000) Optimal control of drug epidemics: Prevent and treat - but not at the same time?
+
+Variable
+independent::t
+state::L,H
+control::u
+
+Statedynamics
+ode::DL=(h+(1-h)*exp(-m*(gamma*(kl*L+kh*H)-u)))*(tau+s*L*exp(-q*H/L))-(a+b)*L
+ode::DH=b*L-g*H-(c*(u/(H+epsilon))^d)*H
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::(kappa+gamma)*(kl*L+kh*H)
+
+Salvagevalue
+
+Optimizationtype
+max
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::gamma*(kl*L+kh*H)-u>=0
+CC2::ineq::u-ulow>=0
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% note that these properties may depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+0::*::implicit
+1:2::*::explicit
+*::*::nonlinear
+
+Parameter
+r::0.04
+h::0.84
+m::2.37e-9
+d::0.6
+a::0.163
+b::0.024
+c::0.0005
+tau::50000
+epsilon::1e-5
+g::0.062
+kappa::113
+kh::118.93
+kl::16.42
+gamma::5.31
+s::0.61
+q::7
+ulow::50

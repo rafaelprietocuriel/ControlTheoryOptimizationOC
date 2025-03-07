@@ -1,0 +1,14 @@
+//
+// standardmodelSymbolicLagrangian.oct
+//
+function out=$MODELNAME$SymbolicLagrangian($ARCVAR$)
+%
+% returns the symbolic extended Hamiltonian (Lagrangian) value for $MODELNAME$
+$INFODETAILS$
+	
+$SYMBOLICPONTRYAGINFUNCTION$
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$SymbolicLagrangeMultiplier($ARCVAR$);
+$LAGRANGEMULTIPLIERSUBSTITUTION$
+!ENDIF!

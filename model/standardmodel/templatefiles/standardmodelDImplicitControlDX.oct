@@ -1,0 +1,24 @@
+function [dudx,coord]=$MODELNAME$DImplicitControlDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$DIMPLICITCONTROLDX returns the derivative of the generalized control with respect to the generalized state.
+%
+% DUDX=$UPPERMODELNAME$DIMPLICITCONTROLDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+$INFODETAILS$
+	
+[luu,coord]=$MODELNAME$D2LagrangianDU2($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+dim=$IMPLICITCONTROLNUM$; % number of implicit controls
+if dim($ARCVAR$+1)
+	lux=$MODELNAME$D2LagrangianDUDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+	luu=reshape(luu,dim($ARCVAR$+1),dim($ARCVAR$+1),[]);
+	lux=reshape(lux,dim($ARCVAR$+1),$STATECOSTATENUM$,[]);
+	dudx=zeros(dim($ARCVAR$+1),$STATECOSTATENUM$,length(t));
+	for ii=1:length(t)
+		dudx(:,:,ii)=-luu(:,:,ii)\lux(:,:,ii);
+	end
+else
+	dudx=[];
+end
+
+% We used the implicit derivative. From LU=0 we find LUX+LUU*dudx=0 and LUX*dot-X+LUU*dot-u=0 yielding
+% dot-u=-LUU^{-1}*LUX*dot-X.

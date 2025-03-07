@@ -1,0 +1,27 @@
+Type
+standardmodel
+
+Description
+Lucas two-sector model of endogenous growth for the social optimum
+
+Variable
+state::K
+control::c
+
+Statedynamics
+ode::DK=A*K^beta*(N0*exp(n*t))^(1-beta)-kappa*K-N0*exp(n*t)*c
+
+Objective
+int::(c^(1-sigma)-1)/(1-sigma)*N0*exp(n*t)
+
+ArcDefinition
+0::[]
+
+Parameter
+n::0
+kappa::0.1
+N0::1
+beta::0.5
+r::0.03
+sigma::0.5
+A::1

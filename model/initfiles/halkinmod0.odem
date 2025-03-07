@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+halkinmod0
+
+Description
+full model
+
+Variable
+state::x,xe,y,z
+
+Dynamics
+ode::Dx=(u+epsilon*du)^2+x*(delta-x/a)
+ode::Dxe=2*(u+epsilon*du)*du+(delta-2*x/a)*xe
+ode::Dy=exp(-r*t)*(u+epsilon*du-x)
+ode::Dz=exp(-r*t)*(du-xe)
+
+
+Parameter
+r::0
+delta::1
+a::1
+u::0
+epsilon::1e-3
+du::1

@@ -1,0 +1,13 @@
+function out=$MODELNAME$SymbolicHamiltonian($ARCVAR$,$SUBSFLAG$)
+% returns the Hamiltonian value for $MODELNAME$
+$INFODETAILS$
+	
+$SYMBOLICPONTRYAGINFUNCTION$
+	
+if $SUBSFLAG$
+	$CONTROL$=$MODELNAME$SymbolicOptimalControl($ARCVAR$);
+!IF $CONSTRAINTNUM$!
+	[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$SymbolicLagrangeMultiplier($ARCVAR$);
+!ENDIF!
+	$CONTROLVALUESUBSTITUTION$
+end

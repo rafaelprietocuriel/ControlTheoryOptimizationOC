@@ -1,0 +1,90 @@
+Type
+standardmodel
+
+Modelname
+sirwithramsey
+
+Description
+epidemic SIR model with optimal vaccination and an economic part
+
+Variable
+state::S,I,R,K
+control::u,cS,cR,nS,nR
+
+Statedynamics
+ode::DS=mu*(S+I+R)-beta*S*I/(S+I+R)-(u*sigma+delta)*S
+ode::DI=beta*S*I/(S+I+R)-(alpha+delta+deltaI)*I
+ode::DR=alpha*I+u*sigma*S-delta*R
+ode::DK=F*(S*nS+R*nR)-S*cS-R*cR-delta*K
+
+Objective
+int::(cS^alphaS+kappaS*log(1-nS)+(cR^alphaR+kappaR*log(1-nR)))-epsilon*u^2
+
+%omega*(S/(S+I+R)*(cS^alphaS-kappaS/(1-nS))+R/(S+I+R)*(cR^alphaR-kappaR*/(1-nR))+(1-omega)*
+%int::omega*(S/(S+I+R)*(cS^alphaS+kappaS*log(1-nS))+R/(S+I+R)*(cR^alphaR+kappaR*log(1-nR))+(1-omega)*(cS^alphaS+kappaS*log(1-nS))+(cR^alphaR+kappaR*log(1-nR)))
+
+%int::(cS^alphaS-kappaS*nS)+(cR^alphaR-kappaR*nR)
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+CC3::ineq::cS>=cSmin
+CC4::ineq::cR>=cRmin
+CC5::ineq::nS>=nSmin
+CC6::ineq::nR>=nRmin
+
+% Control
+% 0::nS,nR::implicit
+% 0::u,cS,cR::explicit
+% 1::nS,nR::implicit
+% 1::u,cS,cR::explicit
+% 2::nS,nR::implicit
+% 2::u,cS,cR::explicit
+% 3::nS,nR::implicit
+% 3::u,cS,cR::explicit
+% 4::nS,nR::implicit
+% 4::u,cS,cR::explicit
+% 5::nS,nR::implicit
+% 5::u,cS,cR::explicit
+% 6::nS,nR::implicit
+% 6::u,cS,cR::explicit
+
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC4
+5::CC5
+6::CC6
+
+Parameter
+r::0
+alpha::0.05
+beta::0.2
+sigma::0.5
+tau::0.5
+omega::0
+mu::0
+delta::0
+deltaI::0.01
+alphaS::0.5
+alphaR::0.5
+kappaS::1
+kappaR::1
+F::1
+epsilon::1e-3
+umin::0
+umax::0.9
+cSmin::0
+cRmin::0
+nSmin::0
+nRmin::0
+
+% S: Susceptible individuals;
+% E: Asymptomatic individuals who have been exposed to the virus but have not yet developed clinical symptoms of SARS
+% Q: Quarantined individuals;
+% I: Symptomatic individuals;
+% J: Isolated individuals;
+% R: Recovered individuals; 

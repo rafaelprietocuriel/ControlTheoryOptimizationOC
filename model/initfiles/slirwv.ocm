@@ -1,0 +1,85 @@
+Type
+standardmodel
+
+Modelname
+slirwv
+
+Description
+How to Distribute the Jabs: Coordinating Lockdowns and the Allocation of Scarce COVID Vaccines
+
+Variable
+state::S,L,I,R,gamma
+control::u
+
+Statedynamics
+ode::DS=nu*(S+L+I+R)-S*beta*2*(I+f*L)*(F*(beta2+(1-beta2)*gamma^theta)+E*(beta1+(1-beta1)*gamma^theta))/(S+L+I+R)-mu*S+relr*R
+ode::DL=S*beta*2*(I+f*L)*(F*(beta2+(1-beta2)*gamma^theta)+E*(beta1+(1-beta1)*gamma^theta))/(S+L+I+R)-mu*L-phi*L
+ode::DI=omega*phi*L-(alpha+mu+muI)*I
+ode::DR=(1-omega)*phi*L+alpha*I-mu*R-relr*R
+ode::Dgamma=u
+
+%Exogenousfunction
+%Exogenousdynamics
+% func1::-M*(xi1*p*I+xi2*log(1+exp(zeta*(p*I-Imax)))/zeta)
+% func2::gamma^sigma*K*(S+R)^sigma
+% func3::-cl/2*u^2
+% func4::-epsilon/(1+tau-gamma)
+% func5::-B*z*(1-gamma)
+
+Objective
+int::-M*(p*xi1*I+log(1+exp(zeta*(p*xi2*I-Imax)))/zeta)+gamma^sigma*K*(S+L+R)^sigma-dfunc1()/2*u^2
+
+Salvagevalue
+func::S0*gamma^sigma1*K*(S+L+R)^sigma1
+
+Nonsmoothfunction
+dfunc1::SW1::cl
+dfunc1::SW2::cr
+
+Switchingcondition
+SW1::ineq::u<=uc
+SW2::ineq::u>=uc
+
+Stateconstraint
+SC1::ineq::gamma<=gammamax,1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+2::gamma
+
+ArcDefinition
+0::SW1
+1::SW2
+2::SW1,SC1
+
+Parameter
+r::0
+alpha::1/9
+beta::0.5362
+beta1::0
+beta2::0
+nu::0
+mu::0
+muI::0
+p::0.02311
+zeta::5000
+Imax::0.000176
+sigma::2/3
+sigma1::2/3
+K::1
+M::5e4
+xi1::0.03
+xi2::1
+S0::365
+cl::1000
+cr::5000
+gammamax::1
+omega::0.6
+theta::2
+phi::1/7.2
+B::0.1
+f::0.75
+F::0.369
+E::0.585
+relr::0
+uc::0
+Smin::0

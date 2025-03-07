@@ -1,0 +1,35 @@
+Type
+standardmodel
+
+Description
+The Gould model
+
+Variable
+state::S
+control::u
+
+Statedynamics
+ode::DS=((alpha*(kappa+u)*Q-beta*(1-Q))*(a-b*S-p)-1+Q-delta)*S
+
+Objective
+int::(p-c)*S-e*u^2/2
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+alpha::0.1
+a::1000
+b::10
+r::0.03
+p::1
+c::0
+delta::0.05
+e::1
+kappa::1
+ulb::0
+beta::1
+Q::1

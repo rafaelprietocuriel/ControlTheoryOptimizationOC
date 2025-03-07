@@ -1,0 +1,33 @@
+Type
+standardmodel
+
+Modelname
+momfinite
+
+Description
+a model of moderation, simple one state model with indifference solutions
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=x-x^3+u
+
+Objective
+int::-x^2-c*u^2
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::u>=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0
+c::2
+umin::-1
+umax::1

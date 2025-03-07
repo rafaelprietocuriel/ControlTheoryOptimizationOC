@@ -1,0 +1,45 @@
+Type
+standardmodel
+
+Description
+Optimal Investments with Increasing Returns to Scale: Black hole or Sisyphos. A capital accumulation model that was previously analyzed by Barucci (1998)
+
+Modelname
+opt_investment
+
+Variable
+state::k
+control::u
+
+Statedynamics
+ode::Dk=u-mu*k
+
+Objective
+expdisc::rho
+int::a*k+b*k^2-f*k^3-c*u-d*u^2
+
+Salvagevalue
+func::s*k
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+rho::0.1
+a::0
+b::0.6
+c::1
+d::1
+f::0.1
+mu::0.2
+s::1
+umin::0
+umax::inf
+
+%r=0.1, a=1, b=1, c=53, d=1, f=0.001, mu=0.2

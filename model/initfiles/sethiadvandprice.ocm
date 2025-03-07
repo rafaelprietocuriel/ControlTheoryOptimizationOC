@@ -1,0 +1,31 @@
+Type
+standardmodel
+
+Description
+An extended version of the Gould model
+
+Variable
+state::X
+control::P,U
+
+Statedynamics
+ode::DX=rho*U*(1-eta*P)*sqrt(1-X)
+
+Objective
+int::P*(rho*U*(1-eta*P)*sqrt(1-X))-e*U^2/2
+
+%Controlconstraint % identifier has to contain an alphabetic character
+%CC1::ineq::P<=1/eta
+%CC2::ineq::u>=ulb
+
+ArcDefinition
+0::[]_3
+%1::CC1
+
+Parameter
+rho::1
+eta::1
+r::0.1
+%delta::0
+e::1
+%ulb::0

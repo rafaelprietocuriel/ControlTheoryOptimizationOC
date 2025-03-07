@@ -1,0 +1,10 @@
+//
+// standardmodelLocalStateDynamics.oct
+//
+function out=$MODELNAME$LocalStateDynamics($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+% returns the canonical systems dynamics
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCALSTATEDYNAMICS$

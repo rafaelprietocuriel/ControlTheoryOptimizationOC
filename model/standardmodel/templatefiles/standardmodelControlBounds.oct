@@ -1,0 +1,15 @@
+//
+// standardmodelControlBounds.oct
+//
+
+function [lb,ub,A,b]=$MODELNAME$ControlBounds($INDEPENDENT$,$LOCSTATE$,$PARVAR$)
+% returns the bounds of the control variables $MODELNAME$
+$INFODETAILS$
+
+	
+$PARAMETERVALUES$
+	
+lb=[];
+ub=[];
+A=[];
+b=[];

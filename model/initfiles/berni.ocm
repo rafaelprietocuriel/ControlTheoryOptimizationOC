@@ -1,0 +1,42 @@
+Type
+standardmodel
+
+Description
+
+
+Variable
+state::k,h
+control::c,u
+
+Statedynamics
+ode::Dk=r*k+w*h*u-c
+ode::Dh=chi*h*(1-u)-epsilon*h^2
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'r'
+int::c^(1-theta)/(1-theta)-tau*u^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulow
+CC2::ineq::u<=uhigh
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+rho::0.03
+r::0.05
+w::1
+chi::1
+tau::0
+theta::0.5
+ulow::0
+uhigh::1
+epsilon::1e-5

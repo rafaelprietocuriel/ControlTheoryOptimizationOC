@@ -1,0 +1,12 @@
+//
+// impulsemodelTransversalityBC.oct
+//
+function out=$MODELNAME$TransversalityBC($ENDTIME$,$LRDEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the transversality condition value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LRDEPENDENTVAR2R$
+	
+$TRANSVERSALITYBC$

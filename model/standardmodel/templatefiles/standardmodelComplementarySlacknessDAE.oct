@@ -1,0 +1,20 @@
+//
+// standardmodelComplementarySlacknessDAE.oct
+//
+function out=$MODELNAME$ComplementarySlacknessDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the value of the Burmeister-Fischer function for $MODELNAME$
+$INFODETAILS$
+	
+!IF $CONTROLCONSTRAINTNUM$!
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$,:);
+$LAGRANGEMULTCC$=$DEPENDENTVAR$($LAGRANGEMULTCCCOORDINATE$,:);
+	
+cstr=$MODELNAME$ConstraintDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+out=burmeisterfischer(cstr,$LAGRANGEMULTCC$,$BURMEISTERFISCHERMU$);
+!ENDIF!
+!IF ~$CONTROLCONSTRAINTNUM$!
+out=[];
+!ENDIF!

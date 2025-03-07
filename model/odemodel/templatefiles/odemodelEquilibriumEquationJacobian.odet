@@ -1,0 +1,14 @@
+// 
+// odemodelEquilibriumEquationJacobian.odet
+//
+function out=$MODELNAME$EquilibriumEquationJacobian($DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the ODEs for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction([],$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+$DYNAMICSJACOBIAN$

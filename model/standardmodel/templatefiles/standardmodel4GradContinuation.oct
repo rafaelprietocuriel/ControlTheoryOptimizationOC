@@ -1,0 +1,103 @@
+//
+// standardmodel4GradContinuation.oct
+//
+function out=$MODELNAME$4GradContinuation()
+%
+% main function for the gradcont continuation process of $MODELNAME$.
+$INFODETAILS$
+	
+out{1}{1}=@statedynamics;
+out{2}{1}=@costatedynamics;
+out{3}{1}=@objectivefunction;
+out{4}{1}=@gradhamiltonian;
+out{5}{1}=@salvagevalue;
+out{6}{1}=@transversaltycondition;
+out{7}{1}=@statedynamicsext;
+out{8}{1}=@explicitgradientcontrol;
+out{9}{1}=@projectionlocal;
+out{10}=@admissible;
+out{11}=@plotcontinuation;
+out{12}=@constraint;
+out{13}=@controlbounds;
+out{14}=@hamiltonian;
+out{15}{1}=@asymptotictransversaltycondition;
+out{16}=@globalcorrector;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function out=statedynamics($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+out=$MODELNAME$LocalStateDynamics($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=costatedynamics($INDEPENDENT$,$LOCCOSTATE$,$LOCSTATECONTROL$,$PARVAR$)
+out=$MODELNAME$LocalCostateDynamics($INDEPENDENT$,$LOCCOSTATE$,$LOCSTATECONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=objectivefunction($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+out=$MODELNAME$LocalObjectiveFunction($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=gradhamiltonian($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$)
+out=$MODELNAME$LocalDHamiltonian($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=salvagevalue($ENDTIME$,$LOCSTATE$,$PARVAR$)
+out=$MODELNAME$LocalSalvagevalue($ENDTIME$,$LOCSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=transversaltycondition($ENDTIME$,$LOCSTATE$,$LOCCOSTATE$,$PARVAR$)
+out=$MODELNAME$LocalTransversalityBC($ENDTIME$,$LOCSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=statedynamicsext($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+	
+out=[statedynamics($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$); ...
+	objectivefunction($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)];
+	
+%--------------------------------------------------------------------------
+function [V,lm]=explicitgradientcontrol($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$GRADIENTLOCCONTROL$,$PARVAR$,$PARGAMMA$)
+[V,lm]=$MODELNAME$KuhnTuckerPoint($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$GRADIENTLOCCONTROL$,$PARVAR$,$PARGAMMA$);
+	
+%--------------------------------------------------------------------------
+function [lb,ub,A,b]=controlbounds($INDEPENDENT$,$LOCSTATE$,$PARVAR$)
+[lb,ub,A,b]=$MODELNAME$ControlBounds($INDEPENDENT$,$LOCSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=hamiltonian($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$)
+out=$MODELNAME$LocalHamiltonian($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=globalcorrector($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$)
+out=$MODELNAME$GlobalCorrector($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=projectionlocal($LOCCONTROL$,$PARVAR$)
+out=$MODELNAME$LocalControlProjection($LOCCONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=constraint($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+out=$MODELNAME$LocalConstraint($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=admissible($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+out=$MODELNAME$LocalConstraint($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function $LOCCOSTATE$=asymptotictransversaltycondition($ENDTIME$,$LOCSTATE$,$LOCCOSTATE$,$PARVAR$)
+return
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation(freepar,extremal,tangent,$PARVAR$,contdata,conttype,makemovie)
+h=$MODELNAME$PlotContinuation4Grad(freepar,extremal,tangent,$PARVAR$,contdata,conttype,makemovie);
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

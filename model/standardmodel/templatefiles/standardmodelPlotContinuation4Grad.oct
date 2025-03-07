@@ -1,0 +1,23 @@
+//
+// standardmodelPlotContinuation4Grad.oct
+//
+function h=$MODELNAME$PlotContinuation4Grad(freepar,extremal,tangent,$PARVAR$,contdata,conttype,makemovie)
+% 
+$INFODETAILS$
+	
+switch length(extremal)
+	case 1
+		subplot(2,2,1)
+		h=plot(extremal.t,extremal.y);
+	
+		subplot(2,2,2)
+		h=plot(extremal.t,extremal.cst_y);
+	
+		subplot(2,2,3)
+		h=plot(extremal.t,extremal.v);
+	
+		subplot(2,2,4)
+		h=plot(extremal.y(1,:),extremal.y(2,:));
+	
+	case 2
+end

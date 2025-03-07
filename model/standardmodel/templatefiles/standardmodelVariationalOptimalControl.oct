@@ -1,0 +1,20 @@
+//
+// standardmodelVariationalOptimalControl.oct
+//
+function out=$MODELNAME$VariationalOptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the variational optimal control values for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$VARIATIONALOPTIMALCONTROLVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$VARIATIONALOPTIMALCONTROLVALUE$
+!ENDIF!

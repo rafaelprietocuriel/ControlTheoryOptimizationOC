@@ -1,0 +1,56 @@
+Type
+standardmodel
+
+Modelname
+lotkavolterra
+
+Variable
+state::R,P % Prey ... (R)abbits, (P)redator
+control::u,v
+
+Statedynamics
+ode::DR=(a-b*P)*R-u
+ode::DP=(-e+c*R)*P-v
+
+Objective
+int::pR*u+pP*v-tau1*u^2-tau2*v^2
+
+Salvagevalue
+func::pR*R+pP*P
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulow
+CC2::ineq::v>=vlow
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::R<=Rmax,1
+SC2::ineq::P>=Pmin,1
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+4::SC1
+5::SC1,CC2
+6::SC2
+7::SC2,CC1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+4,5::R
+6,7::P
+
+Parameter
+r::0
+pR::5
+pP::2
+a::0.6
+b::0.002
+c::0.001
+e::0.4
+ulow::0
+vlow::0
+tau1::0
+tau2::0
+Rmax::70
+Pmin::0

@@ -1,0 +1,63 @@
+Type
+standardmodel
+
+Modelname
+gurtinmurphy
+
+Description
+harvesting model
+
+Variable
+state::F,A,C
+control::h
+costate::lambda1,lambda2,lambda3
+lagrangemultcc::lm % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::DF=(sigma*F*(1-F/(m*A))-gamma/(f*C+tau)*(F^(theta*theta1)/(1+F^(theta*theta2)))-eta*h*F)/epsilon
+ode::DA=(n-d*A-e*A*F)/epsilon
+ode::DC=psi*C/(kappa*C+s*A+w)-l*C
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*h*F-phi*h^2+mu*C
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=ulow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands
+% for the unconstrained case.
+% underscores indicate that multiple solutions of the maximizing
+% Hamiltonian exist for a specific constraint combination 
+ArcDefinition
+0::[]
+1::CC
+
+
+Parameter
+r::0.02
+gamma::1
+d::0.05
+e::1
+epsilon::1
+eta::1
+m::10
+n::1
+p::1
+phi::1
+sigma::1
+tau::0.25
+theta1::2
+theta2::2
+ulow::0
+l::0.1
+mu::1
+psi::1
+s::3
+w::1
+kappa::1
+f::1
+theta::1

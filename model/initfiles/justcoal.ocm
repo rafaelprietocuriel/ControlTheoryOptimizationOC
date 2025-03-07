@@ -1,0 +1,119 @@
+Type
+standardmodel
+
+Modelname
+justcoal
+
+% fN=KN
+% fR=KR
+% fC=KC
+%
+% production function
+% YI=KP^alpha*(thetat*wE^beta+(1-thetat)*wC^beta)^((1-alpha)/beta)
+%
+% pollution function
+% P=phiC*fC+phiN*fN+wC+HC
+%
+% electricity
+% E=fN+fR
+%
+% electricity budget
+% BE=E-wE-HE
+%
+% coal budget
+% BC=fC-fN-wC-HC
+%
+% governmental expenditures
+% G=YI-H+PE*BE+PC*BC-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2
+%
+% social welfare function
+% G^alpha1*H^alpha2*(theta*HC^kappa+(1-theta)*HE^kappa)^(alpha3/kappa)*P^(-alpha4)
+
+Variable
+state::KC,KR,KN,KP
+control::IC,IR,IN,IP,wE,wC,H,HC,HE
+
+Statedynamics
+ode::DKC=IC-deltaC*KC
+ode::DKR=IR-deltaR*KR
+ode::DKN=IN-deltaN*KN
+ode::DKP=IP-deltaP*KP
+
+Objective
+int::(KP^alpha*(thetat*(wE+tauwE)^beta+(1-thetat)*(tauwC+wC)^beta)^((1-alpha)/beta)-H+PE*(KN+KR-wE-HE)+PC*(KC-KN-wC-HC)-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2)^alpha1*H^alpha2*(theta*HC^kappa+(1-theta)*HE^kappa)^(alpha3/kappa)*(phiC*KC+phiN*KN+wC+HC)^(-alpha4)
+
+
+Salvagevalue
+func::tau*(KC+KR+KN+KP)
+
+Controlconstraint
+CC1::ineq::IC>=IC0
+CC2::ineq::IR>=IR0
+CC3::ineq::IN>=IN0
+CC4::ineq::IP>=IP0
+CC5::ineq::wE>=wE0
+CC6::ineq::wC>=wC0
+
+Optimization
+type::max
+method::bvp
+
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC4
+5::CC5
+6::CC6
+
+
+Control
+0::*::implicit
+1::IC::explicit
+1::IR,IN,IP,wE,wC,H,HC,HE::implicit
+2::IR::explicit
+2::IC,IN,IP,wE,wC,H,HC,HE::implicit
+3::IN::explicit
+3::IC,IR,IP,wE,wC,H,HC,HE::implicit
+4::IP::explicit
+4::IC,IR,IN,wE,wC,H,HC,HE::implicit
+5::wE::explicit
+5::IC,IR,IN,IP,wC,H,HC,HE::implicit
+6::wC::explicit
+6::IC,IR,IN,IP,wE,H,HC,HE::implicit
+
+
+Parameter
+r::0.03
+kappa::0.45
+alpha::0.5
+alpha1::0.5
+alpha2::0.5
+alpha3::0.5
+alpha4::2
+beta::0.45
+theta::0.5
+thetat::0.5
+deltaC::0.05 % 5-40%
+deltaR::0.05% 5-40%
+deltaN::0.05 % 5-40%
+deltaP::0.05 % 5-40%
+c1::10 % 10-150 USD/T/y
+c2::20 % 20-400 USD/T/y
+c3::30 % 30-250 USD/T/y
+c4::40 % 40-150 USD/T/y
+PE::30 % 30-450 USD/MWh
+PC::40 % 40-450 USD/MWh
+IC0::0
+IR0::0
+IN0::0
+IP0::0
+phiC::1
+phiN::1
+wE0::0
+wC0::0
+tau::0
+tauwE::1e-2
+tauwC::1e-2

@@ -1,0 +1,113 @@
+//
+// standardmodel4DAEContinuation.oct
+//
+function out=$MODELNAME$4DAEContinuation()
+%
+% main function for the gradcont continuation process of $MODELNAME$.
+$INFODETAILS$
+	
+	
+out{1}{1}=@canonicalsystem;
+out{1}{2}=@dlagrangefunctiondu;
+out{1}{3}=@complementaryslacknesscondition;
+
+out{2}{1}=@canonicalsystemjacobian;
+out{2}{2}=@canonicalsystemparameterjacobian;
+out{2}{3}=@canonicalsystemhessian;
+out{2}{4}=@canonicalsystemparameterhessian;
+out{2}{5}=@dlagrangefunctiondujacobian;
+out{2}{6}=@dlagrangefunctionduparmaeterjacobian;
+out{2}{7}=@complementaryslacknessconditionjacobian;
+out{2}{8}=@complementaryslacknessconditionparameterjacobian;
+
+out{3}{1}=@constraint;
+
+out{5}{1}=@bcinitial;
+out{5}{2}=@bctransversality;
+out{5}{3}=@salvagevalue;
+
+out{8}{1}=@objectivefunction;
+out{8}{2}=@objectivefunctionjacobian;
+out{8}{3}=@objectivefunctionparameterjacobian;
+
+out{11}=@plotcontinuation;
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function out=canonicalsystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$CanonicalSystemDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=canonicalsystemjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$CanonicalSystemJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=canonicalsystemparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$CanonicalSystemParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=objectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$ObjectiveFunctionDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function J=objectivefunctionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+J=$MODELNAME$ObjectiveFunctionJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function J=objectivefunctionparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+J=$MODELNAME$ObjectiveFunctionParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=dlagrangefunctiondu($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$DLagrangeFunctionDuDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=dlagrangefunctiondujacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$DLagrangeFunctionDuJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=dlagrangefunctionduparmaeterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$DLagrangeFunctionDuParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=complementaryslacknesscondition($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$ComplementarySlacknessDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=complementaryslacknessconditionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$ComplementarySlacknessJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=complementaryslacknessconditionparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$ComplementarySlacknessParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=constraint($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$ConstraintDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=salvagevalue($ENDTIME$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$SalvagevalueDAE($ENDTIME$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function out=bcinitial($INDEPENDENT$0,$DEPENDENTVAR$,fixcoord,$DEPENDENTVAR$0,$PARVAR$)
+out=$DEPENDENTVAR$(fixcoord,1)-$DEPENDENTVAR$0;
+	
+%--------------------------------------------------------------------------
+function out=bctransversality($ENDTIME$,$DEPENDENTVAR$,$PARVAR$)
+out=$MODELNAME$TransversalityBCDAE($ENDTIME$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+h=$MODELNAME$PlotContinuationDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$);
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

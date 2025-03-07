@@ -1,0 +1,10 @@
+//
+// standardmodelLocalObjectiveFunction.oct
+//
+function out=$MODELNAME$LocalObjectiveFunction($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$PARVAR$)
+% returns the objective function function for $MODELNAME$ for the gradient algorithm
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCALOBJECTIVEFUNCTION$

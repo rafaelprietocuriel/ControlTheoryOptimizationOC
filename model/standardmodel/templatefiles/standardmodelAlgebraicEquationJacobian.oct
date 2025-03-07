@@ -1,0 +1,36 @@
+//
+// standardmodelAlgebraicEquationJacobian.oct
+//
+function out=$MODELNAME$AlgebraicEquationJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of algebraic equations for the implicitly given controls
+$INFODETAILS$
+	
+!IF $JACOBIANNUMERICALFLAG$!
+dim=$IMPLICITCONTROLNUM$; % number of implicit controls
+numJacOpt.diffvar=2;
+numJacOpt.vectvars=[];
+out=numjaccsd(@$MODELNAME$AlgebraicEquation,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$(:),$ARCVAR$},dim($ARCVAR$+1),numJacOpt);
+	
+!ENDIF!
+!IF $JACOBIANEXPLICITFLAG$!
+$PARAMETERVALUES$
+	
+!ENDIF!
+!IF $IMPLICITCONTROLS$ && $JACOBIANEXPLICITFLAG$!
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!IF $JACOBIANEXPLICITFLAG$!
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERALGEBRAICEQUATION$
+		$ALGEBRAICEQUATIONIMPLICITJACOBIAN$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$ALGEBRAICEQUATIONIMPLICITJACOBIAN$
+!ENDIF!
+!ENDIF!

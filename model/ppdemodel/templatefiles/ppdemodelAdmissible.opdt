@@ -1,0 +1,19 @@
+//
+// ppdemodelAdmissible.opdt
+//
+
+function out=$MODELNAME$Admissible($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+% returns the values of the constraint and Lagrangian multiplier, the solution is 
+% admissible if these values are non-negative.
+$INFODETAILS$
+
+	
+constraintval=$MODELNAME$Constraint($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!IF $CONSTRAINTNUM$!
+$LAGRANGEMULTCC$=$MODELNAME$LagrangeMultiplier($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+out=[constraintval;$LAGRANGEMULTCC$];
+!ENDIF!
+!IF ~$CONSTRAINTNUM$!
+out=constraintval;
+!ENDIF!

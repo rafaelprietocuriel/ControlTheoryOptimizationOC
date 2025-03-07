@@ -1,0 +1,68 @@
+Type
+%
+%
+
+
+standardmodel
+
+Description
+
+
+Variable
+%independent::t
+state::x1,x2
+control::u1,u2
+endtime::T
+costate::lambda1,lambda2
+lagrangemultcc::lm1,lm2 % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::Dx1=beta*x1*(1-x1/(alpha*x2))-theta*x1*u1
+ode::Dx2=phi*x2*(1-x2/Q)-x2*u2
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'r'
+int::1/(1-kappa)*log((theta*u1*x1)^(1-kappa)+u2^(1-kappa))
+
+Salvagevalue
+
+Optimizationtype
+min
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u1>=ep
+CC2::ineq::u2>=ep
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% note that these properties may depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+0::*::implicit
+1::u1::explicit
+1::u2::implicit
+2::u1::implicit
+2::u2::explicit
+3::*::explicit
+*::*::nonlinear
+
+Parameter
+rho::0.03
+beta::1
+phi::1
+Q::1
+alpha::1
+theta::1
+kappa::2
+ep::0

@@ -1,0 +1,36 @@
+//
+// ppdemodelPlotContinuation.opdt
+// this file is called during the continuation process if the 'OCCONTARG' option 'PlotCont' is set 'on'.
+
+function h=$MODELNAME$PlotContinuation(s,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$,freepar,tangent,plotflag)
+% plotting commands called during the continuation process
+% the user can adapt this file to her/his needs
+$INFODETAILS$
+	
+global OCMATCONT
+	
+numarc=numel($ARCVAR$);
+color=$ARCCOLOR$;
+leftarcindex=OCMATCONT.HE.TIMEDDATA.leftarcindex;
+rightarcindex=OCMATCONT.HE.TIMEDDATA.rightarcindex;
+h=zeros(1,numarc);
+	
+$SPACE$=$FEMDATAGRID$;
+	
+h=[];
+for ii=1:numarc
+!IF $STATENUM$==1 && $SPACEDIMENSION$==1!
+	htmp=plot3(repmat($SPACE$(:),1,rightarcindex(ii)-leftarcindex(ii)+1),depvar(1:$FEMDATAGRIDNUM$,leftarcindex(ii):rightarcindex(ii)),depvar($FEMDATAGRIDNUM$+1:2*$FEMDATAGRIDNUM$,leftarcindex(ii):rightarcindex(ii)));
+!ENDIF!
+
+	set(htmp,'Color',color($ARCVAR$(ii)+1,:));
+	h=[h htmp];
+	if ii==1
+		hold on
+	end
+end
+hold off
+xlabel('$MYSPACEARG$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+zlabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')
+

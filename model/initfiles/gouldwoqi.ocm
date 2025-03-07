@@ -1,0 +1,37 @@
+Type
+standardmodel
+
+Modelname
+gouldwoqi
+
+Description
+An extended version of the Gould model with quality and price as state variables
+
+Variable
+state::S
+control::u
+
+Statedynamics
+ode::DS=((alpha*(kappa+u)*Q0-beta*(1-Q0))*(1-S/N)-(1-Q0+delta))*S
+
+Objective
+int::Q0*p*S-e*u^2/2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+alpha::1
+r::0.03
+delta::0.05
+N::10
+ulb::0
+Q0::1
+p::1
+e::1
+kappa::1
+beta::0.5

@@ -1,0 +1,27 @@
+Type
+odemodel
+
+Description
+The uncontrolled fishery model with fish and algae
+
+Variable
+state::F,A
+
+Dynamics
+ode::DF=(sigma*F*(1-F/(m*A))-gamma/(C+tau)*(F^theta1/(1+F^theta2))-eta*h*F)
+ode::DA=(n-d*A-e*A*F)/epsilon
+
+Parameter
+gamma::1
+d::0.05
+e::1
+epsilon::1
+m::10
+n::1
+sigma::1
+tau::0.25
+C::1
+theta1::2
+theta2::2
+eta::1
+h::0

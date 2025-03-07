@@ -1,0 +1,21 @@
+Type
+odemodel
+
+Description
+The reduced Uzawa-Lucas two-sector model of endogenous growth
+
+Variable
+state::p,u,q
+
+Dynamics
+ode::Dp=(A*p^(alpha-1)*u^(1-alpha)-q-psi*(1-alpha+gamma)/(1-alpha)*(1-u))*p
+ode::Du=(psi*(1-alpha+gamma)/(1-alpha)-q+psi*(1-alpha+gamma)/(1-alpha)*u)*u
+ode::Dq=(q+A*(alpha-sigma)/sigma*p^(alpha-1)*u^(1-alpha)-r/sigma)*q
+
+Parameter
+A::1
+psi::0.1
+alpha::0.5
+r::0.03
+gamma::0
+sigma::0.5

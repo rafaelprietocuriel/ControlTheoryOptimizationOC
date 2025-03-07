@@ -1,0 +1,79 @@
+//
+// standarddiffmodelCanonicalSystemMap.oct
+//
+// Template file for the dynamical system of a standard ODE model
+// this file is used for the automatic file generation
+// empty lines and lines starting with // are ignored 
+// terms between $...$ are variables which are replaced during file generation
+// terms between !...! are commands for the file generation, possible commands are 
+// !IF ...!,!ENDIF! ... corresponds to a usual if clause
+// !STARTADDARCCASE!,!ENDADDARCCASE!, lines between these commands are repeated in a 
+// switch case statement for any specific arc
+// a tabulator is interpreted as an empty line in the corresponding generated file
+function out=$MODELNAME$CanonicalSystemMap($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+!IF $EXPLICITDIFFERENCEEQUATION$!
+% the explicit canonical systems map
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$DEPENDENTVAR$=$MODELNAME$AdjointMap($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!ENDIF!
+$STATEDYNAMICS$
+$DEPENDENTVAR$($STATECOORD$,2:end)=statetp1;
+	
+out=$DEPENDENTVAR$(:,2:end)-$DEPENDENTVAR$(:,1:end-1);
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function out=$MODELNAME$AdjointMap($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% the explicit map of the adjoint system
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+out=$DEPENDENTVAR$;
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$ADJOINTSTATETPONE$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$ADJOINTSTATETPONE$
+!ENDIF!
+out($COSTATECOORD$,2:end)=costatetp1;
+!ENDIF!
+
+//
+!IF ~$EXPLICITDIFFERENCEEQUATION$!
+% the implicit canonical systems map
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!ENDIF!
+$CANONICALSYSTEMMAP$
+!ENDIF!
+

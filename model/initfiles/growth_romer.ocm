@@ -1,0 +1,34 @@
+Type
+standardmodel
+
+Modelname
+growth_romer
+
+Description
+Optimal Control Model
+
+Variable
+state::k
+control::c
+
+Statedynamics
+ode::Dk=A*k^(alpha+beta-1)-delta*k-c
+
+Objective
+int::(c^(1-eta)-1)/(1-eta)
+
+Controlconstraint
+CC1::ineq::A*k^(alpha+beta-1)-delta*k-c>=DKmin %
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+r::0.03
+A::10
+delta::0
+alpha::0.5
+beta::0.5
+DKmin::0
+eta::0.5

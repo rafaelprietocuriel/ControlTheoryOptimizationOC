@@ -1,0 +1,177 @@
+//
+// ppdemodel4SaddlePathContinuation.opdt
+//
+function out=$MODELNAME$4SaddlePathContinuation()
+%
+% main function for the bvpcont continuation process of an infinite time horizon problem
+$INFODETAILS$
+	
+out{1}=@canonicalsystem;
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{2}{3}=@derivativetime;
+!ENDIF!
+out{3}{1}=@hessian;
+out{3}{2}=@parameterhessian;
+out{5}{1}=@bcinitial;
+out{5}{2}=@bcasymptotic;
+out{5}{3}=@bctransversality;
+out{5}{4}=@equilibrium;
+out{5}{5}=@explicitequilibriumvalue;
+out{6}{1}=@bcjacobianinitial;
+out{6}{2}=@bcjacobianasymptotic;
+out{6}{3}=@bcjacobiantransversality;
+% functions for hybrid structure and its discretization
+out{7}{1}=@hybridinfo;
+out{7}{2}=@domain;
+out{7}{3}=@guard;
+out{7}{4}=@reset;
+out{7}{5}=@switchtime;
+out{7}{7}=@jacobianguard;
+out{7}{8}=@jacobianreset;
+out{7}{9}=@domaindiscretization;
+out{7}{10}=@timesettransformation;
+out{8}{1}=@objectivefunction;
+out{8}{2}=@objectivefunctionjacobian;
+out{8}{3}=@objectivefunctionparameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{8}{4}=@objectivefunctionderivativetime;
+!ENDIF!
+	
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function dxdt=canonicalsystem($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+dxdt=$MODELNAME$CanonicalSystem($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function J=jacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+J=$MODELNAME$CanonicalSystemJacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+
+	
+!IF ~$ISAUTONOMOUS$!
+%--------------------------------------------------------------------------
+function J=derivativetime($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+J=$MODELNAME$CanonicalSystemDerivativeTime($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+J=$MODELNAME$CanonicalSystemParameterJacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function H=hessian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+H=$MODELNAME$CanonicalSystemHessian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function H=parameterhessian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+H=$MODELNAME$CanonicalSystemTotalHessian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function O=objectivefunction($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+O=$MODELNAME$ObjectiveFunction($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function J=objectivefunctionjacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+J=$MODELNAME$ObjectiveFunctionJacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function Jpar=objectivefunctionparameterjacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+Jpar=$MODELNAME$ObjectiveFunctionParameterJacobian($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!IF ~$ISAUTONOMOUS$!
+%--------------------------------------------------------------------------
+function Jt=objectivefunctionderivativetime($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+Jt=$MODELNAME$ObjectiveFunctionDerivativeTime($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function res=equilibrium($DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+res=$MODELNAME$EquilibriumEquation($DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+%--------------------------------------------------------------------------
+function val=guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,$FEMDATA$)
+% condition on the (continuous) variables (states, costates) when a
+% switching from $ARCVAR$1 to $ARCVAR$2 takes place. edge=[$ARCVAR$1 $ARCVAR$2]
+% this condition determines the switching time
+if isempty(edge)
+	val=[];
+else
+!IF $NUMBEROFARCS$>2!
+	fprintf('The function ''guard'', providing the boundary conditions between different arcs, in ''$MODELNAME$4SaddlePathContinuation.m'' has to be adapted by the user.\nExecution is paused. Please interrupt and edit the file accordingly.')
+	pause
+!ENDIF!
+	val=$MODELNAME$Constraint(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc),$FEMDATA$)-$MODELNAME$Constraint(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc),$FEMDATA$);
+!IF $NUMBEROFARCS$>1!
+	% the user has to adapt the following lines to the constraint properties of the model
+	if edge(1,arc)==0 && edge(2,arc)==1 || edge(2,arc)==0  && edge(1,arc)==1
+		val=val(1);
+	elseif edge(1,arc)==0 && edge(2,arc)==2 || edge(2,arc)==0  && edge(1,arc)==2
+		val=val(2);
+	end
+!ENDIF!
+end
+	
+%--------------------------------------------------------------------------
+function val=reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,freepar,$ARCVAR$,edge,arc,$FEMDATA$)
+%transformation of the (continuous) variables (states, costates) when
+%switching from $ARCVAR$1 to $ARCVAR$2. edge=[$ARCVAR$1 $ARCVAR$2] 
+
+if isempty(edge)
+	val=[];
+else
+	val=$DEPENDENTVAR$a(:,arc+1)-$DEPENDENTVAR$b(:,arc);
+end
+	
+%--------------------------------------------------------------------------
+function res=bcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$,$FEMDATA$)
+res=$DEPENDENTVAR$a(targetcoordinate,1)-initialstate;
+	
+%--------------------------------------------------------------------------
+function res=bcasymptotic($DEPENDENTVAR$b,asymptoticmatrix,saddlepoint,$PARVAR$,$ARCVAR$,$FEMDATA$)
+res=asymptoticmatrix.'*($DEPENDENTVAR$b($STATECOSTATECOORD$,end)-saddlepoint);
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianinitial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector)
+[Ja Jb Jpar]=$MODELNAME$BCJacobian4Initial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector);
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianasymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint)
+[Ja Jb Jpar]=$MODELNAME$BCJacobian4Asymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint);
+	
+%--------------------------------------------------------------------------
+function J=jacobianguard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function J=jacobianreset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,$FEMDATA$,freepar,tangent)
+h=$MODELNAME$PlotContinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,$FEMDATA$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function [out labelS]=testadmissibility($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+	
+out=$MODELNAME$Admissible($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!FOR COUNTER=1:$NUMBEROFARCS$!
+labelS(COUNTER).$ARCVAR$=!EVAL(COUNTER-1)!;
+labelS(COUNTER).info='';
+!ENDFOR!
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

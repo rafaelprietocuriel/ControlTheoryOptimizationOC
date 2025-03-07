@@ -1,0 +1,13 @@
+//
+// standardmodelLocalCostateDynamics.oct
+//
+function out=$MODELNAME$LocalCostateDynamics($INDEPENDENT$,$LOCCOSTATE$,$LOCSTATECONTROL$,$PARVAR$)
+% returns the canonical systems dynamics
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCSTATE$=$LOCSTATECONTROL$($LOCSTATECOORD$);
+$LOCCONTROL$=$LOCSTATECONTROL$($LOCCONTROLCOORD$);
+	
+$LOCALCOSTATEDYNAMICS$

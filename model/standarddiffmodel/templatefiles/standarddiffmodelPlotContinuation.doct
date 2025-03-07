@@ -1,0 +1,28 @@
+//
+// standarddiffmodelPlotContinuation.oct
+// this file is called during the continuation process if the 'OCCONTARG' option 'PlotCont' is set 'on'.
+
+function h=$MODELNAME$PlotContinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,freepar,tangent,plotflag)
+% plotting commands called during the continuation process
+$INFODETAILS$
+	
+global OCBVP
+color=$ARCCOLOR$;
+	
+arc=0;
+for jj=1:length(OCBVP.numarc)
+	for ii=1:OCBVP.numarc(jj)
+		arc=arc+1;
+		h(arc)=plot(depvar(1,OCBVP.Lidx(arc):OCBVP.Ridx(arc)),depvar(2,OCBVP.Lidx(arc):OCBVP.Ridx(arc)));
+		set(h(arc),'Marker','x','Color',color(arcid(arc)+1,:),'LineStyle','none')
+		if arc==1
+			hold on
+		end
+	end
+end
+hold off
+xlabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')
+!IF $STATENUM$>2!
+zlabel('$LATEXUSERDEPENDENTNAMETHIRD$','Interpreter','Latex')
+!ENDIF!

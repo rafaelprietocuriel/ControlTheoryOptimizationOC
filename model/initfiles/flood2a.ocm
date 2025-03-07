@@ -1,0 +1,60 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::ky,kd
+control::c,jota
+
+
+
+Statedynamics
+%introducing tau for a better numeric solution, kappa is weighting the damage of k_d, jota general&constant:
+ ode::Dky=(A*ky^alpha-c)*(1-jota)-deltay*ky-tau*((1/pi*atan(eta*kd^2*(W()-(1-zetad)*kd))+1/2)*(1-1/(1+W()^2)))*ky
+ ode::Dkd=(A*ky^alpha-c)*jota-deltad*kd-kappa*tau*((1/pi*atan(eta*kd^2*(W()-(1-zetad)*kd))+1/2)*(1-1/(1+W()^2)))*kd
+
+Exogenousfunction
+W::Wbase+t
+
+Objective
+% the term kappa*Ef^2 is only introduced to derive the necessary optimality conditions automatically, even though the case of linear controls is not implemented up to now
+expdisc::rho 
+int::log(c)-epsilon*jota^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::c>=clow
+CC2::ineq::c<=A*ky^alpha
+CC3::ineq::jota>=jotalow
+CC4::ineq::jota<=jotahigh
+
+ArcDefinition
+0::[]_1
+1::[]_2
+2::CC1
+3::CC2
+4::CC3
+5::CC4
+6::CC1,CC3
+7::CC1,CC4
+8::CC2,CC3
+9::CC2,CC4
+
+Parameter
+rho::0.03 
+alpha::0.7
+deltay::0.1
+deltad::0.01
+A::0.8
+zetad::0.5
+clow::0
+eta::50
+kappa::1
+tau::1
+epsilon::0.001
+kappam::1
+kappas::10
+jotalow::0
+jotahigh::1
+Wbase::0

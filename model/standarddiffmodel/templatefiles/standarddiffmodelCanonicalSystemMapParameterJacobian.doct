@@ -1,0 +1,41 @@
+//
+// standarddiffmodelCanonicalSystemMapParameterJacobian.oct
+//
+function out=$MODELNAME$CanonicalSystemMapParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the canonical systems
+$INFODETAILS$
+	
+!IF $IMPLICITCONTROLS$!
+% the algebraic equations are replaced by its total time derivatives
+out=$MODELNAME$CanonicalSystemImplicitNumericalParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+% if the used BVP solver is able to handle algebraic equations the following
+% function can be used.
+% out=$MODELNAME$CanonicalSystemAEParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+	
+%--------------------------------------------------------------------------
+function out=$MODELNAME$CanonicalSystemMapAEParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian with respect to the parameter variables of the canonical
+% system given as a system of differential algebraic equations
+	
+!ENDIF!
+$PARAMETERVALUES$
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$CANONICALSYSTEMMAPPARAMETERJACOBIAN$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$CANONICALSYSTEMMAPPARAMETERJACOBIAN$
+!ENDIF!

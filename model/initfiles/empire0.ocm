@@ -1,0 +1,47 @@
+Type
+standardmodel
+
+Modelname
+empire0
+
+Description
+Growth of Empires: Dynamic Optimization Model, Yegorov, Yuri, Feichtinger Gustav, Grass, Dieter
+
+Variable
+state::R
+control::w
+
+Statedynamics
+ode::DR=alpha/2*w*R-2*alpha*P0-alpha*beta/2*R^2
+
+Objective
+int::log((A-delta)*k0-w-beta*R)+c*R^sigma
+
+Controlconstraint % identifier has to contain an alphabetic character 
+%
+CC1::ineq::w>=Dmin
+CC2::ineq::(A-delta)*k0-w-beta*R>=Ymin
+
+%Stateconstraint % identifier::constrainttype::constraint,order
+%SC1::ineq::R>=Rmin,1
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+%State % define the state variable(s) that are explicitly derived from the state constraints 
+%2::R
+
+Parameter
+r::0.03
+A::1
+alpha::0.1
+beta::0.1
+c::1
+sigma::-1
+delta::0.2
+k0::1
+P0::0.03
+Dmin::0
+Ymin::0

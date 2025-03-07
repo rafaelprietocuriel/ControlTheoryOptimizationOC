@@ -1,0 +1,10 @@
+//
+// standardmodelLocalTransversalityBC.oct
+//
+function out=$MODELNAME$LocalTransversalityBC($ENDTIME$,$LOCSTATE$,$PARVAR$)
+% returns the transversality condition value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCALTRANSVERSALITYCONDITION$

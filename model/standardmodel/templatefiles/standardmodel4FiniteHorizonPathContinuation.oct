@@ -1,0 +1,383 @@
+//
+// standardmodel4FiniteHorizonPathContinuation.oct
+//
+function out=$MODELNAME$4FiniteHorizonPathContinuation()
+%
+% main function for the bvpcont continuation process of a finite time horizon problem
+$INFODETAILS$
+	
+out{1}=@canonicalsystem;
+	
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{2}{3}=@canonicalsystemderivativetime;
+!ENDIF!
+	
+!IF ~$IMPLICITCONTROLS$!
+out{3}{1}=@hessian;
+out{3}{2}=@parameterhessian;
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+out{3}{1}=[];
+out{3}{2}=[];
+!ENDIF!
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+out{4}{1}=@exogenousdynamics;
+out{4}{2}=@exogenousjacobian;
+out{4}{3}=@exogenousparameterjacobian;
+out{4}{11}=@exogenousinitialstates;
+	
+!ENDIF!
+!IF $VARIATIONPARAMETERNUM$!
+out{4}{4}=@variationaldynamics;
+out{4}{5}=@variationaljacobian;
+out{4}{6}=@variationalparameterjacobian;
+!IF $EXOGENOUSFUNCTIONNUM$!
+out{4}{7}=@exogenousvariationaldynamics;
+out{4}{8}=@exogenousjacobian4variationalargument;
+out{4}{9}=@exogenousvariationaldynamicsjacobian;
+!ENDIF!
+out{4}{10}=@variationalhamiltonian;
+	
+!ENDIF!
+out{5}{1}=@bcinitial;
+out{5}{2}=@bctransversality;
+out{5}{3}=@bcoptimalhorizon;
+out{5}{4}=@hitvaluefunc;
+out{5}{6}=@salvagevalue;
+!IF $VARIATIONPARAMETERNUM$!
+out{5}{9}=@variationalguard;
+out{5}{10}=@variationalreset;
+out{5}{11}=@variationalbcinitial;
+out{5}{12}=@variationalbctransversality;
+	
+!ENDIF!
+out{5}{15}=@userbc;
+	
+out{6}{1}=@bcjacobianinitial;
+out{6}{2}=@bcjacobiantransversality;
+	
+% functions for hybrid structure and its discretization
+out{7}{1}=@hybridinfo;
+out{7}{2}=@domain;
+out{7}{3}=@guard;
+out{7}{4}=@reset;
+out{7}{5}=@switchtime;
+out{7}{7}=@jacobianguard;
+out{7}{8}=@jacobianreset;
+out{7}{9}=@domaindiscretization;
+out{7}{10}=@timesettransformation;
+	
+out{8}{1}=@objectivefunction;
+out{8}{2}=@objectivefunctionjacobian;
+out{8}{3}=@objectivefunctionparameterjacobian;
+out{8}{4}=@objectivefunctionderivativetime;
+!IF $VARIATIONPARAMETERNUM$!
+out{8}{5}=@variationalobjectivefunction;
+out{8}{6}=@variationalobjectivefunctionjacobian;
+out{8}{7}=@variationalobjectivefunctionparameterjacobian;
+out{8}{8}=@variationalobjectivefunctionderivativetime;
+out{8}{9}=@variationalsalvagevalue;
+!ENDIF!
+	
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function dxdt=canonicalsystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+!IF ~$IMPLICITCONTROLS$!
+dxdt=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+dxdt=$MODELNAME$CanonicalSystemGeneralized($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=jacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+!IF ~$IMPLICITCONTROLS$!
+J=$MODELNAME$CanonicalSystemJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+J=$MODELNAME$CanonicalSystemGeneralizedJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!	
+!IF ~$ISAUTONOMOUS$!
+%--------------------------------------------------------------------------
+function J=canonicalsystemderivativetime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$CanonicalSystemDerivativeTime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+!IF ~$IMPLICITCONTROLS$!
+J=$MODELNAME$CanonicalSystemParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+J=$MODELNAME$CanonicalSystemGeneralizedParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF ~$IMPLICITCONTROLS$!
+	
+%--------------------------------------------------------------------------
+function H=hessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+H=$MODELNAME$CanonicalSystemHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function H=parameterhessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+H=$MODELNAME$CanonicalSystemTotalHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+%--------------------------------------------------------------------------
+function out=exogenousdynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=exogenousjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$ExogenousJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=exogenousparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$ExogenousParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!IF $VARIATIONPARAMETERNUM$!
+%--------------------------------------------------------------------------
+function out=variationaldynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalDynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationaljacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalhamiltonian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalHamiltonian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalobjectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalObjectiveFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalobjectivefunctionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalObjectiveFunctionJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalobjectivefunctionparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalObjectiveFunctionParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=variationalsalvagevalue($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$
+out=$MODELNAME$VariationalSalvageValue($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$;	
+	
+%--------------------------------------------------------------------------
+function out=variationalobjectivefunctionderivativetime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalObjectiveFunctionDerivativeTime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);	
+	
+%--------------------------------------------------------------------------
+function val=variationalguard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc)
+% condition on the (continuous) variables (states, costates) when a
+% switching from arcid1 to arcid2 takes place. edge=[arcid1 arcid2]
+% this condition determines the switching time
+if isempty(edge)
+	val=[];
+else
+	%val=$MODELNAME$VariationalHamiltonian(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc))-$MODELNAME$VariationalHamiltonian(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+	
+	val=$MODELNAME$VariationalConstraint(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc))-$MODELNAME$VariationalConstraint(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+!IF $CONTROLCONSTRAINTNUM$>1!
+	% the user has to adapt the following lines to the constraint properties of the model
+	if edge(1,arc)==0 && edge(2,arc)==1 || edge(2,arc)==0  && edge(1,arc)==1
+		val=val(1);
+	elseif edge(1,arc)==0 && edge(2,arc)==2 || edge(2,arc)==0  && edge(1,arc)==2
+		val=val(2);
+	end
+!ENDIF!
+end
+%--------------------------------------------------------------------------
+function val=variationalreset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,freepar,$ARCVAR$,edge,arc)
+%transformation of the (continuous) variables (states, costates) when
+%switching from arcid1 to arcid2. edge=[arcid1 arcid2] 
+	
+if isempty(edge)
+	val=[];
+else
+	val=$DEPENDENTVAR$a($VARIATIONALSTATECOSTATECOORD$,arc+1)-$DEPENDENTVAR$b($VARIATIONALSTATECOSTATECOORD$,arc);
+end
+	
+%--------------------------------------------------------------------------
+function res=variationalbcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$)
+	
+res=depvara($VARIATIONALSTATECOORD$,1)-[0;0];
+	
+%--------------------------------------------------------------------------
+function res=variationalbctransversality($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$b($VARIATIONALCOSTATECOORD$,end)-$MODELNAME$VariationalTransversalityBC($ENDTIME$,$DEPENDENTVAR$b(:,end),$PARVAR$,$ARCVAR$);
+
+!IF $EXOGENOUSFUNCTIONNUM$!
+%--------------------------------------------------------------------------
+function out=exogenousvariationaldynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$VariationalExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+
+	
+!ENDIF!
+!ENDIF!
+%--------------------------------------------------------------------------
+function out=hitvaluefunc($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+out=[];
+	
+%--------------------------------------------------------------------------
+function out=userbc($INDEPENDENT$,$DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$)
+global MYCONT OCMATFTE
+out=[];
+	
+%--------------------------------------------------------------------------
+function O=objectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+O=$MODELNAME$ObjectiveFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function J=objectivefunctionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$ObjectiveFunctionJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function Jpar=objectivefunctionparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+Jpar=$MODELNAME$ObjectiveFunctionParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function Jt=objectivefunctionderivativetime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+Jt=$MODELNAME$ObjectiveFunctionDerivativeTime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);	
+	
+%--------------------------------------------------------------------------
+function val=guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc)
+% condition on the (continuous) variables (states, costates) when a
+% switching from $ARCVAR$1 to $ARCVAR$2 takes place. edge=[$ARCVAR$1 $ARCVAR$2]
+% this condition determines the switching time
+if isempty(edge)
+	val=[];
+else
+	%val=$MODELNAME$Hamiltonian(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc))-$MODELNAME$Hamiltonian(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+	
+	val=$MODELNAME$Constraint(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc))-$MODELNAME$Constraint(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+!IF $CONTROLCONSTRAINTNUM$>1!
+	% the user has to adapt the following lines to the constraint properties of the model
+	if edge(1,arc)==0 && edge(2,arc)==1 || edge(2,arc)==0  && edge(1,arc)==1
+		val=val(1);
+	elseif edge(1,arc)==0 && edge(2,arc)==2 || edge(2,arc)==0  && edge(1,arc)==2
+		val=val(2);
+	end
+!ENDIF!
+end
+	
+%--------------------------------------------------------------------------
+function val=reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,freepar,$ARCVAR$,edge,arc)
+%transformation of the (continuous) variables (states, costates) when
+%switching from $ARCVAR$1 to $ARCVAR$2. edge=[$ARCVAR$1 $ARCVAR$2] 
+
+if isempty(edge)
+	val=[];
+else
+	val=$DEPENDENTVAR$a($STATECOSTATECOORD$,arc+1)-$DEPENDENTVAR$b($STATECOSTATECOORD$,arc);
+!IF $IMPLICITCONTROLS$!
+	if edge(1,arc)==0 && edge(2,arc)==1
+		val0=$MODELNAME$AlgebraicEquation(0,$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+	elseif edge(2,arc)==0  && edge(1,arc)==1
+		val0=$MODELNAME$AlgebraicEquation(0,$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc));
+	end
+	val=[val;val0];
+!ENDIF!
+end
+	
+%--------------------------------------------------------------------------
+function res=bcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$)
+!IF ~$IMPLICITCONTROLS$!
+res=$DEPENDENTVAR$a(targetcoordinate,1)-initialstate;
+!ENDIF!
+!IF $IMPLICITCONTROLS$!
+res=[$DEPENDENTVAR$a(targetcoordinate,1)-initialstate; ...
+	$MODELNAME$AlgebraicEquation(0,$DEPENDENTVAR$a,$PARVAR$,$ARCVAR$)];
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function res=bctransversality($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$b($COSTATECOORD$,end)-$MODELNAME$TransversalityBC($ENDTIME$,$DEPENDENTVAR$b(:,end),$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function out=salvagevalue($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$)
+out=$MODELNAME$DiscountedSalvagevalue($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function res=bcoptimalhorizon($ENDTIME$,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$)
+res=$MODELNAME$Hamiltonian($ENDTIME$,$DEPENDENTVAR$b(:,end),$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianinitial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector)
+[Ja Jb Jpar]=$MODELNAME$BCJacobian4Initial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector);
+	
+%--------------------------------------------------------------------------
+function J=jacobianguard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function J=jacobianreset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function infoH=hybridinfo()
+
+infoH.arcarg=$ARCARGUMENT$; % replaces name of arcnum arcidentifier
+infoH.edge=$EDGES$; % each row represents a possible transition between the states of the hybrid system    
+	
+%--------------------------------------------------------------------------
+function infoD=domain($ARCVAR$)
+% returns general information about the domain for each arc
+infoD=$MODELNAME$ArcInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function val=switchtime(edge)
+% here a fixed switchtime for a specific edge can be specified, otherwise
+% it is determined by the guard
+val=[];
+	
+%--------------------------------------------------------------------------
+function infoD=domaindiscretization($ARCVAR$)
+% returns information about the discretization for each arc
+infoD=$MODELNAME$ArcDiscretizationInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function infoT=timesettransformation()
+infoT.normalization=1; % the timenterval of the nth arc is normalized to [n,n+1]
+%infoT.infinity=-0.1; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1]
+%infoT.asymptoticapproximation=inf;
+infoT.infinity=0; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1], infoT.infinity<0
+infoT.asymptoticapproximation=100;
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,freepar,tangent)
+h=$MODELNAME$PlotContinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function [out labelS]=testadmissibility($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+	
+out=$MODELNAME$Admissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!FOR COUNTER=1:$NUMBEROFARCS$!
+labelS(COUNTER).$ARCVAR$=!EVAL(COUNTER-1)!;
+labelS(COUNTER).info='';
+!ENDFOR!
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

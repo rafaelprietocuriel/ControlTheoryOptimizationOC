@@ -1,0 +1,35 @@
+Type
+ppdemodel
+
+Description
+J.R. Zipkin, M.B. Short, and A.L. Bertozzi. Cops on the dots in a mathematical model of urban crime and police response. Discrete and Continuous Dynamical Systems - Series B, 19(5):1479–1506, 2014.
+
+Variable
+state::A(z1,z2,t),rho(z1,z2,t) % space distributed variable
+control::k(z1,z2,t)
+space::z1,z2
+
+Spacegeometry
+intvl::[-l,l],[-l,l] % square
+
+Statedynamics
+ppde::DtA=eta*lapOp.A+exp(-k)*rho*A-A-B0
+%ppde::Dtrho=divOp.(nabOb.rho-2*rho*nabOp.(log(A)))-exp(-k)*(rho*A-barB)
+ppde::Dtrho=lapOp.rho-2/A^2*(nabOb.rho*.nabOb.A-rho*nabOb.A*.nabOb.A)+rho/A*lapOp.A
+
+Boundarycondition
+nm::DnA=0
+nm::Dnrho=0
+
+Objective
+expdisc::r 
+int(z,t)::-exp(-k)*rho*A-gamma*k
+
+
+Parameter
+r::0.03
+eta::1
+B0::0.6
+barB::1
+gamma::1
+l::2

@@ -1,0 +1,35 @@
+Type
+standardmodel
+
+Modelname
+fishwar
+
+Variable
+state::v1,v2
+control::k1,k2
+
+Statedynamics
+ode::Dv1 =(v1-k1)^a1*(v2-k2)^b1
+ode::Dv2 =(v1-k1)^a2*(v2-k2)^b2
+
+Objective
+expdisc::rho
+int::p*p1*v1*k1-c*(c1+d)*k1^2+p*p2*v2*k2-c*(c2+d)*k2^2
+
+ArcDefinition
+0::[]
+
+
+Parameter
+rho::0.03
+a1::0.5
+b1::0.2
+a2::0.5
+b2::0.2
+c::1
+c1::1
+c2::1
+p::1
+p1::1
+p2::1
+d::0

@@ -1,0 +1,12 @@
+//
+// standardmodelVariationalStateConstraintBC.oct
+//
+function out=$MODELNAME$VariationalStateConstraintBC($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,edge)
+% returns the optimal control values for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$VARIATIONALSTATECONSTRAINT$
+	
+out=SCx*$DEPENDENTVAR$($VARIATIONALSTATECOORD$);

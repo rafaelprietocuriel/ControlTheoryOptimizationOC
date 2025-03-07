@@ -1,0 +1,14 @@
+//
+// odemodelDynamicsParameterJacobian.oct
+//
+function out=$MODELNAME$DynamicsParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the ODEs with respect to the parameter variables for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+$DYNAMICSPARAMETERJACOBIAN$

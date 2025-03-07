@@ -1,0 +1,24 @@
+Type
+standardmodel
+
+Modelname
+calc_var2
+
+
+Description
+example for the Leitmann equivalence problem, (wagener2010)
+Variable
+state::x
+control::v
+
+Statedynamics
+ode::Dx=v
+
+Objective
+int::c1*x^2-c2*x^4-c3*v^2
+
+Parameter
+r::0.0
+c1::0.5
+c2::0.25
+c3::0.5

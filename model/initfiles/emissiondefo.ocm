@@ -1,0 +1,31 @@
+Type
+standardmodel
+
+Description
+optimal emissions and deforestation rates under time-dependent environmental absorption
+
+Variable
+state::P,A
+control::u,v,w
+
+Statedynamics
+ode::DP=u+alpha*v-A*P
+ode::DA=w-v-gamma*P
+
+Objective
+int::a*log(u)+b*log(v)-c*P^2/2-w^2/2
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::w>=wlb
+
+
+ArcDefinition
+0::[]
+1::CC1
+Parameter
+alpha::0.1
+a::1
+b::1
+c::1
+gamma::1
+r::0.03
+wlb::0

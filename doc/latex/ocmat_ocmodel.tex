@@ -1,0 +1,607 @@
+The Optimal Control Toolbox (\OCT) is developed to analyze optimal control problems \OCPC\ of the following type
+\vspace{0.5cm}
+\begin{subequations}
+\label{eq:opt_pro}
+\begin{align}
+& \max_{u(\cdot)}\int_0^T\E^{-rt}g\left(x(t),u(t),\modelpar\right)\,\D t\label{eq:opt_pro_obj}\\
+\text{s.t.}\quad & \dot{x}(t) =f\left(x(t),u(t),\modelpar\right),\quad t\in[0,\,T]\label{eq:opt_pro_dyn}\\
+\text{with}\quad & x(0) = x_0\label{eq:opt_pro_init}\\
+& \mixc\left(x(t),u(t),\modelpar\right)\geq0,\quad t\in[0,\,T]\label{eq:opt_pro_mc}\\
+&\statec\left(x(t),\modelpar\right)\geq0,\quad t\in[0,\,T]\label{eq:opt_pro_sc}\\
+&\eic(x(T),T)\geq0\label{eq:opt_pro_eic}\\
+&\eec(x(T),T)=0,\label{eq:opt_pro_eec}
+\end{align}
+where the state dynamics $f:\R^{n+m}\rightarrow\R^n$, the objective function $g:\R^{n+m}\rightarrow\R$, the mixed path constraints $\mixc:\R^{n+m}\rightarrow\R^{\mixcnum}$, and the pure state constraints $\statec:\R^n\rightarrow\R^{\statecnum}$ are assumed to be (two times) continuously differentiable in their arguments and $T\in[0,\infty]$. Moreover the model is assumed to be nonlinear in the control variable $u$.
+\end{subequations}
+\vspace{0.5cm}
+
+\begin{remark}
+Within the \MATL\ environment the model is realized as a derived class \ocmodel\ from a base class \optdyn, where the base class contains the necessary analytical properties, and the derived class \ocmodel\ contains the information for specific parameter values. In the following we present the class structure of the base class \ocmodel. (see \refsec{sec:ocmodelclass})
+\end{remark}
+To analyze a model of type \refeq{eq:opt_pro} its properties have to be provided by an initialization file and the subsequent initialization process, which is described in the following section. 
+
+\section{Initialization}
+The initialization process consists of four main steps
+\begin{enumerate}
+\item Creation of an initialization file.
+\item Generating \MATL\ files containing default information of the model.
+\item Generating the \MATL\ files necessary for the computation.
+\end{enumerate}
+In the following these steps are explained on the basis of a simple example.
+
+\subsection{Structure of the Initialization File}
+\label{sec:init_file}
+Let us consider a simple optimal control model ``A model of moderation'' (\MOM) \citep{caulkinsetal2005a}:
+\vspace{0.5cm}
+\begin{subequations}
+\label{eq:model_mom}
+\begin{align}
+& \max_{u(\cdot)}\int_0^\infty \E^{-rt}(x^2+cu^2)\,\D\!t\label{eq:model_mom_obj}\\
+\text{s.t.}\quad & \dot{x} =x-x^3+u\label{eq:model_mom_dyn}\\
+& x(0) = x_0\label{eq:model_mom_init}
+\end{align}
+\end{subequations}
+\vspace{0.5cm}
+with one state $x$ and one control $u$. Then the corresponding initialization file can be written as
+\begin{lstlisting}
+% Model of moderation (MOM) 
+statedynamics=sym('[x1-x1^3+u1]');
+objectivefunction=sym('x1^2+c*u1^2');
+\end{lstlisting}
+where the name of the file (\lstinline+mom.m+) is used as the models' name. 
+
+\subsubsection{Mandatory Variables}
+The dynamics and objective function have to be provided as symbolic expressions named \lstinline+statedynamics+ and \lstinline+objectivefunction+, respectively. These two variables are mandatory. Furthermore the state variables have to be denoted by \lstinline+x1,x2,...+, and control variables are denoted by \lstinline+u1,u2,...+.
+
+\subsubsection{Optional Variables}
+Other variables, which can be used in the initialization file are those providing constraints, the name of the discount variable, parameter values, etc.
+
+\paragraph{Mixed Path Constraints}
+This model can be extended by introducing, e.g., control constraints
+\begin{displaymath}
+  \norm{u_1}\leq K\quad\Leftrightarrow\quad \norm{u_1}\ge-K,
+\end{displaymath}
+by adding the line
+\begin{lstlisting}
+controlconstraint=sym('[u1+K;K-u1]');
+\end{lstlisting}
+to the initialization file. 
+
+\paragraph{Discount Variable}
+One can also specify the variable used for the discount rate, by setting, e.g.
+\begin{lstlisting}
+discountvariable='rho';
+\end{lstlisting}
+its default name is \lstinline+r+.
+
+\paragraph{Parameter Values}
+
+Also specific parameter values can be provided, otherwise these are set to one by default. This part of the file has to be introduced by the comment \lstinline+% General+. For our example we may write
+\begin{lstlisting}
+% General
+r=0.05;
+c=1;
+\end{lstlisting}
+
+\subsection{Generating the \MATL\ Files}
+Next the initialization file has to be stored at some directory, where \MATL\ can find it, the default directory for the initialization files is \lstinline+$OCHOME$\oc\model\initfiles+. To start the initialization we have to invoke the command \lstinline+initocmat+, with the model's name as argument, e.g.
+\begin{lstlisting}
+>> [ocPro,fonCon,modelInfo]=initocmat('mom');
+\end{lstlisting}
+If the model is initialized for the first time the following messages appear and have to be answered
+\begin{lstlisting}
+$OCHOME$\model\mom does not exist. Create it?  y/(n): y
+$OCHOME$\data\mom does not exist. Create it?  y/(n): y
+\end{lstlisting}
+\lstinline+$OCHOME$+ is the home directory of the \OCT\ toolbox. During the initialization the models default \lstinline+data+ and \lstinline+model+ directories are created and are added to the \MATL\ path. Moreover the three structures \lstinline+[ocPro,fonCon,modelInfo]+ are returned, where \lstinline+ocPro+ contains the models properties, \lstinline+fonCon+ contains the derived first order optimality conditions, and in \lstinline+modelInfo+ general information necessary for generating the models \mfile s are stored. These structures are saved as a \matfile\ \lstinline+Data.m+ at \lstinline+$OCHOME$\data\mom+.
+
+Next we start the process for generating the \mfile s necessary to analyze the model. This is done by invoking
+\begin{lstlisting}
+>> files4model('mom');
+\end{lstlisting}
+By default the such generated files are stored at \lstinline+$OCHOME$\model\out+ and
+\begin{lstlisting}
+>> moveocmatfiles(m);
+\end{lstlisting}
+will move the \mfile s into the models directory \lstinline+$OCHOME$\model\mom+.
+
+\subsection{Creating an Ocmodel}
+Before we can start to analyze the model \MOM\ we have to create the corresponding \ocmodel, which is implemented as a class object of the \MATL\ environment. Subsequently we denote such a class by the variable name \ocvar. Thus we set
+\begin{lstlisting}
+>> m=ocmodel('mom');
+\end{lstlisting}
+
+\section{Basic Operations}
+\label{sec:basic_op}
+In the following we present basic operations, which can be applied to the object \ocvar.
+
+\subsection{Displaying/Changing the Parameter Values}
+Since the models optimal behavior strongly depends on the actual set of parameter values it is important to display as well as to be able to easily change these values. The first task can simply be accomplished by
+\begin{lstlisting}
+>> showparameter(m)
+r : 2
+c : 1
+\end{lstlisting}
+which returns the parameter variables together with its actual values. To change, e.g., the specific value for $r$ one can simply write
+\begin{lstlisting}
+>> m0=changeparameter(m,'r',0.5);showparameter(m0)
+r : 0.5
+c : 1
+\end{lstlisting}
+or for changing the values for  $r$ and  $c$
+\begin{lstlisting}
+>> m1=changeparameter(m,'r,c',[1 2]);showparameter(m1)
+r : 1
+c : 2
+\end{lstlisting}
+Thus we finally end up with three different specifications of the model \MOM, denoted by $\ocvar, \ocvar_0$ and $\ocvar_1$. Another important operation is that of storing and fetching specific models.
+
+\subsection{Storing and Fetching a Specific Model}
+Storing a model together with the results calculated so far (see \refsec{sec:analysis_model}) can be done by
+\begin{lstlisting}
+>> save(m)
+\end{lstlisting}
+This command creates a mat-file \lstinline+mom_p1_2_p2_1.mat+ containing the variable \ocObj, which is simply the model \ocvar, where by default the file name is generated by the name of the model and the parameter variables plus the actual parameter values. This file is then stored at \lstinline+$OCHOME$\data\mom+. To fetch a model, which has been stored in a previous session one has to load the \matfile
+\begin{lstlisting}
+>> load('mom_p1_2_p2_1.mat')
+\end{lstlisting}
+This command loads the variable \ocObj, containing the corresponding model, into the \MATL\ workspace. With
+\begin{lstlisting}
+>> m=ocObj;
+\end{lstlisting}
+the \optdyn\ variable is renamed to our default name \ocvar.
+ 
+\subsection{Displaying Stored Models Information}
+All information of the model is stored in the \ocmodel\ \ocvar, which is designed as a \MATL\ structure. To display the stored information the command \lstinline+get+ can be used, where
+\begin{lstlisting}
+>> get(m)
+
+ans = 
+
+    ocInstant: [1x1 struct]
+      ocInfos: [1x1 struct]
+    ocProblem: [1x1 struct]
+    ocResults: [1x1 struct]
+\end{lstlisting}
+returns the basic structure of the model class and, e.g.
+\begin{lstlisting}
+>> get(m,'ocInstant')
+
+ans = 
+
+    ParameterValue: [2 1]
+      FixTimeValue: []
+\end{lstlisting}
+or
+\begin{lstlisting}
+>> get(m,'ocInstant.ParameterValue')
+
+ans =
+
+     2     1
+\end{lstlisting}
+the substructure and value of \lstinline+ocInstant+ and \lstinline+ocInstant.ParameterValue+. 
+
+\begin{remark}
+Alternatively the dot operation 
+\begin{lstlisting}
+>> m.ocInstant
+
+ans = 
+
+    ParameterValue: [2 1]
+      FixTimeValue: []
+\end{lstlisting}
+returns the same result.
+\end{remark}
+
+\section{Analysis of the Model}
+\label{sec:analysis_model}
+
+In this section we present the first steps for analyzing a specified optimal control model, which we exemplify by the model \MOM.
+\subsection{Calculating Equilibria of the Canonical System}
+In the simplest case, where the equilibria can be calculated analytically, simply call 
+\begin{lstlisting}
+>> ocEP=calcep(m)
+
+Search for zeros: 
+
+Arc Identifier: 1
+Coordinates:
+         0         0         0    0.8165   -0.8165
+         0         0         0   -0.2722    0.2722
+
+
+ocEP = 
+
+    [1x1 dynprimitive]    [1x1 dynprimitive]    [1x1 dynprimitive]
+    [1x1 dynprimitive]    [1x1 dynprimitive]
+\end{lstlisting}
+which returns a cell array of equilibria, realized as objects of the class \dynprimitive. 
+
+In case that the equilibria cannot be computed analytically one has to resort to numerical calculations, where by default \MATL\ s \lstinline+fsolve+ command is used. 
+\begin{lstlisting}
+>> ocEPn=calcep(m,[[0 0]',[0.8 0.5]',-[0.8 0.5]'])
+
+Search for zeros: 
+
+Arc Identifier: 1
+Coordinates:
+         0    0.8165   -0.8165
+         0    0.5443   -0.5443
+
+
+ocEPn = 
+
+    [1x1 dynprimitive]    [1x1 dynprimitive]    [1x1 dynprimitive]
+\end{lstlisting}
+To remove repetitive equilibria call
+\begin{lstlisting}
+>> ocEP=uniqueoc(ocEP)
+
+ocEP = 
+
+    [1x1 dynprimitive]    [1x1 dynprimitive]    [1x1 dynprimitive]
+\end{lstlisting}
+To check whether the calculated equilibria are admissible, i.e., satisfy possible constraints and are actually zeros of the dynamics the command 
+\begin{lstlisting}
+b=isadmissible(ocEP{:},m)	
+
+b =
+
+     1     1     1
+\end{lstlisting}
+can be used, where \lstinline+b=1+ denotes an admissible solution and is zero otherwise. Finally the equilibria can be stored in the \lstinline+ocResults+ structure of the \ocmodel\ by calling
+\begin{lstlisting}
+>> store(m,ocEP)	
+\end{lstlisting}
+which can be checked using
+\begin{lstlisting}
+>> m.ocResults
+
+ans = 
+
+    Equilibrium: {[1x1 dynprimitive]  [1x1 dynprimitive]  [1x1 dynprimitive]}
+\end{lstlisting}
+To retrieve equilibria already stored in \ocvar\ we may write
+\begin{lstlisting}
+>> ocEP=equilibrium(m);
+\end{lstlisting}
+
+\subsection{Detection and Continuation of a Limit Cycle}
+To find a limit cycle we take advantage from using \MATCONT, \citet[see]{dhoogeetal2003} or contact the internet address \httpMATCONT. Therefore we have written some simple interface between \OCT\ and \MATCONT, which will subsequently be applied to a two state, one control \OCPRO\ taken from \citet{caulkinsetalinsub2007}.
+\begin{lstlisting}[numbers=left]
+>> load('terrnpubop_p1_0.05_p2_2_p3_0.8_p4_1_p5_0.5_p6_1_p7_0.25_p8_4_p9_0.05_p10_0.0003_p11_0_p12_0.05_p13_1_p14_1e-005_p15_Inf.mat')
+>> m=ocObj;ocEP=equilibrium(m);
+>> opt=setocoptions('MATCONT','Backward',1);(*@\label{lst:occont_lc_matcont}@*)
+>> [x v s]=contep(m,ocEP{1},getparameterindex(m,'kappa'),opt);(*@\label{lst:occont_lc_contep}@*)
+first point found(*@\label{lst:occont_lc_contep_s}@*)
+tangent vector to first point found
+label = H , x = ( 0.003955 0.193739 19.372406 -1.605097 0.001115 )
+First Lyapunov coefficient = 3.105446e-005
+label = LP, x = ( 0.000846 0.175103 37.029764 -1.161352 0.001660 )
+a=2.583481e-003
+
+elapsed time  = 1.0 secs
+npoints curve = 300(*@\label{lst:occont_lc_contep_e}@*)
+>> [m1,ocEP1]= matcont2ocmodel(m,x,s(2).index);(*@\label{lst:occont_lc_matcont2ocmodel}@*)
+>> opt=setocoptions(opt,'MATCONT','Backward',1,'MaxStepsize',5e-1);
+>> [xlc vlc slc]=contlc(m1,ocEP1,getparameterindex(m,'kappa'),1e-6,20,4,opt);(*@\label{lst:occont_lc_contlc}@*)
+first point found
+tangent vector to first point found
+
+elapsed time  = 141.3 secs
+npoints curve = 300
+>> [dum idx]=min(abs(xlc(end,:)-0.0003));xlc(end,idx)=0.0003;(*@\label{lst:occont_lc_minabs}@*)
+>> [m2,ocLC]= matcont2ocmodel(m1,xlc,idx,opt)(*@\label{lst:occont_lc_matcont2ocmodellc}@*)
+>> opt=setocoptions(opt,'BVP','AbsTol',1e-10,'RelTol',1e-9);
+>> ocLC2=calclc(m,ocLC,opt)(*@\label{lst:occont_lc_calclc}@*)
+ 
+ocLC2 =
+ 
+  dynprimitive object:
+ 
+      dynVar:        [4x858 double]
+      period:        139.5402
+      linearization: [4x4 double]
+      t:             [1x858 double]
+      arcid:         1
+      timeintervals: 139.5402
+      solverinfos:   [1x1 struct]
+      violation:    empty
+
+>> store(m,ocLC2)
+>> eval=eig(ocLC2);eval(3:4)(*@\label{lst:occont_lc_eig}@*)
+
+ans =
+
+    1.1077
+    1.0002
+\end{lstlisting}
+\begin{description}
+	\item[\reflin{lst:occont_lc_matcont}] The \OCT\ option structure contains the option structure for \MATCONT\ allowing therefore an immediate setting of specific option values for \MATCONT.
+	\item[\reflin{lst:occont_lc_contep}] The \lstinline+contep+ command is an interface to the native \MATCONT\ command \lstinline+cont(@equilibrium,...)+ including the initialization with \lstinline+init_EP_EP+, \citep[for details see][]{matcontmanual}.
+	\item[\reflinsto{lst:occont_lc_contep_s}{lst:occont_lc_contep_e}] During the continuation process a Hopf bifurcation occurs, which allows to start a limit cycle continuation
+	\item[\reflin{lst:occont_lc_matcont2ocmodel}] The command \lstinline+matcont2ocmodel+ returns an \ocmodel, where the parameter, taken as continuation variable for \MATCONT\ is changed, with the value taken from the \lstinline+s(2).index+s columns of the variable \lstinline+x+, and the corresponding equilibrium. In that case this is the bifurcation value for the Hopf bifurcation.
+	\item[\reflin{lst:occont_lc_contlc}] The \lstinline+contlc+ command to the native \MATCONT\ command \lstinline+cont(@limitcycle,...)+ including the initialization with \lstinline+init_H_LC+.
+	\item[\reflin{lst:occont_lc_minabs}] We want to determine the limitcycle for the model with $\kappa=0.0003$. Therefore we determine the index of the solution \lstinline+xlc+ closest to this value, change the parameter value of \lstinline+xlc+ to this value and pass this to the \lstinline+matcont2ocmodel+ command in the next line.
+	\item[\reflin{lst:occont_lc_matcont2ocmodellc}] The output argument \lstinline+ocLC+ contains the limit cycle for the parameter value $\kappa=0.0003$.
+	\item[\reflin {lst:occont_lc_calclc}] The \lstinline+calclc+ command recalculates the limit cycle using a native \MATL\ \BVP\ solver (or any solver specified in the ocoptions structure) together with the monodromy matrix at the initial point.
+	\item[\reflin{lst:occont_lc_eig}] The command \lstinline+eig+ overloads the corresponding \MATL\ command and returns the eigenvalues of a limit cycle or equilibrium. 
+\end{description}
+One of the most important tasks of this toolbox is the calculation of (stable) paths converging to a saddle point or limit cycle, which is explained in the subsequent section.
+
+\subsection{Calculating the Stable Manifold of a Saddle Point}
+
+To determine whether the calculated equilibria are hyperbolic and of saddle type the following commands are provided
+\begin{lstlisting}
+>> issaddle(ocEP{:})
+
+ans =
+
+     0     1     1
+
+>> ishyperbolic(ocEP{:})
+
+ans =
+
+     0     1     1
+
+\end{lstlisting}
+Thus the last two equilibria are of saddle type and are hyperbolic. 
+
+To calculate the stable path of an equilibrium or a limit cycle two approaches are provided, \citep[cf.,][]{grassetal2008}, subsequently denoted as the initial value (\IVP) and boundary value (\BVP) approach, respectively. 
+
+\subsubsection{Using the \IVP\ Approach}
+The calculation of the stable path is done by
+\begin{lstlisting}
+>> ocAsy=stablepath(m,ocEP{2},100);store(m,ocAsy);
+>> opt=setocoptions('OCCONT','Backward',1);
+>> ocAsy=stablepath(m,ocEP{2},100,opt);store(m,ocAsy);
+\end{lstlisting}
+where \lstinline+ocEP{2}+ is the equilibrium for which the stable path is calculated and \lstinline+100+ determines the length of the time interval. The output argument \lstinline+ocAsy+ is an \ocasymptotic\ and is stored in the \lstinline+ocResults+ (by default in the field \lstinline+ExtremalSolution+ ). In the second and third line, respectively, the second branch of the stable path is calculated by setting the option \lstinline+Backward+ equal to one (the default value is zero).
+
+\subsubsection{Using the \BVP\ Approach}
+To start the calculation an initial structure has to be provided by calling
+\begin{lstlisting}
+>> initStruct=initoccont('extremal',m,'initpoint',1,0.5,ocEP{2},'IntegrationTime',1000);
+\end{lstlisting}
+The meaning of the calling arguments is:
+\begin{itemize}
+	\item \lstinline+extremal+: specifies that a (stable path) solution of the canonical system has to be calculated.
+	\item \lstinline+m+: is the usual \ocmodel.
+	\item \lstinline+initpoint+: the underlying continuation is done for varying the initial state(s) of the path.
+	\item \lstinline+1+: denotes the coordinate of the solution path to be varied, i.e., $x_1$ or in \MATL\ notation \lstinline+x(1)+.
+	\item \lstinline+0.5+: denotes the value of the initial state to which the solution has to be continued, i.e., provided that the continuation process is successful, $x(0)=0.5$, where $x(\cdot)$ denotes the last solution of the continuation.
+	\item \lstinline+ocEP{2}+: provides an initial solution to start the \BVP\ calculation. In this case this is the trivial equilibrium solution.
+	\item \lstinline+'IntegrationTime',1000+: denotes the finite truncation time $1000$ of the infinite time horizon.
+\end{itemize}
+For different argument specifications see \refsec{sec:options}.
+
+The continuation process to calculate the stable path is started by
+\begin{lstlisting}
+>> ocAsy=occont(m,initStruct);store(m);
+\end{lstlisting}
+\begin{remark}
+Note that contrary to the example in for the \IVP\ the solution \lstinline+ocAsy+ has not to be provided as an argument to be stored in the \lstinline+ocResults+. Since by default the result of the continuation process is stored as a \matfile, and fetched, when the \lstinline+store+ command is invoked without further arguments.
+\end{remark} 
+
+\subsection{Calculating a \DNSP\ Point}
+Another important property of an \OCPRO\ is the occurrence of multiple optimal solutions, also known as Skiba, or \DNSP\ points, referring to the works of \citet{sethi1977,sethi1979,skiba1978} and \citet{dechertnishimura1983}, see, e.g., \citet[Chap. 5][]{grassetal2008}. Next we show how to find such a point, using either the \IVP\ or \BVP\ approach.
+
+\subsubsection{Using the \IVP\ Approach}
+We exemplify the calculations using the model \MOM\ for the parameter values $r=1$ and $c=2$. For these parameter values the canonical system exhibits five equilibria, where three of them are saddles.\footnote{The occurrence of multiple equilibria give strong indication for the existence of a \DNSP\ point but is neither sufficient nor necessary.}
+\begin{lstlisting}[numbers=left]
+>> load('mom_p1_1_p2_2_p3_inf.mat');m=ocObj;ocEP=equilibrium(m);
+>> opt=setocoptions('ODE','Events','on');(*@\label{lst:dnss_mom_event}@*)
+>> ocTrj=stablepath(m,ocEP{1},150,opt);(*@\label{lst:dnss_mom_stablepath}@*)
+>> store(m,ocTrj,'FieldName','ExtremalSolution');(*@\label{lst:dnss_mom_store}@*)
+>> opt=setocoptions('OCCONT','Backward',1);(*@\label{lst:dnss_mom_backward}@*)
+>> ocTrj=stablepath(m,ocEP{3},150,opt);
+>> store(m,ocTrj,'FieldName','ExtremalSolution');
+>> ocEx=extremalsolution(m);(*@\label{lst:dnss_mom_extremalsolution}@*)
+>> dnss=finddnss(m,ocEx{1},ocEx{2});(*@\label{lst:dnss_mom_finddnss}@*)
+\end{lstlisting}
+\begin{description}
+	\item[\reflin{lst:dnss_mom_event}] Activate the events flag for an \ODE\ calculation.
+	\item[\reflin{lst:dnss_mom_stablepath}] Calculate one arc of the stable path for the first equilibrium.
+	\item[\reflin{lst:dnss_mom_store}] Store the result in \lstinline+ocResults+ field of the \ocmodel.
+	\item[\reflin{lst:dnss_mom_backward}] Change the option structure to calculate the second arc of the stable path.
+	\item[\reflin{lst:dnss_mom_extremalsolution}] Retrieve the calculated paths stored in the \ocmodel.
+	\item[\reflin{lst:dnss_mom_finddnss}] Calculate the \DNSP\ point, where the Hamiltonians, evaluated along the first and second trajectory, intersect (see \reffig{fig:plot_dnss_mom}a,b).
+\end{description}
+\subsubsection{Using the \BVP\ Approach}
+Above we have seen, how to compute the \DNSP\ point using the \IVP\ approach. More generally the \BVP\ approach can be used to extend the computations for the higher dimensional case and additionally find the higher dimensional analogous such as \DNSP\ curves. Subsequently we apply the \BVP\ approach to the previous example
+\begin{lstlisting}[numbers=left]
+>> load('mom_p1_1_p2_2_p3_inf.mat');m=ocObj;
+>> ocEP=equilibrium(m);
+>> initStruct=initoccont('extremal',m,'initpoint',1,dnss,ocEP{1},'ContinuationType','f','IntegrationTime',1000);(*@\label{lst:dnss_mom_initoccont1}@*)
+>> [sol solv]=occont(m,initStruct,opt);store(m);
+>> initStruct=initoccont('extremal',m,'initpoint',1,dnss,ocEP{3},'ContinuationType','f','IntegrationTime',1000);
+>> [sol solv]=occont(m,initStruct,opt);store(m);(*@\label{lst:dnss_mom_initoccont2}@*)
+>> ocEx=extremalsolution(m);
+>> ocDNSS=[ocEx{3} ocEx{4}];(*@\label{lst:dnss_mom_ocDNSSstr}@*)
+>> initStruct=initoccont('DNSS',m,'initpoint',[],[],ocDNSS,'ContinuationType','f');(*@\label{lst:dnss_mom_initoccontdnss}@*)
+>> sold=occalc(m,initStruct,opt);store(m);(*@\label{lst:dnss_mom_occalc}@*)
+>> plotphaseocresult(m,'costate',1,1,'only',{'DNSSCurve'},'associatedsol','on')(*@\label{lst:dnss_mom_plotphaseocresult}@*)
+\end{lstlisting}
+\begin{description}
+	\item[\reflinsto{lst:dnss_mom_initoccontdnss}{lst:dnss_mom_initoccont2}] Calculate and store the stable paths of the first and third equilibrium starting at the \DNSP\ point calculated before by the \IVP\ approach.
+	\item[\reflin{lst:dnss_mom_ocDNSSstr}] Formally a \DNSP\ points is represented by an \ocasymptotic\ of dimension two. Thus the variable \lstinline+ocDNSS+ consist of two parts \lstinline+ocDNSS(1)+ and \lstinline+ocDNSS(2)+.
+	\item[\reflin{lst:dnss_mom_initoccontdnss}] To initialize a \DNSP\ point computation a \DNSP\ point of the form described before has to be provided.
+	\item[\reflin{lst:dnss_mom_occalc}] With \lstinline+occalc+ the \DNSP\ point is computed satisfying the corresponding \BVP\ conditions. 
+	\item[\reflin{lst:dnss_mom_plotphaseocresult}] The \DNSP\ point is plotted together with the corresponding solution paths (see \reffig{fig:plot_dnss_mom}c). For the plotting commands see \refsec{sec:plot_results}.
+\end{description}
+\begin{figure}
+\centering
+	\subfigure[Stable paths]{\label{fig:mom_dnss1}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/mom_dnss1.eps}}\goodgap
+	\subfigure[Intersecting Hamiltonians along stable paths]{\label{fig:mom_dnss2}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/mom_dnss2.eps}}
+	\subfigure[]{\label{fig:mom_dnss3}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/mom_dnss3.eps}}
+	\label{fig:plot_dnss_mom}
+	\caption{Calculating a \DNSP\ point for model \MOM.}
+\end{figure}
+
+\subsection{Calculating a \DNSP\ Curve}
+As already mentioned above the \BVP\ approach can be used to calculate (in the higher dimensional case) a \DNSP\ curve.
+\begin{lstlisting}[numbers=left]
+>> load('terrnpubop_ex_DNSS_curve.mat');m=ocObj;
+>> ocEP=equilibrium(m);
+>> ocTrj=stablepath(m,ocEP{1},200,opt);(*@\label{lst:dnss_terrnpubop_weakDNSS1}@*)
+>> store(m,ocTrj,'FieldName','ExtremalSolution');
+>> opt=setocoptions(opt,'OCCONT','Backward',1);(*@\label{lst:dnss_terrnpubop_backward}@*)
+>> ocTrj=stablepath(m,ocEP{1},200,opt)(*@\label{lst:dnss_terrnpubop_weakDNSS2}@*)
+>> store(m,ocTrj,'FieldName','ExtremalSolution');
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],[0.1 4],ocEP{2},'ContinuationType','f','IntegrationTime',1000);(*@\label{lst:dnss_terrnpubop_initoccont1}@*)
+>> sol=occont(m,initStruct,opt);store(m);
+>> opt=setocoptions(opt,'OCCONT','MaxStepWidth',5e-0,'MeanIteration',20);(*@\label{lst:dnss_terrnpubop_setocoptions1}@*)
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],[1.8 4],sol,'ContinuationType','al');(*@\label{lst:dnss_terrnpubop_initoccont2}@*)
+>> sol=occont(m,initStruct,opt);store(m);
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],[1.8 4],ocEP{3},'ContinuationType','f','IntegrationTime',1000)
+>> opt=setocoptions(opt,'OCCONT','MaxStepWidth',5e-2);
+>> sol=occont(m,initStruct,opt);(*@\label{lst:dnss_terrnpubop_interrupt}@*)
+
+ Continuation step No.: 53
+ stepwidth width: 0.0004
+??? Operation terminated by user during ==> dyn4i2eps at 15
+
+In ==> bvp4c>residual at 418
+      fLob(:,i) = Fcn(xLob(i),yLob(:,i),FcnArgs{:});
+
+In ==> bvp4c at 251
+  [res,NF] = residual(ode,x,y,yp,Fmid,RHS,threshold,xyVectorized,nBCs, ...
+
+In ==> optdyn.occont>solver at 401
+                bvsolactual= bvp4c(odefunc,bcfunc,bvsolpredict,opt.BVP);
+
+In ==> optdyn.occont at 206
+            solver
+>> store(m);
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],ocEP{3}.dynVar(1:2,1),sol,'ContinuationType','f');
+>> store(m);
+>> plotphaseocresult(m,'hamiltonian',1,1,'only',{'SliceManifold'},'onlyindex',{[3 4]});set(gca,'XLim',[1 1.5],'YLim',[0.152 0.162])(*@\label{lst:dnss_terrnpubop_plotham}@*)
+>> ocEx=extremalsolution(m);
+>> dnss=finddnss(m,3,4);(*@\label{lst:dnss_terrnpubop_finddnss}@*)
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],dnss,ocEx{5},'ContinuationType','f');(*@\label{lst:dnss_terrnpubop_calcdnss1}@*)
+>> sol=occont(m,initStruct,opt);store(m);
+>> initStruct=initoccont('extremal',m,'initpoint',[1 2],dnss,ocEx{6},'ContinuationType','f');
+>> sol=occont(m,initStruct,opt);store(m);(*@\label{lst:dnss_terrnpubop_calcdnss2}@*)
+>> ocEx=extremalsolution(m);
+>> ocDNSS=[ocEx{7} ocEx{8}];(*@\label{lst:dnss_terrnpubop_approxdnss1}@*)
+>> initStruct=initoccont('DNSS',m,'initpoint',[1],ocEx{5}.dynVar(1,1),ocDNSS,'ContinuationType','f');(*@\label{lst:dnss_terrnpubop_initdnss}@*)
+>> sold=occalc(m,initStruct,opt);(*@\label{lst:dnss_terrnpubop_occalcdnss}@*)
+>> store(m);
+>> initStruct=initoccont('DNSS',m,'initpoint',[2],0,ocDNSS,'ContinuationType','al')(*@\label{lst:dnss_terrnpubop_initoccontdnss}@*)
+>> opt=setocoptions(opt,'OCCONT','MaxStepWidth',5e-1,'StepWidth',1e-4,'MeanIteration',80);(*@\label{lst:dnss_terrnpubop_setocoptionsdnss}@*)
+>> sold=occont(m,initStruct,opt);(*@\label{lst:dnss_terrnpubop_occontdnss1}@*)
+>> initStruct=initoccont('DNSS',m,'initpoint',[1],0.5,ocDNSS,'ContinuationType','al')
+>> opt=setocoptions(opt,'OCCONT','MaxStepWidth',1e-2);
+>> sold=occont(m,initStruct,opt);(*@\label{lst:dnss_terrnpubop_occontdnss2}@*)
+>> save(m,[],[],[],'terrnpubop_ex_DNSS_curve')(*@\label{lst:dnss_terrnpubop_save}@*)
+Overwrite existing file from 08-Jun-2009 16:59:07 of size 1074617 with new size 1074617?  y/(n): y
+>>
+\end{lstlisting}
+\begin{description}
+	\item[\reflinsto{lst:dnss_terrnpubop_weakDNSS1}{lst:dnss_terrnpubop_weakDNSS2}] The two arcs of the one-dimensional stable manifold of the second equilibrium are computed. In \reflin{lst:dnss_terrnpubop_backward} the option \lstinline+Backward+ is changed to 1, causing the saddle-path algorithm to start at the opposite (eigenvalue-)direction.
+	\item[\reflin{}] 
+	\item[\reflin{}] 
+\end{description}
+
+\subsection{Calculating the Boundary of the Control Region}
+\begin{lstlisting}[numbers=left]
+>> load('price_ex_boundary_curve.mat');m=ocObj;
+>> ocEP=equilibrium(m);
+>> opt=setocoptions('BVP','AbsTol',1e-08,'RelTol',1e-07,'OC','BVPSolver','bvp5c');
+>> initstruc=initoccont('extremal',m,'initpoint',[1:2],[9 0.25],ocEP{1},'ContinuationType','f','IntegrationTime',1000);
+>> [sol solv]=occont(m,initStruct,opt);solv
+ 
+solv =
+ 
+  ocasymptotic object:
+ 
+        limitset:      [ dynprimitive object ]
+        octrajectory:  
+            dynVar:        [4x105 double]
+            t:             [1x105 double]
+            arcid:         1
+            timeintervals: 1000
+            solverinfos:   [1x1 struct]
+            violation:  [4x105 double]
+>> initStruct=initoccont('boundary',m,'initpoint',[1],[0],solv,'ContinuationType','f');
+>> solb=occont(m,initStruct,opt);store(m);
+>> opt=setocoptions(opt,'OCCONT','Backward',1);
+>> solb=occont(m,initStruct,opt);store(m);
+>> opt=setocoptions(opt,'OCCONT','Backward',0,'MeanIteration',30);
+>> initStruct=initoccont('extremal',m,'initpoint',[1:2],[9 0.25],solv,'ContinuationType','f');
+>> [sol1 sol1v]=occont(m,initStruct,opt);store(m);
+>> plotphaseocresult(m,'state',1,2,'only',{'ExtremalSolution','Equilibrium'},'continuous','off'),hold on
+>> plotphaseocresult(m,'state',1,2,'only',{'BoundaryCurve'},'Color',[0 0 0]),hold off
+>> save(m,[],1,[],'price_ex_boundary_curve')
+\end{lstlisting}
+\section{Plotting Commands}
+\label{sec:plot_results}
+\subsection{Plotting \octrajectory}
+To plot the calculated trajectory \lstinline+ocAsy+ of the previous example write (see \reffig{fig:plot01a})
+\begin{lstlisting}
+>> plot(ocAsy,1,2)
+\end{lstlisting}
+then the path is plotted in the phase space, where the first coordinate is the $x$ coordinate and the second coordinate the $y$ coordinate. To swap the $x$ and $y$ coordinate simple call (see \reffig{fig:plot01b})
+\begin{lstlisting}
+>> plot(ocAsy,2,1)
+\end{lstlisting}
+To plot the time path of the trajectory, the first (or second) coordinate has to be set to zero, yielding (see \reffig{fig:plot01c})
+\begin{lstlisting}
+>> plot(ocAsy,0,1)
+\end{lstlisting}
+It is also possible to provide the usual line specification arguments \emph{LineSpec} of the \MATL\ plot command (see \reffig{fig:plot01d}), e.g.,
+\begin{lstlisting}
+>> plot(ocAsy,1,2,'Linestyle','--','Color',[1 0 0])
+\end{lstlisting}
+For  an \ocasymptotic\ \lstinline+ocAsy+ it is possible to plot the assigned equilibrium by setting the property \lstinline+limitset+ to \lstinline+on+ (see \reffig{fig:plot01e})
+\begin{lstlisting}
+>> plot(ocAsy,1,2,'limitset','on')
+\end{lstlisting}
+\begin{figure}
+\centering
+	\subfigure[\lstinline+>> plot(ocAsy,1,2)+]{\label{fig:plot01a}\includegraphics[bb=0 0 568 502,scale=0.29]{./images/plot01a.eps}}\goodgap
+	\subfigure[\lstinline+>> plot(ocAsy,2,1)+]{\label{fig:plot01b}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot01b.eps}}\\
+	\subfigure[Time trajectory of the state path.]{\label{fig:plot01c}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot01c.eps}}\goodgap
+	\subfigure[Changing the line specifications]{\label{fig:plot01d}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot01d.eps}}\\
+	\subfigure[Additionally plotting the limitset.]{\label{fig:plot01e}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot01e.eps}}\goodgap
+	\label{fig:plot01}
+	\caption{The plotting command for \octrajectory.}
+\end{figure}
+\subsection{Plotting Results of an \ocmodel}
+The plotting command for an \ocmodel\ allows an easy way to show the values of the Hamiltonian, control(s), etc. This is realized by setting the $x$ and $y$ space implemented as the property arguments \lstinline+XSpace+ and  \lstinline+YSpace+ of the plot command, e.g.,
+\begin{lstlisting}
+>> load('mom_p1_0.5_p2_2.5.mat');m=ocObj;
+>> ocAsy=m.ocResults.ExtremalSolution;
+>> plot(m,ocAsy{1},'XSpace','state','YSpace','control')
+>> plot(m,ocAsy{1},'XSpace','control', ...
+'YSpace','hamiltonian','linestyle','--')
+>> plot(m,ocAsy{8},'XSpace','time','YSpace', ...
+'hamiltonian','linestyle','-','Color','r');
+>> set(gca,'XLim',[0 5])
+\end{lstlisting}
+The commands \lstinline+plotphase+ and \lstinline+plottimepath+ can be used as abbreviations in case that the $x$-space is given by the state space or for a time path.
+\begin{lstlisting}
+>> plotphase(m,ocAsy{1},'control')
+>> plottimepath(m,ocAsy{8},'hamiltonian');set(gca,'XLim',[0 5])
+\end{lstlisting}
+With the command \lstinline+plotphaseocresult+ all \octrajectory, \dynprimitive, etc. elements, stored in an \ocmodel, can be depicted
+\begin{lstlisting}
+>> plotphase(m,ocAsy{1},'control')
+>> plottimepath(m,ocAsy{8},'hamiltonian');
+>> set(gca,'XLim',[0 5])
+>> plotphaseocresult(m,'costate',1,1, ...
+     'only',{'ExtremalSolution','Equilibrium'});
+>> set(gca,'XLim',[-1.25 1.25],'YLim',[-3.5 3.5])
+\end{lstlisting}
+\begin{figure}
+\centering
+	\subfigure[$(x,u)-$space]{\label{fig:plot02a}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot02a.eps}}\goodgap
+	\subfigure[$(u,\Ha)-$space]{\label{fig:plot02b}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot02b.eps}}
+	\subfigure[$(t,\Ha)-$space]{\label{fig:plot02c}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot02c.eps}}\goodgap
+	\subfigure[\lstinline+plotphaseocresult+]{\label{fig:plot02d}\includegraphics[bb=0 0 568 502,scale=0.3]{./images/plot02d.eps}}\goodgap
+	\label{fig:plot02}
+	\caption{The plotting command for \ocmodel.}
+\end{figure}

@@ -1,0 +1,22 @@
+//
+// standardmodelSymbolicStateControlCanonicalSystemJacobian.oct
+//
+function out=$MODELNAME$SymbolicCanonicalSystemJacobian($ARCVAR$)
+% returns the symbolic expression for the Jacobian of the canonical system.
+$INFODETAILS$
+
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICSTATECONTROLCANONICALSYSTEMJACOBIAN$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$SYMBOLICSTATECONTROLCANONICALSYSTEMJACOBIAN$
+!ENDIF!
+	
+$COSTATE$=$MODELNAME$SymbolicCostate($ARCVAR$);
+$COSTATEVALUESUBSTITUTION$

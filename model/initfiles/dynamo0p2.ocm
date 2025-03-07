@@ -1,0 +1,43 @@
+Type
+standardmodel
+
+Modelname
+dynamo0p2
+
+Description
+Is protecting the charismatic species really enough? Tourism strategies to optimally balance recreation and conservation in a predator-prey system
+
+Variable
+state::R,P
+control::u
+
+Statedynamics
+ode::DR=a*R*(1-R/Rmax)-b*R*P
+ode::DP=tau+c*b*R*P-d*P-k*u*P
+
+Objective
+int::alpha*R-beta*P-gamma*u^2
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::P<=Pmax,1
+
+ArcDefinition
+0::[]
+1::SC1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+1::P
+
+Parameter
+r::0.04
+a::0.108909
+Rmax::295163
+b::0.000037
+d::1.44831
+k::1
+gamma::1
+alpha::1463
+beta::1867875
+c::0.097267
+tau::16.25
+Pmax::80

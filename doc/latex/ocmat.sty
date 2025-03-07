@@ -1,0 +1,126 @@
+% General Abbreviations
+\newcommand{\modelpar}{\alpha} % 
+
+
+% predefined unnumbered headings
+\newcommand{\preface}[1][\prefacename]{\chapter*{#1}\markboth{#1}{#1}}
+% same with TOC entry
+\newcommand{\Preface}[1][\prefacename]{\chapter*{#1}\markboth{#1}{#1}%
+\addcontentsline{toc}{chapter}{#1}}
+\def\prefacename{Preface}%
+
+\newcommand{\ocmodel}{\textit{ocmodel}} % abbreviation for optimal control problems
+\newcommand{\msmodel}{\textit{msmodel}}
+\newcommand{\optdyn}{\textit{optdyn}}
+\newcommand{\ocpoint}{\textit{ocpoint}} % abbreviation for optimal control problems
+\newcommand{\occase}{\textit{occase}} % abreviation for optimal
+\newcommand{\occurve}{\textit{occurve}} % abreviation for optimal
+\newcommand{\ocperiodic}{\textit{ocperiodic}} % abbreviation for optimal control problems
+\newcommand{\octrajectory}{\textit{octrajectory}} % abbreviation for optimal control problems
+\newcommand{\octrajectories}{\textit{octrajectories}} % abbreviation for optimal control problems
+\newcommand{\ocasymptotic}{\textit{ocasymptotic}} % abbreviation for optimal control problems
+\newcommand{\dynprimitive}{\textit{dynprimitive}} % abbreviation for optimal control problems
+                                % control problems
+% Abbreviations for verbatim expressions
+\newcommand{\mfile}{\lstinline+m+-file} % 
+\newcommand{\matfile}{\lstinline+mat+-file} %
+\newcommand{\ocStruct}{\lstinline+ocStruct+}
+\newcommand{\MoM}{\lstinline+MoM+} % model of moderation
+\newcommand{\FM}{\lstinline+FM2+} % model of moderation
+\newcommand{\CRM}{\lstinline+CRM+} % model of moderation
+
+\newcommand{\indexbf}[1]{{\it #1}}
+
+\def\TReg{\textsuperscript{\textregistered}}
+\def\scalefactor{0.775}
+
+\definecolor{gray}{gray}{0.5}
+
+% Listing definitions
+\newcommand{\lsi}{\lstinline}
+\lstdefinelanguage{ocm}
+{keywords={Type,Variable,Statedynamics,Objective,Controlconstraint,ArcDefinition,Parameter,Description},
+sensitive=true,
+comment=[l]{\%}
+}
+\lstdefinelanguage{oct}
+{keywords={},
+sensitive=true,
+showlines=true,
+showtabs=true,
+tab=$\rightarrow$,
+escapeinside={\%*}{*)},
+comment=[l][\color{gray}]{//}
+}
+
+\lstnewenvironment{ocmlisting}
+{\lstset{language=ocm,columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily,keywordstyle=\underbar}}
+{}
+
+\lstnewenvironment{ocmlistingnum}
+{\lstset{language=ocm,columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily,keywordstyle=\underbar,numbers=left,numberstyle=\tiny,stepnumber=1,numbersep=5pt,escapeinside={(*@}{@*)}}}
+{}
+
+\lstnewenvironment{octlisting}
+{\lstset{language=oct,columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily,keywordstyle=\underbar}}
+{}
+
+\lstnewenvironment{pathlisting}
+{\lstset{columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily}}
+{}
+
+\lstnewenvironment{matlab}
+{\lstset{language=matlab,columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily}}
+{}
+
+\lstnewenvironment{smallmatlab}
+{\lstset{language=matlab,columns=[l]flexible,keepspaces=true,basicstyle=\small\ttfamily}}
+{}
+
+\lstnewenvironment{matlabnum}
+{\lstset{language=matlab,columns=[l]flexible,keepspaces=true,basicstyle=\ttfamily,numbers=left,numberstyle=\tiny,stepnumber=1,numbersep=5pt,escapeinside={(*@}{@*)}}}
+{}
+
+%\lstMakeShortInline[style=\ttfamily]§
+
+
+% definitions for cleveref
+ \if@cref@abbrev%
+   \crefname{equation}{\unskip}{\unskip}%
+   \crefname{figure}{Fig.}{Figs.}%
+   \crefname{line}{line}{lines}%
+   \crefname{subfigure}{Fig.}{Figs.}%
+   \crefname{section}{Sec.}{Secs.}%
+   \crefname{chapter}{Chap.}{Chapters}%
+ \else%
+   \crefname{equation}{Equation}{Equations}%
+   \crefname{figure}{Figure}{Figures}%
+   \crefname{subfigure}{Figure}{Figures}%
+ \fi%
+
+
+% snippet taken from http://tex.stackexchange.com/questions/93944/using-lstinline-inside-a-item
+%\makeatletter
+%\let\orig@item\item
+%
+%\def\item{%
+    %\@ifnextchar{[}%
+        %{\lstinline@item}%
+        %{\orig@item}%
+%}
+%
+%\begingroup
+%\catcode`\]=\active
+%\gdef\lstinline@item[{%
+    %\setbox0\hbox\bgroup
+        %\catcode`\]=\active
+        %\let]\lstinline@item@end
+%}
+%\endgroup
+%
+%\def\lstinline@item@end{%
+    %\egroup
+    %\orig@item[\usebox0]%
+%}
+
+\makeatother

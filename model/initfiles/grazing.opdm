@@ -1,0 +1,62 @@
+Type
+ppdemodel
+
+Modelname
+grazing
+
+Description
+distributed grazing model
+
+Variable
+%state::b,w % space distributed variable alternatively space and time dependent variables can explicitly be defined
+state::z,t::b,w % space distributed variable
+%state::t::v
+control::t::A
+costate::mu1,mu2
+time::t
+space::z
+
+Spacegeometry
+intvl::[-L,L] % 1D, interval
+
+Statedynamics
+pde::Dt.b=lambda*w*b*((1+eta*b)^2)*(1-b)-b-A*b*(tanh(cos(kg*z)*fac)+1)/2+D1*D2.b
+pde::Dt.w=prec-nu*w*(1-rho*b)-lambda*w*b*((1+eta*b)^2)+D2*D2.w
+% pde::Dt.b=lambda*w*b*((1+eta*b)^2)*(1-b)-b-A*b*funcS()+D1*D2.b
+% pde::Dt.w=prec-nu*w*(1-rho*b)-lambda*w*b*((1+eta*b)^2)+D2*D2.w+u^2
+
+% Exogenousfunction
+% funcS::(tanh(cos(kg*x)*fac)+1)/2
+
+Boundarycondition
+nm::intvl::Dn.b=0
+nm::intvl::Dn.w=0
+
+Objective
+expdisc::r 
+int::z,t::kappa*A*b*(tanh(cos(kg*z)*fac)+1)/2-c*A^2
+%int::x,t::kappa*A*b*funcS()-c*A^2
+
+Controlconstraint
+CC::ineq::A>=Amin
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.03
+prec::2
+lambda::0.45
+eta::2.8
+nu::1.4
+rho::0.7
+kappa::1
+c::1
+fac::1
+Amin::0
+kg::1
+omega::0
+D1::1
+D2::1
+L::5

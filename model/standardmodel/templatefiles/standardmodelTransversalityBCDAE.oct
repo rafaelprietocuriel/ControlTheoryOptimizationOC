@@ -1,0 +1,10 @@
+//
+// standardmodelTransversalityBCDAE.oct
+//
+function out=$MODELNAME$TransversalityBCDAE($ENDTIME$,$DEPENDENTVAR$,$PARVAR$)
+% returns the transversality condition value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$TRANSVERSALITYCONDITIONDAE$

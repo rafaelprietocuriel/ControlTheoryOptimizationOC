@@ -1,0 +1,14 @@
+function idx=findcontclass(ocObj,contclass,varargin)
+%
+
+contresultStruct=contresult(ocObj);
+if isempty(contresultStruct)
+    idx=[];
+    return
+end
+
+idx=zeros(1,length(contresultStruct));
+for ii=1:length(contresultStruct)
+    idx(ii)=~isempty(strmatch(contclass,contresultStruct{ii}.ContinuationClassification));
+end
+idx=find(idx);

@@ -1,0 +1,19 @@
+//
+// standardmodelSymbolicEquilibriumEquation.oct
+//
+function out=$MODELNAME$SymbolicEquilibriumEquation($ARCVAR$)
+% equations for an equilibrium of the canonical system
+$INFODETAILS$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$SYMBOLICEQUILIBRIUMEQUATION$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$SYMBOLICEQUILIBRIUMEQUATION$
+!ENDIF!

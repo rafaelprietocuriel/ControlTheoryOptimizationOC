@@ -1,0 +1,20 @@
+//
+// standarddiffmodelFixPointEquation.oct
+//
+function out=$MODELNAME$FixPointEquation($DEPENDENTVAR$,$PARVAR$,$ARCVAR$,iterate)
+% equations for the fix point of the canonical systems map.
+$INFODETAILS$
+	
+!IF $EXPLICITDIFFERENCEEQUATION$!
+out=$DEPENDENTVAR$(:,1)-$MODELNAME$CanonicalSystemMap(0,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+//
+!IF ~$EXPLICITDIFFERENCEEQUATION$!
+out=zeros(length($DEPENDENTVAR$),1);
+$DEPENDENTVAR$=reshape($DEPENDENTVAR$,[],iterate);
+$DEPENDENTVAR$=[$DEPENDENTVAR$ $DEPENDENTVAR$(:,1)];
+	
+for ii=1:iterate
+	out($ODIFFDIM$*(ii-1)+($ODIFFDIMCOORD$))=$MODELNAME$CanonicalSystemMap(0,$DEPENDENTVAR$(:,ii:ii+1),$PARVAR$,$ARCVAR$);
+end
+!ENDIF!

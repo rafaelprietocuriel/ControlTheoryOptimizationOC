@@ -1,0 +1,20 @@
+//
+// standardmodelNonsmoothFunction.oct
+//
+function out=$MODELNAME$NonsmoothFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the value of the nonsmooth functions
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$NONSMOOTHFUNCTIONTERM$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$NONSMOOTHFUNCTIONTERM$
+!ENDIF!

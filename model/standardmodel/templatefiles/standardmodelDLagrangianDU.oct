@@ -1,0 +1,27 @@
+//
+// standardmodelDLagrangianDU.oct
+//
+function [out,coord]=$MODELNAME$DLagrangianDU($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$DLAGRANGIANDU returns the derivative of the Lagrangefunction with respect to the implicit controls.
+%
+% [LU,COORD]=$UPPERMODELNAME$DLAGRANGIANDU($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) argument COORD returns the
+% index of the implicit control.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$DLAGRANGIANDU$
+		coord=$IMPLICITINDEX$;
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$DLAGRANGIANDU$
+coord=$IMPLICITINDEX$;
+!ENDIF!

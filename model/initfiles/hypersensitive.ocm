@@ -1,0 +1,24 @@
+Type
+standardmodel
+
+Modelname
+hypersensitive
+
+Description
+Hypersensitive optimal control problem from mazziasettanni2021
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=-a*x^3+u
+
+Objective
+int::-1/2*(c1*x^2+c2*u^2)
+
+Parameter
+r::0.0
+a::1
+c1::1
+c2::1

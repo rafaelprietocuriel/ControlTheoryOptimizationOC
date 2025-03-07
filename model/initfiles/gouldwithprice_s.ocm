@@ -1,0 +1,37 @@
+Type
+standardmodel
+
+Description
+An extended version of the Gould model
+
+Variable
+state::S
+control::p,u
+
+Statedynamics
+ode::DS=(alpha*u*(a-b*p^2-S)-delta)*S
+
+Objective
+int::(p-c)*S-e*u^2/2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::p<=a/b
+CC2::ineq::u>=ulb
+
+ArcDefinition
+0::[]_1
+1::[]_2
+2::[]_3
+3::CC1
+4::CC2
+5::CC1,CC2
+
+Parameter
+alpha::1
+c::1
+a::1
+b::1
+r::0.1
+delta::0.2
+e::1
+ulb::0

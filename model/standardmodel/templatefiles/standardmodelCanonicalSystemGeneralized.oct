@@ -1,0 +1,13 @@
+//
+// standardmodelCanonicalSystemGeneralized.oct
+//
+function DXDt=$MODELNAME$CanonicalSystemGeneralized($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$CANONICALSYSTEMGENERALIZED returns the canonical system together with the control dynamics
+% for implicitly given controls.
+$INFODETAILS$
+	
+DXDt=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+DUDt=$MODELNAME$ImplicitControlDynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+DXDt=[DXDt;DUDt];

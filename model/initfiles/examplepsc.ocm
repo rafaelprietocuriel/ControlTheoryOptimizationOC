@@ -1,0 +1,39 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=c*u
+
+Objective
+int::-x-tau*u^2
+
+Controlconstraint
+CC1::ineq::u>=ulb %
+CC2::ineq::u<=uhb %
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::x>=xlb,1
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::SC1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+3::x
+
+Parameter
+r::0.04
+tau::1e-2
+ulb::-1
+uhb::1
+xlb::0
+c::1

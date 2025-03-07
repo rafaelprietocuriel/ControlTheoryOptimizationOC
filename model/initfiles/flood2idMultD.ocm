@@ -1,0 +1,68 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+%Flood model with multiplikative damage
+
+Variable
+state::ky,kd
+control::c,id
+
+
+
+Statedynamics
+%official formula:
+%introducing tau for a better numeric solution; control variables c and id
+ ode::Dky=(1-tau*(0.5*(1+(W()-(1-zetad)*kd)+tau2)/sqrt((W()-(1-zetad)*kd+tau2)^2+tau1)*(1-1/(1+W()^2))))*A*ky^alpha-c-(theta1*id+theta2*id^2)-delta*ky
+ ode::Dkd=   id   -delta*kd
+%former damage function: -kappa*tau*((1/pi*atan(eta*kd^2*(W-(1-zetad)*kd))+1/2)*(1-1/(1+W^2)))*kd
+
+
+Exogenousfunction
+W::t
+
+Objective
+% the term kappa*Ef^2 is only introduced to derive the necessary optimality conditions automatically, even though the case of linear controls is not implemented up to now
+expdisc::rho 
+int::log(c)
+%int::(c^(1-sigma)-1)/(1-sigma)-epsilon*jota^2
+%int::(sqrt(c)-1)/0.5-epsilon*jota^2
+%int::log(c)-epsilon*id^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::c>=clow
+CC2::ineq::c<=(A*ky^alpha)-id
+CC3::ineq::id>=idlow
+%CC4::ineq::id<=(A*ky^alpha)-c
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2_1
+3::CC2_2
+4::CC3
+5::CC1,CC3
+6::CC2,CC3
+
+Parameter
+rho::0.03 
+teta::0.3
+alpha::0.7
+%jota::0.3
+%jotafix::0.1
+delta::0.1
+A::0.8
+zetad::0.5
+clow::0
+%sigma::0.5
+eta::50
+kappa::1
+tau::1
+tau1::1
+tau2::0
+epsilon::0.001
+idlow::0
+%idhigh::1
+theta1::0.5
+theta2::0.5

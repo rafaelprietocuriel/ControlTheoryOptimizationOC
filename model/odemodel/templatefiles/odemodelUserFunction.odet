@@ -1,0 +1,11 @@
+//
+// odemodelUserFunction.oct
+//
+
+function out=$MODELNAME$UserFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% the output of this file is called by userfunction(odeObj,ocElement)
+$INFODETAILS$
+
+$PARAMETERVALUES$
+	
+out=[];

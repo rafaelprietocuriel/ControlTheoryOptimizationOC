@@ -1,0 +1,37 @@
+//
+// impulsemodelPlotIndifferenceContinuation.oct
+// this file is called during the continuation process for an indifference threshold if the 'OCCONTARG' option 'PlotCont' is set 'on'.
+
+function h=$MODELNAME$PlotIndifferenceContinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,freepar,tangent,plotflag)
+% plotting commands called during the continuation process
+% the user can adapt this file to her/his needs
+$INFODETAILS$
+	
+global OCMATCONT IOCMATINDIF
+	
+color=$ARCCOLOR$;
+numarc=numel($ARCVAR$);
+leftarcindex=OCMATCONT.HE.TIMEDDATA.leftarcindex;
+rightarcindex=OCMATCONT.HE.TIMEDDATA.rightarcindex;
+h=zeros(1,numarc);
+	
+for ii=1:numarc
+!IF $STATENUM$<=2!
+	h(ii)=plot(depvar(1,leftarcindex(ii):rightarcindex(ii)),depvar(2,leftarcindex(ii):rightarcindex(ii)));
+!ENDIF!
+!IF $STATENUM$>2!
+	h(ii)=plot3(depvar(1,leftarcindex(ii):rightarcindex(ii)),depvar(2,leftarcindex(ii):rightarcindex(ii)),depvar(3,leftarcindex(ii):rightarcindex(ii)));
+!ENDIF!
+	set(h(ii),'Color',color($ARCVAR$(ii)+1,:));
+	if ii==1
+		hold on
+	end
+end
+set(h(IOCMATINDIF.arccoord{IOCMATINDIF.indifferenceorder}),'LineStyle','--')
+hold off
+	
+xlabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')
+!IF $STATENUM$>2!
+zlabel('$LATEXUSERDEPENDENTNAMETHIRD$','Interpreter','Latex')
+!ENDIF!

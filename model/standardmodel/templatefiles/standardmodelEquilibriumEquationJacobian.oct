@@ -1,0 +1,11 @@
+function out=$MODELNAME$EquilibriumEquationJacobian($DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the equilibrium equations
+$INFODETAILS$
+	
+out=$MODELNAME$CanonicalSystemJacobian(0,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!IF $IMPLICITCONTROLS$!
+	
+% Jacobian of algebraic equations
+outae=$MODELNAME$AlgebraicEquationJacobian(0,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+out=[out;outae];
+!ENDIF!

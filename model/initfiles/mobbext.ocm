@@ -1,0 +1,27 @@
+Type
+standardmodel
+
+Modelname
+mobbext
+
+Description
+Model of Organizational Bridge Building (caulkinsetal2007b)
+
+Variable
+state::P
+control::u
+
+Statedynamics
+ode::DP=P*(P-p1)*(P-p2)+u
+
+Objective
+int::-(P-p1)^2*(P-p2)^2-c*u^2
+
+Optimizationtype
+max
+
+Parameter
+r::1
+c::2
+p1::1
+p2::-1

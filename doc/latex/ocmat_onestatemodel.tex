@@ -1,0 +1,512 @@
+For a concrete model we use the so called ``model of moderation'' (\MoM) which is analyzed in \citet{caulkinsetal2005a} and given by
+\begin{subequations}
+\label{eq:mom}
+\begin{align}
+& \max_{u(\cdot)}\int_0^\infty\E^{-rt}\left(x(t)^2+cu(t)^2\right)\,\Dt\label{eq:mom1}\\
+\text{s.t.}\quad & \dot{x}(t)=x(t)\left(1-x(t)^2\right)+u(t),\quad t\ge0\label{mom2}\\
+\text{with}\quad & x(0) = x_0.\label{eq:mom3}
+\end{align}
+\end{subequations}
+Model \cref{eq:mom} consists of one state $x$ and one control $u$ and is obviously member of the class of models \cref{eq:simple_simple_opt_pro}. 
+
+\section{Initialization}
+\label{sec:InitializationMoM}
+In the subsequent sections the initialization process for \MoM\ is presented. The following steps are necessary and will subsequently be carried out in detail.
+\begin{enumerate}
+	\item Preparation of an initialization file (plain ASCII file).
+	\item Process the initialization file to generate the necessary optimality conditions. (We assume that the symbolic toolbox is installed.)
+	\item Start auto-generation of the model files.
+\end{enumerate}
+
+\subsection{Initialization File}
+\label{sec:InitializationFile}
+Initialization files are plain ASCII files with extension (\lstinline+.ocm+) and a specific syntax, that allows \OCMAT\ to identify the model structure and therefore derive the necessary optimality conditions. The following example for \MoM\ is a minimal example, since only mandatory parts are included. We generate a file \lstinline+mom.ocm+ consisting of
+\begin{ocmlisting}
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=x-x^3+u
+
+Objective
+int::-(x^2+c*u^2)
+
+Parameter
+r::1
+c::1
+\end{ocmlisting}
+The empty lines between the different sections can be omitted and are only kept for better readability. There are four mandatory sections that have to appear in each initialization file. The signal words \lstinline+Variable+, \lstinline+Statedynamics+, \lstinline+Objective+ and \lstinline+Parameter+ are case insensitive but have to appear in a separate line. Comments starting with \lstinline+%+ are allowed at any place.
+
+\paragraph{Variable}
+\label{sec:Variable}
+The lines following the signal word \lstinline+Variable+ define the variable names for the state and the control variable(s). The syntax is 
+\begin{ocmlisting}
+variable::variablename
+\end{ocmlisting}
+where \lstinline+variable+ can be one of the following types
+\begin{itemize}
+	\item state
+	\item control
+	\item costate (default variable name \lstinline+lambda1,lambda2,+ etc.).
+\end{itemize}
+The \lstinline+variablename+ has to be a name satisfying the \MATL\ rules for variable names. If there exist more than one \lstinline+variable+ the variable names have to be comma separated
+\begin{ocmlisting}
+variable::variablename1,variablename2
+\end{ocmlisting}
+or according to \MATL\ convention
+\begin{ocmlisting}
+variable::variablename1:variablename4
+\end{ocmlisting}
+which is a short cut for
+\begin{ocmlisting}
+variable::variablename1,variablename2,variablename3,variablename4
+\end{ocmlisting}
+The main reason for specifying the variable names explicitly is for a better readability for the user, who is familiar with her/his own denomination and need not adapt to a standard notation.\footnote{In the auto-generated model files such a standard notation is used, where, e.g. state and costates are replaced by the variable name \lstinline+depvar+ (for dependent variables) with an index. Symbolic expressions of terms, like the Hamiltonian, are returned (using, e.g., the command \lstinline+hamiltonian(m)+) in the user denomination.}
+
+\paragraph{Statedynamics}
+\label{sec:Statedynamics}
+The syntax for the state dynamics is as follows
+\begin{ocmlisting}
+ode::Dx=f(x,u)
+\end{ocmlisting}
+where \lstinline+f(x,u)+ is some algebraic term for the differential equation.
+Each state dynamics has to be written in an extra line.
+
+%For a two state model with state variables $F$ and $A$ this becomes
+%\begin{ocmlisting}
+%Statedynamics
+%ode::DF=sigma*F*(1-F/(m*A))-gamma/(C+tau)*(F^theta1/(1+F^theta2))-eta*h*F
+%ode::DA=(n-d*A-e*A*F)/epsilon
+%\end{ocmlisting}
+
+\paragraph{Objective}
+\label{sec:Objective}
+The objective section lets you specify the actual function that has to be optimized. Usually this will be a (discounted) integral, and the syntax is
+\begin{ocmlisting}
+int::g(x,u)
+\end{ocmlisting}
+where \lstinline+g(x,u)+ is some algebraic expression for the integrand of the following integral
+\begin{equation*}
+	\int\E^{-rt}g(x(t),u(t))\,\Dt.
+\end{equation*}
+Without additional information it is assumed that the integrand is exponentially discounted and the variable for the discount rate is $r$ by default. To use a different variable name for the discount rate, e.g. \lstinline+rho+, you can additionally specify
+\begin{ocmlisting}
+expdisc::rho
+int::g(x,u)
+\end{ocmlisting}
+Also note that by default the problem is considered as a maximization problem and therefore the objective function for \MoM\ as it is given in \cref{eq:mom1} is multiplied by minus one in the initialization file. %Subsequently we will show how to change the optimization type to minimization.
+
+\paragraph{Parameter}
+\label{sec:Parameter}
+For each of the parameter variables that appear in the functional forms of the model a value has to be provided in the form
+\begin{ocmlisting}
+r::1
+c::1
+\end{ocmlisting}
+It is also allows to provide functional expressions like
+\begin{ocmlisting}
+r::exp(0)+6
+c::sqrt(2)
+\end{ocmlisting}
+
+\subsection{Processing the Initialization File}
+\label{sec:ProcessingInitializationFile}
+Next the necessary optimality conditions and further information about the model have to be processed within \OCMAT. During this step the default model folders, where files and data are stored, will be generated. These folders are
+\begin{pathlisting}
+ocmat\model\usermodel\[modelname]
+ocmat\model\usermodel\[modelname]\data
+\end{pathlisting}
+Moreover, a structure \lstinline+ocStruct+ will be generated, containing the model specific properties. This structure is stored in
+\begin{pathlisting}
+ocmat\model\usermodel\[modelname]\data\[modelname]ModelDataStructure.mat
+\end{pathlisting}
+For the model \MoM\ the process is initiated by
+\begin{matlab}
+>> ocStruct=processinitfile('mom');(*@\index{Command!Initialization!\lstinline+processinitfile+}@*)
+.\ocmat\model\usermodel\mom does not exist. Create it?  y/(n): y
+.\ocmat\model\usermodel\mom\data does not exist. Create it?  y/(n): y
+.\ocmat\model\usermodel\mom\data is not on MATLAB path. Add it?  (y)/n: y
+\end{matlab}
+The main fields of the structure \lstinline+ocStruct+ are
+\begin{matlab}
+ocStruct = 
+
+             modeltype: 'standardmodel'
+             modelname: 'mom'
+              variable: [1x1 struct]
+            constraint: [1x1 struct]
+             objective: [1x1 struct]
+             parameter: [1x1 struct]
+                   arc: [1x1 struct]
+    pontryaginfunction: [1x1 struct]
+                   foc: [1x1 struct]
+\end{matlab}
+E.g., the field \lstinline+foc+ itself is a structure containing the first order necessary optimality conditions. %For a detailed description of the structure see \cref{sec:ocStruct}.
+
+\subsection{Generating the Model Files}
+\label{sec:GeneratingTheModelFiles}
+In the last step the necessary model files are generated and moved to the default model folder. To start the file generation call the command
+\begin{matlab}
+>> modelfiles=makefile4ocmat(ocStruct);(*@\index{Command!Initialization!\lstinline+makefile4ocmat+}@*)
+\end{matlab}
+The variable \lstinline+modelfiles+ is a structure consisting of the file names and some properties that were generated, e.g.
+\begin{matlab}
+>> strvcat(modelfiles.name)
+
+ans =
+
+ArcInfo                           
+ArcDiscretizationInfo             
+CanonicalSystem                   
+EquilibriumEquation               
+SymbolicCanonicalSystem           
+CanonicalSystemJacobian           
+CanonicalSystemParameterJacobian  
+CanonicalSystemHessian            
+CanonicalSystemTotalHessian       
+OptimalControl                    
+SymbolicOptimalControl            
+LagrangeMultiplier                
+SymbolicLagrangeMultiplier        
+Hamiltonian                       
+DHamiltonianDx                    
+D2HamiltonianDu2                  
+SymbolicHamiltonian               
+4SaddlePathContinuation           
+4IndifferenceSolutionContinuation 
+BCJacobian4Initial                
+BCJacobian4Asymptotic             
+BCJacobian4Guard                  
+BCJacobian4Reset                  
+Admissible                        
+UserAdmissible                    
+UserFunction                      
+ObjectiveFunction                 
+ObjectiveFunctionJacobian         
+ObjectiveFunctionParameterJacobian
+Constraint                        
+PlotIndifferenceContinuation      
+PlotContinuation          
+\end{matlab}
+For each of these files a corresponding template file has to exist. These template files are plain ASCII files and provide the structure, that is filled by the specific functional forms of a model. Calling the command \lstinline+makefile4ocmat+ generates these files and store the files in the intermediate folder
+\begin{pathlisting}
+\ocmat\model\usermodel\out
+\end{pathlisting}
+This step is mainly interposed for security reasons that the user may check the files and decide if s/he wants to replace maybe older model files from a previous model installation. 
+
+To move the files to the actual model folder, e.g.
+\begin{pathlisting}
+\ocmat\model\usermodel\mom
+\end{pathlisting}
+call the \MATL\ command
+\begin{matlab}
+>> moveocmatfiles(ocStruct,modelfiles)(*@\index{Command!Initialization!\lstinline+moveocmatfiles+}@*)
+\end{matlab}
+If the model files already exist you are asked if you want to overwrite the older files by the actual files.
+
+\subsection{Model Instance}
+\label{sec:modelinstance}
+The default instance of the standard optimal control model \lstinline+stdocmodel+\index{Command!\lstinline+stdocmodel+} \MoM\ is initiated by
+\begin{matlab}
+>> m=stdocmodel('mom')
+Model data structure successfully loaded from data file:
+.\ocmat\model\usermodel\mom\data\momModelDataStructure.mat
+m =
+ocmatclass: stdocmodel
+    modelname : mom
+    r : 1
+    c : 2
+\end{matlab}
+This loads the data structure for model \MoM\ and assigns the corresponding \MATL\ class \lstinline+stdocmodel+ for model \cref{eq:mom} to \lstinline+m+. The parameter values are the default values specified in the initialization file.
+
+This class consists of the two fields \lstinline+Model+ (mainly the data structure) and \lstinline+Result+, where the latter is empty for a new instance. All results of an analysis will then be written into this field and the specific instance can be saved
+\begin{matlab}
+>> save(m)
+\end{matlab}
+This stores the actual instance \lstinline+m+ into a \lstinline+mat+-file with default name \lstinline+mom_r_1_c_2.mat+ (composed of the model name and its parameter values) at the default model data folder \lstinline+.\ocmat\model\usermodel\mom\data+.
+
+To generate an instance with different parameter values, these can be changed using
+\begin{matlab}
+>> m=changeparametervalue(m,'r',0.1);\index{Command!stdocmodel!changeparametervalue}
+\end{matlab}
+or to change more than one parameter value at once
+\begin{matlab}
+>> m=changeparametervalue(m,'r,c',[0.1 2]);
+\end{matlab}
+
+\subsection{Retrieving Model Information}
+There exists a large number of commands that allow the user either to evaluate expressions, e.g. canonical system, Hamiltonian, etc., at specific points or to return the corresponding symbolic expressions. In the following a few of these commands are presented.
+
+With \lstinline+control+ the symbolic expression for the control value is returned
+\begin{matlab} 
+>> u=control(m)
+u =
+-1/2*lambda1/c
+\end{matlab}
+Similar the expression of the Hamiltonian is returned by
+\begin{matlab} 
+>> H=hamiltonian(m)
+H =
+x^2+c*u^2+lambda1*(x-x^3+u)
+\end{matlab}
+We note that the control variable \lstinline+u+ is not replaced by its optimal expression. To get the maximized Hamiltonian, i.e., where the control variable is substituted by the corresponding expression from the Hamiltonian maximizing condition, the following command can be used
+\begin{matlab} 
+>> H_opt=hamiltonian(m,[],[],1)
+H_opt =
+x^2+1/4/c*lambda1^2+lambda1*(x-x^3-1/2*lambda1/c)
+\end{matlab}
+The empty arguments are necessary and will be explained in due course. Analogous to the latter case we find the canonical system by
+\begin{matlab} 
+>> dxdt=canonicalsystem(m)
+dxdt =
+                           x-x^3+u
+ r*lambda1-(2*x+lambda1*(1-3*x^2))
+\end{matlab}
+or with replaced control variable
+\begin{matlab} 
+>> dxdt_opt=canonicalsystem(m,[],[],1)
+dxdt_opt =
+             x-x^3-1/2*lambda1/c
+ r*lambda1-2*x-lambda1*(1-3*x^2)
+\end{matlab}
+To find the expressions where the parameter variables are replaced by the values of the actual instance \lstinline+m+ we can, e.g., call
+\begin{matlab} 
+>> H_rep=subsparametervalue(m,H_opt)
+H_rep =
+x^2+1/8*lambda1^2+lambda1*(x-x^3-1/4*lambda1)
+\end{matlab}
+
+\section{Numerical Analysis}
+\label{sec:numanalysis}
+After a successful initialization of the model the numerical analysis can immediately start. Subsequently we present the basic steps of an analysis. This includes the determination of equilibria of the canonical system and the calculation of stable paths. Since equilibria and trajectories are central objects of the analysis these are implemented as \MATL-classes (see \cref{sec:classdesign}).
+
+\subsection{Equilibria}
+\label{sec:numanalysis_equilib}
+In its simplest form the equilibria can be found by
+\begin{matlab} 
+>> ocEP=calcep(m)(*@\index{Command!dynprimitive!\lstinline+calcep+}@*)
+ocEP = 
+    [1x1 dynprimitive]
+    [1x1 dynprimitive]
+    [1x1 dynprimitive]
+    [1x1 dynprimitive]
+    [1x1 dynprimitive]
+\end{matlab}
+For our example and the actual parameter values of the instance \lstinline+m+ five equilibria, each of them is represented by a member of the class \lstinline+dynprimitive+, are detected. The returning argument assigned to \lstinline+ocEP+ is a cell array of \lstinline+dynprimitive+ objects.
+
+To find the equilibria by \lstinline+calcep(m)+ it is assumed that the symbolic expressions of the canonical system
+\begin{matlab} 
+>> dxdt_rep=subsparametervalue(m,dxdt_opt)(*@\index{Command!stdocmodel!\lstinline+subsparametervalue+}@*)
+dxdt_rep =
+             x-x^3-1/4*lambda1
+ lambda1-2*x-lambda1*(1-3*x^2)
+\end{matlab}
+can be solved by the symbolic toolbox of \MATL.\footnote{I.e. the equations are solved using the \MATL\ command \lstinline+solve(dxdt_rep(1),dxdt_rep(2),'x','lambda1')+} Otherwise further arguments have to be provided and a numerical procedure is used, which will be explicated in the next chapter.
+
+The class structure of \lstinline+dynprimitive+ allows an easy manipulation of the objects and access to the basic properties. Basic information about the values and the eigenvalues of an equilibrium, e.g., for the second equilibrium of the previous example, are displayed in the workspace simply writing
+\begin{matlab} 
+>> ocEP{2}
+ans =
+ocmatclass: dynprimitive
+modelname: mom
+Equilibrium:
+   -0.8881
+   -0.7507
+Eigenvalues:
+   -1.2269
+    2.2269
+Arcidentifier:
+     0
+\end{matlab}
+For the subsequent examples let us assign the second equilibrium to the variable \lstinline+dynPrim+, i.e.
+\begin{matlab} 
+>> dynPrim=ocEP{2};
+\end{matlab}
+To retrieve the values of \lstinline+dynPrim+ the following commands can used
+\begin{matlab} 
+>> y=dynPrim.y;
+\end{matlab}
+or equivalently
+\begin{matlab} 
+>> y=dependentvar(dynPrim);(*@\index{Command!dynprimitive!\lstinline+dependentvar+}@*)
+\end{matlab}
+For the Jacobian write
+\begin{matlab} 
+>> J=dynPrim.linearization;
+\end{matlab}
+or equivalently
+\begin{matlab} 
+>> J=jacobian(dynPrim);(*@\index{Command!dynprimitive!\lstinline+jacobian+}@*)
+\end{matlab}
+Due to the importance of eigenvectors and eigenvalues for the calculation of solution paths the \MATL\ command \lstinline+eig+ was overloaded for the \lstinline+dynprimitive+ class. Thus,
+\begin{matlab} 
+>> [vec val]=eig(dynPrim);(*@\index{Command!dynprimitive!\lstinline+eig+}@*)
+\end{matlab}
+returns the eigenvectors and eigenvalues.
+
+Members of the class \lstinline+dynprimitive+ can be used as (second) arguments for the commands like, \lstinline+hamiltonian+, \lstinline+control+, \lstinline+canonicalsystem+, etc. Then the particular expressions are evaluated at the specific equilibrium, e.g.
+\begin{matlab} 
+>> H=hamiltonian(m,dynPrim);(*@\index{Command!dynprimitive!\lstinline+hamiltonian+}@*)
+>> u=control(m,dynPrim);(*@\index{Command!dynprimitive!\lstinline+control+}@*)
+>> dxdt=canonicalsystem(m,dynPrim);(*@\index{Command!dynprimitive!\lstinline+canonicalsystem+}@*)
+\end{matlab}
+For an equilibrium the last command should return a nullvector, or, due to numerical inaccuracy, a ``near'' nullvector. Additionally the commands
+\begin{matlab} 
+>> x=state(m,dynPrim);(*@\index{Command!dynprimitive!\lstinline+state+}@*)
+>> lambda=costate(m,dynPrim);(*@\index{Command!dynprimitive!\lstinline+costate+}@*)
+\end{matlab}
+allow to specifically address the state or costate values.
+
+To check if a calculated equilibrium is admissible, i.e. it satisfies the constraints if there are any, the canonical system is zero (or nearly zero) evaluated at the equilibrium and the equilibrium is real valued (or an imaginary part is smaller than some tolerance) the following command can be used
+\begin{matlab} 
+>> b=isadmissible(dynPrim,m);(*@\index{Command!dynprimitive!\lstinline+isadmissible+}@*)
+\end{matlab}
+where $b=1$ denotes an admissible equilibrium and $b=0$ an inadmissible equilibrium. It is also possible to check a cell array of \lstinline+dynprimitive+ objects
+\begin{matlab} 
+>> b=isadmissible(ocEP,m);
+\end{matlab}
+In that case \lstinline+b+ is a vector of the same size as the cell array with zero and one for (in)admissible equilibria.
+
+To ease the search for saddle points that have to be considered for a further analysis the command \lstinline+issaddle+ can be used
+\begin{matlab} 
+>> [b dim]=issaddle(dynPrim);(*@\index{Command!dynprimitive!\lstinline+issaddle+}@*)
+\end{matlab}
+where \lstinline+b+ is one in case of a saddle point and zero otherwise. The argument \lstinline+dim+ denotes the number of eigenvalues with negative real part (dimension of the corresponding stable manifold).
+
+\subsection{Saddle-path}
+\label{sec:numanalysis_saddlepath}
+The core part of \OCMAT\ is the calculation of a saddle-path corresponding to an equilibrium and starting at some given initial state. The basic numerical concepts are presented in \citet{grass2012}. At this point only the technical steps within the \OCMAT\ environment are explained. To reproduce the process depicted in \cref{fig:uniquemomcont} the following commands have to be called. 
+\begin{matlab} 
+>> m=changeparametervalue(m,'r',0.5);ocEP=calcep(m);
+>> sol=initocmat_AE_EP(m,ocEP{1},1,1.5)(*@\index{Command!continuation!\lstinline+initocmat_AE_EP+}@*)
+sol = 
+              x: [1x40 double]
+              y: [2x40 double]
+     parameters: 0
+    arcinterval: [0 100]
+    timehorizon: Inf
+         arcarg: 0
+             x0: 0
+          idata: [1x1 struct]
+>> c=bvpcont('extremal2ep',sol);(*@\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 41
+ Continuation parameter: 0.000513129
+
+/* run through continuation steps */
+
+ Continuation step No.: 205
+ stepwidth: 0.1
+ Newton Iterations: 1
+ Mesh size: 93
+ Continuation parameter: 1.01721
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+\end{matlab}
+First the parameter $r$ is set to $0.05$ and the corresponding equilibria are calculated. Next the continuation process is initialized. The function of the equilibrium \lstinline+ocEP{1}+ is twofold. First it denotes the equilibrium for which the saddle-path is calculated. Second it is used as an initial solution for the underlying \BVP. The third argument denotes the used coordinate for the continuation. The last argument specifies the initial state for the requested solution. The returned argument \lstinline+sol+ is a structure, representing the initial function for the \BVP. 
+
+Finally the continuation process is started, where \lstinline+extremal2ep+ denotes a saddle-path continuation by varying the initial state. The continuation process is depicted graphically (see \cref{fig:uniquemomcont}) and information is displayed in the command window (see the previous listing). The output argument \lstinline+c+ mainly consists of the initial and last detected solution. The information \lstinline+Target value hit.+ (equivalently \lstinline+Continuation parameter=1+) indicates that the solution at the requested initial state $x=1.5$ is reached.
+
+To save the results of the so far carried out calculations, i.e. the equilibria and saddle-path continuation, a storing command is provided.
+\begin{matlab} 
+>> store(m,ocEP);(*@\index{Command!continuation!\lstinline+store+}@*)
+>> store(m,'extremal2ep');
+>> save(m)
+\end{matlab}
+The first two commands store the equilibria and result of the continuation process in the \lstinline+Result+ field of the model \lstinline+m+. The last command saves the entire object (and therefore also the results) as a \lstinline+mat+ file in the default model data folder (see \cref{sec:modelinstance}).
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{15}{./fig/UniqueMoMContinuation_}{001}{207}
+\caption{The graphic display during the continuation process.}
+\label{fig:uniquemomcont}
+\end{figure}
+
+\subsection{Detection of an Indifference Threshold\index{indifference threshold}}
+\label{sec:numanalysis_detindthr}
+An interesting phenomenon that consistently appears in \OCPRO, is that of multiple optimal solutions, i.e. initial states for which at least two solutions exist. For a detailed discussion of this phenomenon and the underlying bifurcations the reader is referred to \citet{grassetal2008,kiselevawagener2008a} and \citet{kiseleva2011}. The usual ingredients for the appearance of multiple optimal solutions is the occurrence of multiple equilibria (saddle points). The standard procedure  for the detection of such an indifference threshold (in economic literature also called Skiba point)\index{indifference threshold}\index{Skiba point|see{indifference threshold}} consists of the following steps\footnote{In the presentation we implicitly assume that the model has one state variable. For higher dimensional models the procedure is very similar but needs a more careful explanation.}
+\begin{enumerate}
+	\item Choose two saddle points $\hat E_{1,2}$.
+	\item Calculate the saddle-path starting at the state value of the second equilibrium and converging to the first equilibrium. If an indifference threshold exists such a path does not exist. Usually the saddle-path bends back (limit point) and the continuation process (ideally) stops if the maximum number of continuation steps is reached.\footnote{In case of the existence of an indifference threshold point and if the Hessian matrix of the Hamiltonian with respect to the control variables is strictly convex (maximum), concave (minimium), the saddle-paths cannot be continued to the state values of the other equilibrium, respectively.} Otherwise the user can interrupt the continuation process, pressing the stop button in the ``User Stop'' window.
+	\item Repeat the previous step with interchanged roles of the equilibria.
+	\item If a region (in the state space) exists, where both saddle paths exist an indifference threshold may exist in this region. To find this point the Hamiltonian is evaluated along both saddle-paths. A possible intersection point denotes the indifference threshold.\footnote{Note that the objective value is given by the Hamiltonian multiplied by the reciprocal of the discount rate $r$ \citep{michel1982}.}
+\end{enumerate}
+\begin{matlab} 
+>> m=stdocmodel('mom');
+>> ocEP=calcep(m);store(m,ocEP);
+>> opt=setocoptions('OCCONTARG','MaxContinuationSteps',150);
+>> sol=initocmat_AE_EP(m,ocEP{1},1,state(m,ocEP{3}));
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');
+>> sol=initocmat_AE_EP(m,ocEP{3},1,state(m,ocEP{1}));(*@\index{Command!continuation!\lstinline+initocmat_AE_EP+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');
+>> it=findindifferencepoint(m,1,2);(*@\index{Command!stdocmodel!\lstinline+findindifferencepoint+}@*)
+\end{matlab}
+The last command \lstinline+findindifferencepoint+ computes the indifference threshold by intersecting the Hamiltonian functions corresponding to the two stable paths. The second and third input argument therefore denote the index of the stable path (continuations) as stored in the object \lstinline+m+. Thus, the arguments $1$ and $2$ entail that the indifference threshold is searched by comparing the results of the first and second continuation.
+
+In this approach the value of the indifference threshold depends on the step width of the continuation. To find the (numerical) exact value a \BVP\ can be formulated, that allows the computation of the two optimal paths and therefore the location of the indifference threshold, cf.~\citet{grass2012}.\footnote{A further advantage of this approach is the possible usage of continuation to compute, e.g. an indifference threshold curve in a two state model.} The necessary steps are shown by the following listing of \OCMAT\ commands 
+\begin{matlabnum} 
+>> sol=initocmat_AE_EP(m,ocEP{1},1,it);(*@\label{li:initocmat_ae_ep_mom}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');
+>> sol=initocmat_AE_EP(m,ocEP{3},1,it);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');(*@\label{li:m_store_mom}@*)
+>> ocAsym{1}=m.Result.Continuation{3}.ExtremalSolution;(*@\label{li:ocasym1_mom}@*)
+>> ocAsym{2}=m.Result.Continuation{4}.ExtremalSolution;(*@\label{li:ocasym2_mom}@*)
+>> sol=initocmat_AE_IS(m,ocAsym,1,[]);(*@\label{li:initocmat_ae_is_mom}@*)
+>> opt=setocoptions('OCCONTARG','InitStepWidth',0,'MaxContinuationSteps',1);(*@\label{li:setocoptions_mom}@*)
+>> c=bvpcont('indifferencesolution',sol,[],opt);(*@\label{li:bvpcont_mom}\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0
+ Newton Iterations: 1
+ Mesh size: 127
+ Continuation parameter: 0
+>> store(m,'indifferencesolution');(*@\label{li:store_mom}@*)
+>> save(m)(*@\label{li:save_mom}@*)
+Overwrite existing file from 05-Sep-2013 06:14:35 of size 465687 with new size 1891454?  y/(n): y
+\end{matlabnum}
+To determine an initial function for the indifference threshold \BVP\ the saddle-paths starting at the previously calculated value \lstinline+it+ are computed and stored (\crefrange{li:initocmat_ae_ep_mom}{li:m_store_mom}). These solutions are assigned to a cell array \lstinline+ocAsym+ (\cref{li:ocasym1_mom,li:ocasym2_mom}). Then global variables for the \BVP\ are initialized and the initial function \lstinline+sol+ is returned (\cref{li:initocmat_ae_is_mom}). Next some options are set (\cref{li:setocoptions_mom}). The initial step size is set to zero, because in fact nothing is to be continued. Only the first solution is needed. Therefore also the number of continuation steps is set to one. Finally the computation is started (\cref{li:bvpcont_mom}) and successfully cancels after one step. To keep the result for further processing the solution is stored (\cref{li:store_mom}) and the model is saved (\cref{li:save_mom}).
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{15}{./fig/MultipleMoMContinuation_}{001}{152}
+\caption{The continuation processes for the detection of an indifference threshold.}
+\label{fig:multiplemomcont}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[scale=\scalefactor]{./fig/MultipleMoM}
+\label{fig:multiplemom}
+\caption{The Hamiltonian evaluated along the saddle-paths intersect in an indifference threshold}
+\end{figure}
+\begin{remark}
+The existence of multiple equilibria in the canonical system does not imply the existence of multiple optimal solutions as the example with $r=0.5$ and $c=2$ shows. In that case the saddle-path of the equilibrium at the origin overlaps the other saddle-points in the state space, cf.~\cref{fig:uniquemomov}
+\end{remark}
+\begin{figure}
+\centering
+\includegraphics[scale=\scalefactor]{./fig/UniqueMoMOverlap}
+\caption{The saddle-path (right arc) of the equilibrium at the origin (green) overlaps the right saddle-point and its saddle-path (blue)}
+\label{fig:uniquemomov}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[scale=\scalefactor]{./fig/ExactIndifferenceThresholdMoM}
+\caption{The (numerical) exact indifference threshold determined as a solution of a \BVP.}
+\label{fig:exactindifferencethresholdmom}
+\end{figure}
+%
+%\section{Graphical Display}
+%\label{sec:graphicaldisplay}
+%The graphical representation of the numerical results is of crucial importance as well. It is of course possible to use the native \MATL\ plotting commands. However, the provided plotting commands in \OCMAT\ take specifically care about the underlying class structure of the model and results and therefore simplifies its handling. This section is devoted to the introduction of these basic plotting commands.
+

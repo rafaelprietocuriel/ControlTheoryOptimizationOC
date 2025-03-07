@@ -1,0 +1,33 @@
+Type
+standardmodel
+
+Description
+shallow lake model with slow fast dynamics, where the second (mud) variable is transformed Mnew=b*M
+
+Variable
+state::P,M
+control::u
+
+Statedynamics
+ode::DP=(d*u-(s1+h)*P+k1*M*P^q/(m^q+P^q))/epsilon
+ode::DM=s2*P-b*M-k2*M*P^q/(m^q+P^q)
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::a*log(u)-c*P^2
+
+
+Parameter
+r::0.03
+a::1
+b::0.001
+c::0.075
+d::1
+epsilon::1
+h::0.15
+k1::0.019
+k2::0.019
+m::2.4
+q::8
+s1::0.7
+s2::0.7

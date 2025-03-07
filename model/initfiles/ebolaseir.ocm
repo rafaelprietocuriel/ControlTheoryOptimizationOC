@@ -1,0 +1,46 @@
+Type
+standardmodel
+
+Modelname
+ebolaseir
+
+Description
+Deviant quality model 
+
+Variable
+state::S,E,I,R
+control::u
+
+Statedynamics
+ode::DS=delta*N-beta*S*I-l*S-u*S
+ode::DE=beta*S*I-gamma*E-(l+lE)*E
+ode::DI=gamma*E-mu*I-(l+lI)*I
+ode::DR=mu*I-l*R+u*S
+
+
+Objective
+int::-I-tau/2*u^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0
+delta::0.03507
+beta:: 0.299
+l::0.0099
+lE::0.0003366
+lI::0.0031
+tau::0.02
+gamma:: 0.034
+mu:: 0.0859
+umin::0
+umax::0.9
+N::1

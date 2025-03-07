@@ -1,0 +1,66 @@
+Type
+standardmodel
+
+Modelname
+quality2DsIII
+
+Description
+How to simultaneously determine price, quality, investment and advertising. A simplified version, where the exponent 'theta' of 'a' is set to one.
+
+Variable
+state::R,Q
+control::a,p,u
+
+Statedynamics
+ode::DR=(a+eta)*Q-delta1*R
+ode::DQ=tau+u-delta2*Q
+
+Objective
+int::(p-c*Q^2)*(alpha*R*Q^gamma*p^(-beta))-c1*a^2-c2*u^2-tauQ*Q^2-tauR*R^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::a>=alb
+CC2::ineq::u>=ulb
+CC3::ineq::p<=phigh
+ArcDefinition
+0::[]_1
+1::CC1_1
+2::CC2
+3::CC3
+4::CC1,CC2_1
+5::CC1,CC3
+6::CC2,CC3
+7::CC1,CC2,CC3
+
+% % if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% % these properties can depend on the constraint combination, therefore the syntax is given by
+% % arcid::controlvariable::property
+% Control
+% 0::p::implicit
+% 0::a,u::explicit
+% 1::p::implicit
+% 1::a,u::explicit
+% 2::p::implicit
+% 2::a,u::explicit
+% 3::p::implicit
+% 3::a,u::explicit
+
+Parameter
+r::0.03
+delta2::0.1
+c::1
+c1::1
+c2::1
+beta::1.5
+gamma::0.5
+alpha::1
+alb::0
+ulb::0
+delta1::0.1
+eta::0.1
+tauQ::0
+tauR::0
+tau::0
+epsilon1::0
+epsilon2::0
+phigh::1000

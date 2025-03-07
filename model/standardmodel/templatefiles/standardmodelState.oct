@@ -1,0 +1,21 @@
+//
+// standardmodelState.oct
+//
+function out=$MODELNAME$State($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the state values for active state constraints
+$INFODETAILS$
+
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$EXPLICITSTATEVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$EXPLICITSTATEVALUE$
+!ENDIF!

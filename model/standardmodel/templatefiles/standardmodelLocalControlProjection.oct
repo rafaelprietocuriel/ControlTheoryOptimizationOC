@@ -1,0 +1,10 @@
+//
+// standardmodelLocalControlProjection.oct
+//
+function $LOCCONTROL$=$MODELNAME$LocalControlProjection($LOCCONTROL$,$PARVAR$)
+% returns the control values projected onto the admissible region for $MODELNAME$.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCALCONTROLPROJECTION$

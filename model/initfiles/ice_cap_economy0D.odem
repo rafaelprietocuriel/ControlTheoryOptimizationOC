@@ -1,0 +1,42 @@
+Type
+odemodel
+
+Description
+0D ice cap model (north1990)
+
+Modelname
+ice_cap_economy0D
+
+Variable
+state::K,T,M
+independent::t
+
+Dynamics
+ode::DK=B*K^alpha*(a1*(T-T0)^2+1)^(-psi)-C-A-(delta+n)*K
+ode::DT=(-A-B*T+Q*ap()+(1-xi)*6.3*log(M/M0))/ch
+ode::DM=beta1*(a*K/A)-mu*M
+
+Exogenousfunction
+%ap::(ub-lb)/2*tanh(fac*(T-Ts))+(ub+lb)/2
+ap::(ub-lb)/2*fac*(T-Ts)/sqrt(1+(fac*(T-Ts))^2)+(ub+lb)/2
+
+Parameter
+Q::1367/4
+A::201.4
+Ts::-10
+B::1.45
+ch::1000
+ub::0.7
+lb::0.4
+fac::4
+
+% @Article{north1990,
+  % author  = {North, Gerald R.},
+  % title   = {Multiple solutions in energy balance climate models},
+  % journal = {Palaeogeography, Palaeoclimatology, Palaeoecology},
+  % year    = {1990},
+  % volume  = {82},
+  % number  = {3},
+  % pages   = {225--235},
+  % doi     = {10.1016/S0031-0182(12)80003-4},
+% }

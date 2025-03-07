@@ -1,0 +1,29 @@
+//
+// standardmodelVariationalExogenousFunction.oct
+//
+function out=$MODELNAME$VariationalExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% Jacobian with respect to the switching times of an exogenous function that depends on the linearization along an extremal solution
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+%$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $NONSMOOTHFUNCTIONNUM$!
+%$NONSMOOTHFUNCTION$=$MODELNAME$NonsmoothFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+%$NONSMOOTHFUNCTIONDX$=$MODELNAME$NonsmoothJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		% placeholder: user has to change it
+		out=zeros($EXOGENOUSFUNCTIONNUM$,length($INDEPENDENT$));
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+% placeholder: user has to change it
+out=zeros($EXOGENOUSFUNCTIONNUM$,length($INDEPENDENT$));
+!ENDIF!

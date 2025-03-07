@@ -1,0 +1,30 @@
+//
+// CanonicalSystemJacobian.oct
+//
+function out=$MODELNAME$CanonicalSystemJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the canonical system with respect to the dependent variables.
+$INFODETAILS$
+	
+!IF $IMPLICITCONTROLS$!
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		dim=$CANONICALSYSTEMDIMENSION$;
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$CANONICALSYSTEMDIMENSION$
+!ENDIF!
+	
+!ENDIF!
+numJacOpt.diffvar=2;
+numJacOpt.vectvars=[];
+!IF $IMPLICITCONTROLS$!
+out=numjaccsd(@$MODELNAME$CanonicalSystemGeneralized,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$},dim,numJacOpt);
+out=out(1:dim,1:dim);
+!ENDIF!
+!IF ~$IMPLICITCONTROLS$!
+out=numjaccsd(@$MODELNAME$CanonicalSystem,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$},$EQUATIONNUMIMPLICIT$,numJacOpt);
+!ENDIF!

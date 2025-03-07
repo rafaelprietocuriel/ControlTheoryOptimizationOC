@@ -1,0 +1,20 @@
+Type
+odemodel
+
+Modelname
+lotkavolterra0D
+
+Description
+Chafee  and  Infante
+
+Variable
+state::R,F
+
+Dynamics
+ode::DR=(alpha-F)*R
+ode::DF=(R-beta-e*F)*F
+
+Parameter
+alpha::1
+beta::0.56
+e::0

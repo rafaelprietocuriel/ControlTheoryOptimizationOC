@@ -1,0 +1,12 @@
+//
+// odemodelUserAdmissible.odet
+//
+
+function out=$MODELNAME$UserAdmissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% in this file the user can specify admissibility conditions, e.g., non-negative states.
+% These conditions can be used during the query for admissible equilibria
+$INFODETAILS$
+
+$PARAMETERVALUES$
+
+out=$DEPENDENTVAR$($STATECOORD$,:);

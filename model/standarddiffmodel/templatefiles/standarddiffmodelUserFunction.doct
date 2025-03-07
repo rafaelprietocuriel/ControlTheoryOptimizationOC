@@ -1,0 +1,20 @@
+//
+// standarddiffmodelUserFunction.oct
+//
+
+function out=$MODELNAME$UserFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% the output of this file is called by userfunction(ocObj,ocElement)
+$INFODETAILS$
+
+$PARAMETERVALUES$
+
+%$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $CONSTRAINTNUM$!
+%[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+!IF $EXOGENOUSFUNCTIONNUM$!
+%$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+out=[];

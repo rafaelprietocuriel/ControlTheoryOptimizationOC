@@ -1,0 +1,22 @@
+//
+// impulsemodelUserAdmissible.oct
+//
+
+function out=$MODELNAME$UserAdmissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% in this file the user can specify admissibility conditions, e.g., non-negative states.
+% These conditions can be used during the query for admissible equilibria
+$INFODETAILS$
+
+$PARAMETERVALUES$
+
+%$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!IF $CONSTRAINTNUM$!
+%[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+!ENDIF!
+!IF $EXOGENOUSFUNCTIONNUM$!
+%$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+
+out=[$DEPENDENTVAR$($STATECOORD$,:)];

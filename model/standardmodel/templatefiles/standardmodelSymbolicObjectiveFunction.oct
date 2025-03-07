@@ -1,0 +1,16 @@
+//
+// standardmodelSymbolicObjectiveFunction.oct
+//
+function out=$MODELNAME$SymbolicObjectiveFunction($ARCVAR$,$SUBSFLAG$)
+% returns the objective function
+$INFODETAILS$
+	
+$SYMBOLICDISCOBJECTIVEFUNCTION$
+	
+if $SUBSFLAG$
+	$CONTROL$=$MODELNAME$SymbolicOptimalControl($ARCVAR$);
+!IF $CONSTRAINTNUM$!
+	[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$SymbolicLagrangeMultiplier($ARCVAR$);
+!ENDIF!
+	$CONTROLVALUESUBSTITUTION$
+end

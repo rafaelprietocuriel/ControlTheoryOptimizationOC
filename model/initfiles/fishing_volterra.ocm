@@ -1,0 +1,40 @@
+Type
+standardmodel
+
+Modelname
+fishing_volterra
+
+Description
+a benchmark problem
+
+Variable
+state::x0,x1
+control::w
+
+Statedynamics
+ode::Dx0=a*x0+b*x0*x1-c0*x0*w
+ode::Dx1=c*x1+d*x0*x1-c1*x1*w
+
+Objective
+int::-(x0+c/d)^2-(x1+a/b)^2-epsilon*w^2
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::w>=wmin
+CC2::ineq::w<=wmax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0
+a::1
+b::-1
+c::-1
+d:: 1
+c0::0.4
+c1::0.2
+epsilon::0
+wmin::0
+wmax::1

@@ -1,0 +1,5 @@
+function out=$MODELNAME$SymbolicImpulseHamiltonian($ARCVAR$,$SUBSFLAG$)
+% returns the Impulse Hamiltonian function for $MODELNAME$
+$INFODETAILS$
+	
+$SYMBOLICIMPULSEPONTRYAGINFUNCTION$

@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Description
+The uncontrolled fishery model with fish
+
+Variable
+state::F,p
+
+Dynamics
+ode::DF=sigma*F*(1-F/(m*A))-p/(C+tau)*(F^theta1/(1+F^theta2))-eta*F*h
+ode::Dp=epsilon*p
+
+Parameter
+m::10
+tau::0.25
+C::1
+A::1
+theta1::2
+theta2::2
+sigma::1
+eta::1
+h::0
+epsilon::0

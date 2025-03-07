@@ -1,0 +1,62 @@
+Type
+standardmodel
+
+Modelname
+justcoaltoy
+
+% production function
+% YI=K1^alpha*w^beta
+%
+% pollution function
+% P=phiC*K1+w+HC
+%
+% electricity
+% E=K2
+%
+% governmental expenditures
+% G=YI-c1*I1^2-c2*I2^2
+%
+% social welfare function
+% G^alpha1*P^alpha4
+
+Variable
+state::K
+control::I,w
+
+Statedynamics
+ode::DK=I-delta*K
+
+Objective
+int::(K^alpha*w^beta-c*I^2)^alpha1*(w+HC)^(-alpha4)
+
+
+Salvagevalue
+func::tau*K
+
+Controlconstraint
+CC1::ineq::I>=I0
+
+Optimization
+type::max
+method::bvp
+
+ArcDefinition
+0::[]
+1::CC1
+
+Control
+0::*::implicit
+1::I::explicit
+1::w::implicit
+
+Parameter
+r::0.03
+alpha::0.2
+alpha1::1
+alpha4::2
+beta::0.5
+delta::0.05 % 5-40%
+c::10 % 10-150 USD/T/y
+I0::0
+tau::0
+HC::5e2

@@ -1,0 +1,32 @@
+Type
+odemodel
+
+Modelname
+sir0
+
+Description
+basic SIR model with demography and vaccination, immunization hethcote1978
+
+Variable
+state::S,I,R
+
+Dynamics
+ode::DS=A+nu*(1-phi)*(S+I+R)-beta*S*I/(S+I+R)-mu*S-theta*S-v+epsilon*R
+ode::DI=beta*S*I/(S+I+R)-(alpha+mu+muI)*I
+ode::DR=alpha*I-mu*R+theta*S-epsilon*R+phi*(S+I+R)*nu+v
+
+Parameter
+alpha::1/15
+beta::0.2
+mu::0
+nu::0
+muI::0
+A::0
+theta::0
+epsilon::0
+phi::0
+v::0
+
+%beta corresponds to lambda
+%alpha corresponds to gamma
+%v is the vaccination rate of the susceptibles

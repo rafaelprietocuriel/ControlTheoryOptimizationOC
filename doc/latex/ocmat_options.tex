@@ -1,0 +1,128 @@
+For many calculations it is necessary to include the possibility to specify options that determine the quality and the run-time of the results. In order to be able to easily access the options, \OCMAT\ provides several functions to make the option-handling as easy as possible. All of the available options can be accessed through a basic option structure. This structure consists of several fields (categories) containing different structures containing concrete options and their value needed for certain functions.
+\section{\texorpdfstring{\lstinline+INIT+}{INIT}}
+\label{sec:options_opts_init}
+The category \lstinline+INIT+ contains options required during the model initialization process. The available options are
+
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\textbf{Name} & \textbf{Default Value} & \textbf{Description}\\\hline
+\lstinline+Simplify+  &  \lstinline+'n'+   & Simplifies symbolic terms during model initialization.\\
+%\lstinline+Jacobian+  &  \lstinline+'explicit'+   &\\
+%\lstinline+ControlDynamics+  &  \lstinline+'explicit'+   &\\
+%\lstinline+ParameterJacobian+  &  \lstinline+'explicit'+   &\\
+%\lstinline+Force+  &  \lstinline+'off'+   &\\
+\lstinline+MessageDisplay+  &  \lstinline+'off'+   & Displays messages during model initialization process.\\
+\lstinline+TestConsistency+  &  \lstinline+'on'+   & Tests the formal consistency of the model initialization file.\\
+\hline
+\end{tabularx}
+
+\section{\texorpdfstring{\lstinline+OCCONTARG+}{OCCONTARG}}
+\label{sec:options_opts_occontarg}
+
+The category \lstinline+OCCONTARG+ contains the options for the continuation process.
+
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\textbf{Name} & \textbf{Default Value} & \textbf{Description}\\\hline
+\lstinline+Increment+ & \lstinline+1e-5+ & Increment for numerical derivations.\\ 
+%\lstinline+MaxCorrIters+ & \lstinline+10+ & \\ 
+\lstinline+MaxTestIters+ & \lstinline+10+ & Maximum number of iterations for test functions. (\lstinline+bvpcont+)\\ 
+%\lstinline+FunTolerance+ & \lstinline+1e-6+ & \\ 
+\lstinline+VarTolerance+ & \lstinline+1e-6+ & Distance tolerance. \\ 
+\lstinline+MaxContinuationSteps+ & \lstinline+300+ &  Maximum number of continuation steps.\\ 
+\lstinline+TestTolerance+ & \lstinline+1e-5+ & Deviation tolerance from zero.\\ 
+\lstinline+Singularities+ & \lstinline+0+ & Test for singularities.\\ 
+\lstinline+Backward+ & \lstinline+0+ & Start continuation: (0) direction of tangent, (1) opposite direction of tangent.\\ 
+\lstinline+InitStepWidth+ & \lstinline+0.0100+ & Initial step width of continuation.\\ 
+\lstinline+MaxStepWidth+ & \lstinline+0.1000+ & Maximum step width of continuation. \\ 
+\lstinline+MinStepWidth+ & \lstinline+1e-5+ &  Minimum step width of continuation.\\ 
+\lstinline+IncreaseFactor+ & \lstinline+1.3000+ & Factor for the increase of the step width.\\ 
+\lstinline+DecreaseFactor+ & \lstinline+0.5000+ & Factor for the decrease of the step width. \\ 
+\lstinline+ContinuationMethod+ & \lstinline+1+ &  Type of continuation algorithm: (0) pseudo-arclength, (1) Moore-Penrose\\ 
+\lstinline+WorkSpace+ & \lstinline+0+ & \\ 
+\lstinline+HitTargetValue+ & \lstinline+1+ & Tests (1) if user provided target value is hit, (0) no check for target value.\\ 
+\lstinline+CheckAngle+ & \lstinline+0.9000+ & Maximum angle between tangents of two consecutive continuation steps.\\ 
+\lstinline+CheckStep+ & \lstinline+3+ & Continuation step to start angle check. \\ 
+\lstinline+SaveIntermediate+ & \lstinline+'on'+ & Save results during continuation process \lstinline+'on'+ or \lstinline+'off'+.\\ 
+\lstinline+PrintContStats+ & \lstinline+'on'+ & Display information about continuation process at command window \lstinline+'on'+ or \lstinline+'off'+.\\ 
+\lstinline+PlotCont+ & \lstinline+'on'+ & Plot result of continuation process \lstinline+'on'+ or \lstinline+'off'+.\\ 
+\lstinline+IgnoreSingularity+ & \lstinline+[]+ & \\ 
+\lstinline+ExitOnTargetValue+ & \lstinline+'on'+ & Exit (1) if user provided target value is hit, (0) no exit.\\ 
+\lstinline+Locators+ & \lstinline+[]+ & \\ 
+\lstinline+Userfunctions+ & \lstinline+0+ & \\ 
+\lstinline+CheckAdmissibility+ & \lstinline+'on'+ & Check admissibility of solution during continuation process \lstinline+'on'+ or \lstinline+'off'+.\\ 
+\lstinline+Adapt+ & \lstinline+3+ & Number of steps after which model specific adapt function is called.\\ 
+\lstinline+TotalRelativeDistance+ & \lstinline+1+ & \\ 
+\hline
+\end{tabularx}
+
+\section{\texorpdfstring{\lstinline+GENERAL+}{GENERAL}}
+\label{sec:options_opts_general}
+
+The category \lstinline+GENERAL+ contains general options for \OCMAT.
+
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\textbf{Name} & \textbf{Default Value} & \textbf{Description}\\\hline
+\lstinline+BVPMethod+ & \lstinline+'bvp4c'+ & Possible \BVP\ methods are: \lstinline+'bvp4c'+, \lstinline+'bvp5c'+, \lstinline+'bvp6c'+.\\ 
+\lstinline+ODESolver+ & \lstinline+'ode45'+ & A native \MATL\ \ODE\ solver or user defined \ODE\ solver.\\ 
+\lstinline+NewtonSolver+ & \lstinline+'newtcorr4bvp'+ & The used Newton algorithm for a continuation step.\\ 
+\lstinline+EquationSolver+ & \lstinline+'fsolve'+ & The numerical solver for the calculation of equilibria.\\ 
+\lstinline+ZeroDeviationTolerance+ & \lstinline+1e-6+ & Tolerance for the deviation from zero.\\ 
+\lstinline+AdmissibleTolerance+ & \lstinline+1e-6+ & Tolerance for admissibility.\\ 
+\lstinline+ImaginaryTolerance+ & \lstinline+1e-010+ & Smaller imaginary parts are set to zero.\\ 
+\lstinline+TrivialArcMeshNum+ & \lstinline+40+ & Number of discretization points for limitset solutions (equilibrium, periodic solution).\\ 
+\lstinline+MultiPointBVP+ & \lstinline+'on'+ & If the used \BVP\ solver allow multi-point \BVPs, otherwise multi-point problems are transformed to two-point problems.\\ 
+\hline
+\end{tabularx}
+
+\section{\texorpdfstring{\lstinline+NEWTON+}{NEWTON}}
+\label{sec:options_opts_newton}
+
+The category \lstinline+NEWTON+ contains options used for the used Newton solver for the continuation process.
+
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\textbf{Name} & \textbf{Default Value} & \textbf{Description}\\\hline
+\lstinline+MaxNewtonIters+ & \lstinline+4+ & Maximum number of Newton iterations.\\ 
+\lstinline+MaxProbes+ & \lstinline+4+ & Maximum iteration numbers of weak line search step.\\ 
+\lstinline+AbsTol+ & \lstinline+1e-3+ & Maximum value of the absolute tolerance for the norm of the coefficient in the Newton step. \\ 
+%\lstinline+RelTol+ & \lstinline+1e-3+ & \\ 
+%\lstinline+Display+ & \lstinline+''+ & \\ 
+%\lstinline+TRM+ & \lstinline+0+ & \\ 
+%\lstinline+Log+ & \lstinline+0+ & \\ 
+%\lstinline+LambdaMin+ & \lstinline+1e-3+ & \\ 
+%\lstinline+UpdateJacFactor+ & \lstinline+0.5000+ & \\ 
+%\lstinline+SwitchToFFNFactor+ & \lstinline+0.5000+ & \\ 
+\hline
+\end{tabularx}
+
+\section{\texorpdfstring{\lstinline+SBVPOC+}{SBVPOC}}
+\label{sec:options_opts_sbvpoc}
+
+The category \lstinline+SBVPOC+ contains options specifically for the \BVP\ solver.
+
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\textbf{Name} & \textbf{Default Value} & \textbf{Description}\\\hline
+\lstinline+MeshAdaptation+ & \lstinline+'on'+ & Sets the mesh adaptation of the BVP solver 'on' or 'off'.\\ 
+\lstinline+MeshAdaptAbsTol+ & \lstinline+1e-6+ & The threshold for the mesh adaptation is given by the quotient of the absolute 'MeshAdaptAbsTol' and relative tolerance 'MeshAdaptRelTol'.\\ 
+\lstinline+MeshAdaptRelTol+ & \lstinline+1e-5+ & \\ 
+%\lstinline+MeshAdaptK+ & \lstinline+1000+ & \\ 
+%\lstinline+MeshAdaptN0+ & \lstinline+100+ & \\ 
+%\lstinline+MeshAdaptMaxIter+ & \lstinline+15+ & \\ 
+%\lstinline+MeshAdaptFineMesh+ & \lstinline+1+ & \\ 
+\lstinline+Vectorized+ & \lstinline+'on'+ & The function for the dynamics is vectorized ('on'), or not vectorized ('off').\\ 
+\lstinline+NMax+ & \lstinline+1000+ & Maximum number of grid points of the BVP solution.\\ 
+\lstinline+MaxNewPts+ & \lstinline+2+ & Maximum number of points that can be added during mesh adaptation per time interval.\\ 
+\lstinline+FJacobian+ & \lstinline+1+ & Computes the function derivatives by user provided analytical expressions (1), numerical approximation (0)\\ 
+\lstinline+BCJacobian+ & \lstinline+1+ & Computes the derivatives of the boundary conditions by user provided analytical expressions (1), numerical approximation (0)\\ 
+%\lstinline+residualReductionGuard+ & \lstinline+1e-3+ & \\ 
+\hline
+\end{tabularx}
+
+\section{\texorpdfstring{\lstinline+ODE+, \lstinline+BVP+, \lstinline+EP+}{\ODE, \BVP, EP}}
+\label{sec:options_opts_odebvpep}
+
+See \MATL-Help \lstinline+odeset+, \lstinline+bvpset+ and \lstinline+optimset+ (optimization toolbox required)
+
+
+\section{\texorpdfstring{\lstinline+MATCONT+}{MATCONT}}
+\label{sec:options_opts_matcont}
+
+See \MATCONT-help to learn more about the option structure created with \lstinline+contset+. \MATCONT\ can be downloaded from \httpMATCONT

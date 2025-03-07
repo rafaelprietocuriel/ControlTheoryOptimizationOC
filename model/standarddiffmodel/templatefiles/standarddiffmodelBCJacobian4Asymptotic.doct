@@ -1,0 +1,21 @@
+//
+// standarddiffmodelBCJacobian4Asymptotic.oct
+//
+function [Ja Jb Jpar]=$MODELNAME$BCJacobian4Asymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint)
+$INFODETAILS$
+Ja=[];
+Jb=[];
+Jpar=[];
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERALGEBRAICEQUATION$
+		if size(asymptoticmatrix,1)==$STATENUM$
+			Ja=$ZEROSNTIMESNUMEQ$
+			Jb=$ZEROSNTIMESNUMEQ$
+			Jb(:,$STATECOSTATECOORD$)=asymptoticmatrix(:,$STATECOSTATECOORD$);
+		else
+		end
+	
+!ENDADDARCCASE!
+end

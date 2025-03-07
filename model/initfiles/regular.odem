@@ -1,0 +1,21 @@
+Type
+odemodel
+
+Modelname
+regular
+
+Description
+regularization of 1/K
+
+Variable
+state::K,s
+
+Dynamics
+ode::DK=-delta*K^2+a*K-d
+ode::Ds=K*t
+
+
+Parameter
+a::1
+delta::0.1
+d::1

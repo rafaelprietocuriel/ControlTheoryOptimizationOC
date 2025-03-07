@@ -1,0 +1,11 @@
+//
+// standardmodelVariationalJacobian.oct
+//
+function out=$MODELNAME$VariationalJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the value of the jacobian of the variatonal dynamics
+$INFODETAILS$
+	
+	
+numJacOpt.diffvar=2;
+numJacOpt.vectvars=[];
+out=numjaccsd(@$MODELNAME$VariationalDynamics,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$},$STATECOSTATENUM$,numJacOpt);

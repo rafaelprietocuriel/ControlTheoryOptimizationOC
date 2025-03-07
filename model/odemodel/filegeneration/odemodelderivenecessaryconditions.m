@@ -1,0 +1,2 @@
+function ocStruct=odemodelderivenecessaryconditions(ocStruct,symkernel,opt)
+return

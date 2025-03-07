@@ -1,0 +1,35 @@
+//
+// ppdemodelNonspatialOptimalControl.opdt
+//
+function out=$MODELNAME$NonspatialOptimalControl($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+% returns the nonspatial optimal control values for $MODELNAME$
+% the control values are constantly returned on each spatial grid point
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$DEPENDENTVAR$=$DEPENDENTVARMIDV$;
+$SPACE$=$FEMDATAGRID$;
+$SPACEMID$=$FEMDATAGRIDMID$;
+d$SPACE$=diff($SPACE$);
+% $SPACE$=($SPACE$(1:end-1)+$SPACE$(2:end))*0.5;
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$FEMDATA$.gridmid=$SPACEMID$;
+$FEMDATA$.gridnumm1=$FEMDATAGRIDNUMM1$;
+	
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!ENDIF!
+$FEMDATA$.gridnum=$FEMDATA$.gridnum-1;
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$NONSPATIALOPTIMALCONTROLVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$NONSPATIALOPTIMALCONTROLVALUE$
+!ENDIF!

@@ -1,0 +1,59 @@
+//
+// standarddiffmodelLagrangeMultiplier
+//
+function [$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Lagrangian multipliers for inequality constraints for $MODELNAME$
+$INFODETAILS$
+	
+$LAGRANGEMULTCC$=$MODELNAME$ControlLagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+$LAGRANGEMULTSC$=$MODELNAME$StateLagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%-------------------------------------------------------------------------
+function out=$MODELNAME$ControlLagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Lagrangian multipliers for (mixed) control inequality constraints for $MODELNAME$
+	
+$PARAMETERVALUES$
+	
+!IF $CONTROLCONSTRAINTNUM$!
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERLAGRANGEMULTIPLIER$
+		$CONTROLLAGRANGEMULTIPLIER$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!ENDIF!
+!IF ~$CONTROLCONSTRAINTNUM$!
+out=[];
+!ENDIF!
+	
+	
+%-------------------------------------------------------------------------
+function out=$MODELNAME$StateLagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Lagrangian multipliers for pure state inequality constraints for $MODELNAME$
+	
+$PARAMETERVALUES$
+	
+!IF $STATECONSTRAINTNUM$!
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERLAGRANGEMULTIPLIER$
+		$STATELAGRANGEMULTIPLIER$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!ENDIF!
+!IF ~$STATECONSTRAINTNUM$!
+out=[];
+!ENDIF!

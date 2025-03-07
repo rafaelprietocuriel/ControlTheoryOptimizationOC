@@ -1,0 +1,13 @@
+//
+// impulsemodelSymbolicImpulseObjectiveFunction.oct
+//
+function out=$MODELNAME$SymbolicImpulseObjectiveFunction($JUMPVAR$,$SUBSFLAG$)
+% returns the objective function
+$INFODETAILS$
+	
+$SYMBOLICDISCIMPULSEOBJECTIVEFUNCTION$
+	
+if $SUBSFLAG$
+	$IMPULSECONTROL$=$MODELNAME$SymbolicOptimalImpulseControl($JUMPVAR$);
+	$IMPULSECONTROLVALUESUBSTITUTION$
+end

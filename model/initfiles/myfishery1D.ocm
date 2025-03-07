@@ -1,0 +1,36 @@
+Type
+standardmodel
+
+Modelname
+myfishery1D
+
+Description
+1D fishery model, Anne-Sophie Crepin
+
+Variable
+state::F % fish population
+control::h % harvest effort
+
+Statedynamics
+ode::DF=F*(1-F/A)-1/C*(F^2/(1+F^2))-h*F
+
+Objective
+int::p*h*F-h^2
+
+Controlconstraint
+CC::ineq::h>=hlow
+
+Salvagevalue
+func::s*F
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.03
+A::6
+p::1
+C::0.65
+hlow::0
+s::0

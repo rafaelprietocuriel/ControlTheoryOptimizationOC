@@ -1,0 +1,49 @@
+//
+// ppdemodelCanonicalSystem.opdt
+//
+// Template file for the canonical system of a spatially distributed model
+// this file is used for the automatic file generation
+// empty lines and lines starting with // are ignored 
+// terms between $...$ are variables which are replaced during file generation
+// terms between !...! are commands for the file generation, possible commands are 
+// !IF ...!,!ENDIF! ... corresponds to a usual if clause
+// !STARTADDARCCASE!,!ENDADDARCCASE!, lines between these commands are repeated in a 
+// switch case statement for any specific arc
+// a tabulator is interpreted as an empty line in the corresponding generated file
+function out=$MODELNAME$CanonicalSystem($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+% returns the canonical systems dynamics
+% it has to be taken care that an explicit spatial variable is of the correct size, e.g.
+% z -> repmat(z,1,size(depvar,2))
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $ISEXPLICITSPATIAL$!
+$SPACE$=$FEMDATAGRID$;
+	
+!ENDIF!
+!IF $EXISTSPATIALCONTROL$ && $EXISTNONSPATIALCONTROL$!
+$SPATIALCONTROL$=$MODELNAME$OptimalControl($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+$NONSPATIALCONTROL$=$MODELNAME$NonspatialOptimalControl($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+$CONTROL$=[$SPATIALCONTROL$;$NONSPATIALCONTROL$];
+	
+!ENDIF!
+!IF $EXISTSPATIALCONTROL$ && ~$EXISTNONSPATIALCONTROL$!
+$CONTROL$=$MODELNAME$OptimalControl($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!ENDIF!
+!IF ~$EXISTSPATIALCONTROL$ && $EXISTNONSPATIALCONTROL$!
+$CONTROL$=$MODELNAME$NonspatialOptimalControl($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!ENDIF!
+!IF $CONSTRAINTNUM$!
+$LAGRANGEMULTCC$=$MODELNAME$LagrangeMultiplier($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!ENDIF!
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$);
+	
+!ENDIF!
+$CANONICALSYSTEMDYNAMICS$
+	
+out=out+$FEMDATAINVMK$*$DEPENDENTVAR$($STATECOSTATECOORD$,:);

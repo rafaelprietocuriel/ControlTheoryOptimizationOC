@@ -1,0 +1,17 @@
+Type
+odemodel
+
+Description
+Lanchester Model
+
+Variable
+state::I0,I1
+
+Dynamics
+ode::DI0=-y1*I1
+ode::DI1=-y0*I0
+
+
+Parameter
+y0::0.5
+y1::0.5

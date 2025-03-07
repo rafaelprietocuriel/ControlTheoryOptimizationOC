@@ -1,0 +1,32 @@
+Type
+standardmodel
+
+Description
+Are we addicted to love? A parsimonious economic model of love, Foster, Pingl and Yang (2019)
+
+Modelname
+addict2lovesubst
+
+Variable
+state::x
+control::E
+
+Statedynamics
+ode::Dx=b0+b1*log(E)-r1*x-r2/(x+tau)
+
+Objective
+expdisc::rho
+int::beta*x+alpha*(W-E)
+
+
+Parameter
+rho::0.1
+alpha::1
+beta::1
+b0::1
+b1::1
+r1::0.1
+r2::1
+W::10
+tau::0
+%r=0.1, a=1, b=1, c=53, d=1, f=0.001, mu=0.2

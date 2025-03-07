@@ -1,0 +1,12 @@
+//
+// standardmodelObjectiveFunctionParameterJacobianDAE.oct
+//
+function out=$MODELNAME$ObjectiveFunctionParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the Japcobian with respect to the parameters of the objective function for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$);
+	
+$OBJECTIVEFUNCTIONPARAMETERJACOBIANDAE$

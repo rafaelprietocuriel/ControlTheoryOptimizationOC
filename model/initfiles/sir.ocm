@@ -1,0 +1,51 @@
+Type
+standardmodel
+
+Modelname
+sir
+
+Description
+epidemic SIR model with optimal vaccination
+
+Variable
+state::S,I,R
+control::u
+
+Statedynamics
+ode::DS=mu*(S+I+R)-beta*S*I/(S+I+R)-(u*sigma+delta)*S
+ode::DI=beta*S*I/(S+I+R)-(alpha+delta+deltaI)*I
+ode::DR=alpha*I+u*sigma*S-delta*R
+
+
+Objective
+int::-B*I-C/2*u^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0
+alpha::0.05
+beta::0.2
+sigma::0.5
+mu::0
+delta::0
+deltaI::0
+B::1
+C::1
+umin::0
+umax::0.9
+
+% S: Susceptible individuals;
+% E: Asymptomatic individuals who have been exposed to the virus but have not yet developed clinical symptoms of SARS
+% Q: Quarantined individuals;
+% I: Symptomatic individuals;
+% J: Isolated individuals;
+% R: Recovered individuals; 

@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Description
+shallow lake model
+
+Modelname
+shallowlakelineelliptic
+
+Variable
+state::P1,P,lambda1,lambda
+
+Dynamics
+ode::DP=P1
+ode::DP1=(1/lambda1+b*P-P^2/(1+P^2))/D
+ode::Dlambda=lambda1
+ode::Dlambda1=rho*lambda+2*c*P-lambda*(-b+2*P/(1+P^2)^2)
+
+
+Parameter
+rho::0.03
+b::0.65
+c::0.5
+D::0.5

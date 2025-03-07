@@ -1,0 +1,29 @@
+Type
+odemodel
+
+Modelname
+harvestcompIIfixc
+
+Description
+harvest model
+
+Variable
+state::v1,v2
+
+Dynamics
+ode::Dv1 =tau+(n1-beta11*v1-beta21*v2)*v1-k*v1*k1
+ode::Dv2 =tau+(n2-beta22*v2-beta12*v1)*v2-k*v2*k2
+
+
+
+Parameter
+beta11::0.8
+beta21::1
+beta12::1
+beta22::0.5
+n1::1
+n2::1
+k::1
+k1::0
+k2::0
+tau::0

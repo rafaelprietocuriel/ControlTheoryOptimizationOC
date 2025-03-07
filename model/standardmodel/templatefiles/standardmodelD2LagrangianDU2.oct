@@ -1,0 +1,31 @@
+//
+// standardmodelD2LagrangianDU2.oct
+//
+function [out,coord]=$MODELNAME$D2LagrangianDU2($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$D2LAGRANGIANDU2 returns the Hessian of the Lagrangefunction with respect to the implicit
+% controls.
+%
+% LU2=$UPPERMODELNAME$D2LAGRANGIANDU2($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) let m=#implicit controls
+% n=#time grid, then LU2 is of size m*m x n.
+%
+% [LU2,COORD]=$UPPERMODELNAME$D2LAGRANGIANDU2($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) argument COORD returns the
+% index of the implicit control.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$D2LAGRANGIANDU2$
+		coord=$IMPLICITINDEX$;
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$D2LAGRANGIANDU2$
+coord=$IMPLICITINDEX$;
+!ENDIF!

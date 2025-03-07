@@ -1,0 +1,58 @@
+Type
+standardmodel
+
+Variable
+state::Px0,Px1,Px2,Px3,Px4,Px5,Px6,Px7,Px8,Px9,Px10,Px11,Px12,Px13,Px14,Px15,Px16,Px17,Px18,Px19,Px20,Px21,Px22,Px23,Px24,Px25,Px26,Px27,Px28,Px29,Px30,Px31
+control::u
+
+Statedynamics
+ode::DPx0 = 1/2*(-2*b*Px0*L^2*delta*m^q-2*b*Px0^(1+q)*L^2*delta+2*r*Px0^q*L^2*delta+D*N*u*m^q+D*N*u*Px0^q-D*N*Px0*m^q-D*N*Px0^(1+q)+D*N^2*Px1*delta*m^q+D*N^2*Px1*delta*Px0^q-D*N^2*Px0*delta*m^q-D*N^2*Px0^(1+q)*delta)/(m^q+Px0^q)/L^2/delta
+ode::DPx1 = -1/4*(4*b*Px1*L^2*m^q+4*b*Px1^(1+q)*L^2-4*r*Px1^q*L^2-D*N^2*Px0*m^q-D*N^2*Px0*Px1^q+2*D*N^2*Px1*m^q+2*D*N^2*Px1^(1+q)-D*N^2*Px2*m^q-D*N^2*Px2*Px1^q)/(m^q+Px1^q)/L^2
+ode::DPx2 = -1/4*(4*b*Px2*L^2*m^q+4*b*Px2^(1+q)*L^2-4*r*Px2^q*L^2-D*N^2*Px1*m^q-D*N^2*Px1*Px2^q+2*D*N^2*Px2*m^q+2*D*N^2*Px2^(1+q)-D*N^2*Px3*m^q-D*N^2*Px3*Px2^q)/(m^q+Px2^q)/L^2
+ode::DPx3 = -1/4*(4*b*Px3*L^2*m^q+4*b*Px3^(1+q)*L^2-4*r*Px3^q*L^2-D*N^2*Px2*m^q-D*N^2*Px2*Px3^q+2*D*N^2*Px3*m^q+2*D*N^2*Px3^(1+q)-D*N^2*Px4*m^q-D*N^2*Px4*Px3^q)/(m^q+Px3^q)/L^2
+ode::DPx4 = -1/4*(4*b*Px4*L^2*m^q+4*b*Px4^(1+q)*L^2-4*r*Px4^q*L^2-D*N^2*Px3*m^q-D*N^2*Px3*Px4^q+2*D*N^2*Px4*m^q+2*D*N^2*Px4^(1+q)-D*N^2*Px5*m^q-D*N^2*Px5*Px4^q)/(m^q+Px4^q)/L^2
+ode::DPx5 = -1/4*(4*b*Px5*L^2*m^q+4*b*Px5^(1+q)*L^2-4*r*Px5^q*L^2-D*N^2*Px4*m^q-D*N^2*Px4*Px5^q+2*D*N^2*Px5*m^q+2*D*N^2*Px5^(1+q)-D*N^2*Px6*m^q-D*N^2*Px6*Px5^q)/L^2/(m^q+Px5^q)
+ode::DPx6 = -1/4*(4*b*Px6*L^2*m^q+4*b*Px6^(1+q)*L^2-4*r*Px6^q*L^2-D*N^2*Px5*m^q-D*N^2*Px5*Px6^q+2*D*N^2*Px6*m^q+2*D*N^2*Px6^(1+q)-D*N^2*Px7*m^q-D*N^2*Px7*Px6^q)/(m^q+Px6^q)/L^2
+ode::DPx7 = -1/4*(4*b*Px7*L^2*m^q+4*b*Px7^(1+q)*L^2-4*r*Px7^q*L^2-D*N^2*Px6*m^q-D*N^2*Px6*Px7^q+2*D*N^2*Px7*m^q+2*D*N^2*Px7^(1+q)-D*N^2*Px8*m^q-D*N^2*Px8*Px7^q)/(m^q+Px7^q)/L^2
+ode::DPx8 = -1/4*(4*b*Px8*L^2*m^q+4*b*Px8^(1+q)*L^2-4*r*Px8^q*L^2-D*N^2*Px7*m^q-D*N^2*Px7*Px8^q+2*D*N^2*Px8*m^q+2*D*N^2*Px8^(1+q)-D*N^2*Px9*m^q-D*N^2*Px9*Px8^q)/(m^q+Px8^q)/L^2
+ode::DPx9 = -1/4*(4*b*Px9*L^2*m^q+4*b*Px9^(1+q)*L^2-4*r*Px9^q*L^2-D*N^2*Px8*m^q-D*N^2*Px8*Px9^q+2*D*N^2*Px9*m^q+2*D*N^2*Px9^(1+q)-D*N^2*Px10*m^q-D*N^2*Px10*Px9^q)/(m^q+Px9^q)/L^2
+ode::DPx10 = -1/4*(4*b*Px10*L^2*m^q+4*b*Px10^(1+q)*L^2-4*r*Px10^q*L^2-D*N^2*Px9*m^q-D*N^2*Px9*Px10^q+2*D*N^2*Px10*m^q+2*D*N^2*Px10^(1+q)-D*N^2*Px11*m^q-D*N^2*Px11*Px10^q)/(m^q+Px10^q)/L^2
+ode::DPx11 = -1/4*(4*b*Px11*L^2*m^q+4*b*Px11^(1+q)*L^2-4*r*Px11^q*L^2-D*N^2*Px10*m^q-D*N^2*Px10*Px11^q+2*D*N^2*Px11*m^q+2*D*N^2*Px11^(1+q)-D*N^2*Px12*m^q-D*N^2*Px12*Px11^q)/(m^q+Px11^q)/L^2
+ode::DPx12 = -1/4*(4*b*Px12*L^2*m^q+4*b*Px12^(1+q)*L^2-4*r*Px12^q*L^2-D*N^2*Px11*m^q-D*N^2*Px11*Px12^q+2*D*N^2*Px12*m^q+2*D*N^2*Px12^(1+q)-D*N^2*Px13*m^q-D*N^2*Px13*Px12^q)/(m^q+Px12^q)/L^2
+ode::DPx13 = -1/4*(4*b*Px13*L^2*m^q+4*b*Px13^(1+q)*L^2-4*r*Px13^q*L^2-D*N^2*Px12*m^q-D*N^2*Px12*Px13^q+2*D*N^2*Px13*m^q+2*D*N^2*Px13^(1+q)-D*N^2*Px14*m^q-D*N^2*Px14*Px13^q)/(m^q+Px13^q)/L^2
+ode::DPx14 = -1/4*(4*b*Px14*L^2*m^q+4*b*Px14^(1+q)*L^2-4*r*Px14^q*L^2-D*N^2*Px13*m^q-D*N^2*Px13*Px14^q+2*D*N^2*Px14*m^q+2*D*N^2*Px14^(1+q)-D*N^2*Px15*m^q-D*N^2*Px15*Px14^q)/L^2/(m^q+Px14^q)
+ode::DPx15 = -1/4*(4*b*Px15*L^2*m^q+4*b*Px15^(1+q)*L^2-4*r*Px15^q*L^2-D*N^2*Px14*m^q-D*N^2*Px14*Px15^q+2*D*N^2*Px15*m^q+2*D*N^2*Px15^(1+q)-D*N^2*Px16*m^q-D*N^2*Px16*Px15^q)/(m^q+Px15^q)/L^2
+ode::DPx16 = -1/4*(4*b*Px16*L^2*m^q+4*b*Px16^(1+q)*L^2-4*r*Px16^q*L^2-D*N^2*Px15*m^q-D*N^2*Px15*Px16^q+2*D*N^2*Px16*m^q+2*D*N^2*Px16^(1+q)-D*N^2*Px17*m^q-D*N^2*Px17*Px16^q)/(m^q+Px16^q)/L^2
+ode::DPx17 = -1/4*(4*b*Px17*L^2*m^q+4*b*Px17^(1+q)*L^2-4*r*Px17^q*L^2-D*N^2*Px16*m^q-D*N^2*Px16*Px17^q+2*D*N^2*Px17*m^q+2*D*N^2*Px17^(1+q)-D*N^2*Px18*m^q-D*N^2*Px18*Px17^q)/(m^q+Px17^q)/L^2
+ode::DPx18 = -1/4*(4*b*Px18*L^2*m^q+4*b*Px18^(1+q)*L^2-4*r*Px18^q*L^2-D*N^2*Px17*m^q-D*N^2*Px17*Px18^q+2*D*N^2*Px18*m^q+2*D*N^2*Px18^(1+q)-D*N^2*Px19*m^q-D*N^2*Px19*Px18^q)/(m^q+Px18^q)/L^2
+ode::DPx19 = -1/4*(4*b*Px19*L^2*m^q+4*b*Px19^(1+q)*L^2-4*r*Px19^q*L^2-D*N^2*Px18*m^q-D*N^2*Px18*Px19^q+2*D*N^2*Px19*m^q+2*D*N^2*Px19^(1+q)-D*N^2*Px20*m^q-D*N^2*Px20*Px19^q)/(m^q+Px19^q)/L^2
+ode::DPx20 = -1/4*(4*b*Px20*L^2*m^q+4*b*Px20^(1+q)*L^2-4*r*Px20^q*L^2-D*N^2*Px19*m^q-D*N^2*Px19*Px20^q+2*D*N^2*Px20*m^q+2*D*N^2*Px20^(1+q)-D*N^2*Px21*m^q-D*N^2*Px21*Px20^q)/(m^q+Px20^q)/L^2
+ode::DPx21 = -1/4*(4*b*Px21*L^2*m^q+4*b*Px21^(1+q)*L^2-4*r*Px21^q*L^2-D*N^2*Px20*m^q-D*N^2*Px20*Px21^q+2*D*N^2*Px21*m^q+2*D*N^2*Px21^(1+q)-D*N^2*Px22*m^q-D*N^2*Px22*Px21^q)/(m^q+Px21^q)/L^2
+ode::DPx22 = -1/4*(4*b*Px22*L^2*m^q+4*b*Px22^(1+q)*L^2-4*r*Px22^q*L^2-D*N^2*Px21*m^q-D*N^2*Px21*Px22^q+2*D*N^2*Px22*m^q+2*D*N^2*Px22^(1+q)-D*N^2*Px23*m^q-D*N^2*Px23*Px22^q)/(m^q+Px22^q)/L^2
+ode::DPx23 = -1/4*(4*b*Px23*L^2*m^q+4*b*Px23^(1+q)*L^2-4*r*Px23^q*L^2-D*N^2*Px22*m^q-D*N^2*Px22*Px23^q+2*D*N^2*Px23*m^q+2*D*N^2*Px23^(1+q)-D*N^2*Px24*m^q-D*N^2*Px24*Px23^q)/L^2/(m^q+Px23^q)
+ode::DPx24 = -1/4*(4*b*Px24*L^2*m^q+4*b*Px24^(1+q)*L^2-4*r*Px24^q*L^2-D*N^2*Px23*m^q-D*N^2*Px23*Px24^q+2*D*N^2*Px24*m^q+2*D*N^2*Px24^(1+q)-D*N^2*Px25*m^q-D*N^2*Px25*Px24^q)/(m^q+Px24^q)/L^2
+ode::DPx25 = -1/4*(4*b*Px25*L^2*m^q+4*b*Px25^(1+q)*L^2-4*r*Px25^q*L^2-D*N^2*Px24*m^q-D*N^2*Px24*Px25^q+2*D*N^2*Px25*m^q+2*D*N^2*Px25^(1+q)-D*N^2*Px26*m^q-D*N^2*Px26*Px25^q)/(m^q+Px25^q)/L^2
+ode::DPx26 = -1/4*(4*b*Px26*L^2*m^q+4*b*Px26^(1+q)*L^2-4*r*Px26^q*L^2-D*N^2*Px25*m^q-D*N^2*Px25*Px26^q+2*D*N^2*Px26*m^q+2*D*N^2*Px26^(1+q)-D*N^2*Px27*m^q-D*N^2*Px27*Px26^q)/(m^q+Px26^q)/L^2
+ode::DPx27 = -1/4*(4*b*Px27*L^2*m^q+4*b*Px27^(1+q)*L^2-4*r*Px27^q*L^2-D*N^2*Px26*m^q-D*N^2*Px26*Px27^q+2*D*N^2*Px27*m^q+2*D*N^2*Px27^(1+q)-D*N^2*Px28*m^q-D*N^2*Px28*Px27^q)/(m^q+Px27^q)/L^2
+ode::DPx28 = -1/4*(4*b*Px28*L^2*m^q+4*b*Px28^(1+q)*L^2-4*r*Px28^q*L^2-D*N^2*Px27*m^q-D*N^2*Px27*Px28^q+2*D*N^2*Px28*m^q+2*D*N^2*Px28^(1+q)-D*N^2*Px29*m^q-D*N^2*Px29*Px28^q)/(m^q+Px28^q)/L^2
+ode::DPx29 = -1/4*(4*b*Px29*L^2*m^q+4*b*Px29^(1+q)*L^2-4*r*Px29^q*L^2-D*N^2*Px28*m^q-D*N^2*Px28*Px29^q+2*D*N^2*Px29*m^q+2*D*N^2*Px29^(1+q)-D*N^2*Px30*m^q-D*N^2*Px30*Px29^q)/(m^q+Px29^q)/L^2
+ode::DPx30 = -1/4*(4*b*Px30*L^2*m^q+4*b*Px30^(1+q)*L^2-4*r*Px30^q*L^2-D*N^2*Px29*m^q-D*N^2*Px29*Px30^q+2*D*N^2*Px30*m^q+2*D*N^2*Px30^(1+q)-D*N^2*Px31*m^q-D*N^2*Px31*Px30^q)/(m^q+Px30^q)/L^2
+ode::DPx31 = -1/2*(2*b*Px31*L^2*m^q+2*b*Px31^(1+q)*L^2-2*r*Px31^q*L^2-D*N^2*Px30*m^q-D*N^2*Px30*Px31^q+D*N^2*Px31*m^q+D*N^2*Px31^(1+q))/(m^q+Px31^q)/L^2
+
+Objective
+expdisc::rho
+int::((-Px1^2-Px2^2-Px3^2-Px4^2-Px5^2-Px6^2-Px7^2-Px8^2-Px9^2-Px10^2-Px11^2-Px12^2-Px13^2-Px14^2-Px19^2-Px21^2-Px22^2-Px23^2-Px20^2-Px24^2-Px25^2-Px26^2-Px27^2-Px28^2-Px30^2-1/2*Px0^2-1/2*Px31^2-Px29^2-Px15^2-Px17^2-Px18^2-Px16^2)*c+a*log(u))
+
+Parameter
+rho::0.03
+a::1
+b::0.56
+c::0.5
+n::1
+r::1
+m::1
+q::2
+delta::1
+D::1
+L::10
+N::31

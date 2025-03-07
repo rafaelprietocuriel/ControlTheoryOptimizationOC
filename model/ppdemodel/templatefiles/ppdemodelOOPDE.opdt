@@ -1,0 +1,42 @@
+//
+// ppdemodelOOPDE.opdt
+//
+
+classdef $MODELNAME$OOPDE < pde
+% Class to return the finite element matrices of $MODELNAME$ using OOPDE.
+%
+% OOPDE provides a class library for solving partial differential equation in Matlab using finite elements. 
+% see http://www.mathe.tu-freiberg.de/nmo/mitarbeiter/uwe-pruefert/oopde
+$INFODETAILS$
+	
+	methods(Access = protected)
+		function val = df()
+			% this function is only included for compatibility reasons.
+			val = [];
+		end
+	end
+	methods(Access = public)
+		function initialize($OOPDEOBJ$,$PARVAR$,$FEMDATA$)
+			% Boundary conditions:
+			% We assume that all BCs are homogeneous Neumann.
+			$PARAMETERVALUES$
+	
+			$OOPDEOBJ$.grid=Interval(linspace($LEFTINTERVALLIMIT$,$RIGHTINTERVALLIMIT$,$FEMDATAGRIDNUM$));
+			$OOPDEOBJ$.fem=Lagrange11D;
+	
+			% Assemble stiffness matrix
+			[K,~,~]=$OOPDEOBJ$.fem.assema($OOPDEOBJ$.grid,1,1,0);
+	
+			$KRONECKERMASSMATRIXDEFINITION$
+	
+			% Mass matrix to evaluate the nonlinearity
+			$OOPDEOBJ$.M=kron($KRONECKERMASSMATRIX$,$OOPDEOBJ$.mass);
+	
+			% Diffusion matrix of the finite element approximation
+			$KRONECKERDIFFUSIONMATRIXDEFINITION$
+			$OOPDEOBJ$.A=-kron($KRONECKERDIFFUSIONMATRIX$,K);
+	
+		end 
+	end
+end
+

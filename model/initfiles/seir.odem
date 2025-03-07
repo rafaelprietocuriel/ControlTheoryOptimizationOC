@@ -1,0 +1,27 @@
+Type
+odemodel
+
+Modelname
+seir
+
+Description
+Global analysis of an SEIR model
+
+Variable
+state::E,I,S,R
+
+Dynamics
+ode::DE=beta*S*(I+epsilon*E)/(S+I+E+R)-(kappa+mu)*E
+ode::DI=kappa*E-(alpha+mu+muI)*I
+ode::DS=nu*(S+I+E+R)-beta*S*(I+epsilon*E)/(S+I+E+R)-mu*S
+ode::DR=alpha*I-mu*R
+
+
+Parameter
+alpha::1/9
+beta::1/5
+nu::0
+mu::0
+muI::0
+kappa::1/7.2
+epsilon::0.75

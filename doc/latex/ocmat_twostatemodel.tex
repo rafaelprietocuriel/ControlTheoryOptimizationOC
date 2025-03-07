@@ -1,0 +1,938 @@
+The example model for a two-state model is a fishery model (\FM). 
+\begin{subequations}
+\label{eq:harvest2D}
+\begin{align}
+& \max_{h(\cdot)}\int_0^\infty\E^{-rt}\left(ph(t)F(t)-\varphi h(t)^2\right)\,\Dt\label{eq:harvest2D1}\\
+\text{s.t.}\quad & \dot{F}(t)=\sigma F(t)\left(1-\frac{F(t)}{A(t)}\right)-\frac{1}{C}\frac{F(t)^2}{1+F(t)^2}-h(t)F(t),\quad t\ge0\label{eq:harvest2D2}\\
+&\dot{A}(t)=\varepsilon(n-dA(t)-eA(t)F(t))\label{eq:harvest2D3}\\
+&h(t)\ge0,\quad t\ge0\label{eq:harvest2D4}\\
+\text{with}\quad & F(0) = F_0>0,\ A(0)=A_0>0.\label{eq:harvest2D5}
+\end{align}
+\end{subequations}
+Model \cref{eq:harvest2D} consists of two states $F$ (fish), $A$ (algae) and one control $h$ (harvesting) and is member of the class of models \cref{eq:simple_simple_opt_pro}. 
+
+Model \FM\ is a simplified version of the following three-state model (\CRM) presented in \citet{crepin2007}.
+\begin{subequations}
+\label{eq:harvest3D}
+\begin{align}
+& \max_{h(\cdot)}\int_0^\infty\E^{-rt}\left(ph(t)F(t)-\varphi h(t)^2+\mu C(t)\right)\,\Dt\label{eq:harvest3D1}\\
+\text{s.t.}\quad & \varepsilon\dot{F}(t)=\sigma F(t)\left(1-\frac{F(t)}{A(t)}\right)-\frac{\gamma}{C(t)+\tau}\frac{F(t)^{\theta_1}}{1+F(t)^{\theta_2}}-\eta h(t)F(t),\quad t\ge0\label{eq:harvest3D2}\\
+&\varepsilon\dot{A}(t)=n-dA(t)-eA(t)F(t)\label{eq:harvest3D3}\\
+&\dot{C}(t)=\frac{\psi C}{\kappa C+sA+w}-lC\label{eq:harvest3D4}\\
+&h(t)\ge0,\quad t\ge0\label{eq:harvest3D5}\\
+\text{with}\quad & F(0) = F_0>0,\ A(0)=A_0>0,\ C(0)=C_0>0.\label{eq:harvest3D6}
+\end{align}
+\end{subequations}
+The third state denotes the size of corals ($C$) and appeared as a parameter value in the simplified model \FM. The dynamics of both models are formulated as slow-fast systems, which is a topic for itself and is not further considered. In all numerical examples $\varepsilon$ is set to one.
+
+In the next subsections only model \FM\ is discussed. The presentation of the full model \CRM\ starts in \cref{sec:initandnumanacrm}.
+\section{Initialization}
+\label{sec:InitializationCRM}
+Subsequently only the steps, that differ from the example case \MoM\ are presented in detail
+
+Compared to the initialization file of \MoM\ the initialization file of model \FM\ includes new mandatory sections for the control constraint \cref{eq:harvest2D4}.
+\begin{ocmlistingnum}
+Variable
+state::F,A
+control::h
+
+Statedynamics
+ode::DF=sigma*F*(1-F/A)-1/C*(F^2/(1+F^2))-h*F
+ode::DA=(n-d*A-e*A*F)*epsilon
+
+Objective
+int::p*h*F-h^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=ulow
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.03
+d::0.05
+e::1
+n::1
+epsilon::1
+p::1
+sigma::1
+ulow::0
+C::2
+\end{ocmlistingnum}
+Each line of section \lstinline+Controlconstraint+ formulates a constraint, usually inequalities \lstinline+ineq+, of the corresponding model. Each constraint is assigned a (unique) identifier, e.g. (\lstinline+CC+). This identifier appears in the section \lstinline+ArcDefinition+. The concept of arcs reflects the fact that a solution path may consist of parts with different (combinations) of active constraints. In the actual case only two cases have to be distinguished. The control constraint \cref{eq:harvest2D4} is inactive (arc number \lstinline+0+) or active (arc number \lstinline+1+). The number of the arcs have to start with zero and in consecutive increasing order.
+
+The further steps of initialization are the same for each model, where slight modifications are possible. E.g. an option can be provide to yield information about the initialization process.
+\begin{ocmlisting}
+>> opt=setocoptions('INIT','MessageDisplay','on');
+>> ocStruct=processinitfile('fishery2D',opt);(*@\index{Command!Initialization!\lstinline+processinitfile+}@*)
+Initialization file passed the main syntax consistency test.
+
+Initialization file passed the consistency test for the derived model structure.
+
+The necessary conditions are derived using the symbolic toolbox version 3.2.2.
+The necessary conditions are successfully derived.
+
+Model folder(s) are successfully created:
+[userspecific path]\ocmat\model\usermodel\fishery2D
+[userspecific path]\ocmat\model\usermodel\fishery2D\data
+
+Data structure 'ocStruct' is successfully stored in file:
+[userspecific path]\ocmat\model\usermodel\fishery2D\data\fishery2DModelDataStructure.mat.
+>> m=stdocmodel('fishery2D');(*@\index{Command!\lstinline+stdocmodel+}@*)
+>> modelfiles=makefile4ocmat(m);(*@\index{Command!Initialization!\lstinline+makefile4ocmat+}@*)
+>> moveocmatfiles(m,modelfiles);(*@\index{Command!Initialization!\lstinline+moveocmatfiles+}@*)
+\end{ocmlisting}
+
+\section{Numerical Analysis}
+\label{sec:numanalysis2D}
+The numerical analysis of \FM\ follows the same steps as for \MoM. In a first step these are mainly the determination of equilibria for the canonical system and the calculation of stable paths in case of saddle-points.
+
+\subsection{Equilibria}
+\label{sec:numanalysis_equilib2D}
+Again the equilibria can be calculated using the symbolic toolbox of \MATL, yielding
+\begin{matlab} 
+>> ocEP=calcep(m);numel(ocEP)(*@\index{Command!dynprimitive!\lstinline+calcep+}@*)
+ans =
+    17
+\end{matlab}
+Not all of the $17$ equilibria are admissible, some of them are complex valued, e.g.
+\begin{matlab} 
+>> ocEP{4}
+ans =
+ocmatclass: dynprimitive
+modelname: fishery2D
+   0.3018 - 0.8326i
+   0.4306 + 1.0190i
+   1.9022 - 2.5651i
+  -0.2952 + 2.2148i
+\end{matlab}
+others violate the control constraint \cref{eq:harvest2D4}
+\begin{matlab} 
+>> control(m,ocEP{7})
+ans =
+   -0.8873
+\end{matlab}
+Equilibria with negative state values, e.g.,
+\begin{matlab} 
+>> ocEP{17}
+ans =
+ocmatclass: dynprimitive
+modelname: fishery2D
+   -1.1423
+   -0.9155
+         0
+         0
+\end{matlab}
+can be excluded as well. Since pure state constraints, like $F(t)\ge0$ or $A(t)\ge0$, do not have to be considered explicitly, the latter equilibrium does not violate any admissibility condition. Therefore these equilibria will remain even after dismissing the non-admissible equilibria
+\begin{matlab}
+>> b=isadmissible(ocEP,m);ocEP(~b)=[];
+\end{matlab}
+To handle these cases the user can specify own admissibility conditions in the file \lstinline+fishery2DUserAdmissible+. By default the positivity condition for the states are set
+\begin{matlab}
+function out=fishery2DUserAdmissible(t,depvar,par,arcid)
+% in this file the user can specify admissiblity conditions, e.g., non-negative states.
+% These conditions can be used during the query for admissible equilibria
+%
+% this file was generated automatically: 25-Oct-2013 05:12:47
+% 2012, Dieter Grass
+r=par(1);
+d=par(2);
+e=par(3);
+n=par(4);
+epsilon=par(5);
+p=par(6);
+sigma=par(7);
+ulow=par(8);
+C=par(9);
+%ctrl=fishery2DOptimalControl(t,depvar,par,arcid);
+	
+%[lagmcc,lagmsc]=fishery2DLagrangeMultiplier(t,depvar,par,arcid);
+out=[depvar(1:2,:)];
+\end{matlab}
+where \lstinline+depvar+ is  the internal name for the dependent variables, i.e. states and costates. These conditions can be changed by the user for his/her own needs. The admissibility test, including the user specific part, becomes
+\begin{matlab}
+>> b=isadmissible(ocEP,m,[],'UserAdmissible');ocEP(~b)=[];numel(ocEP)(*@\index{Command!dynprimitive!\lstinline+isadmissible+}@*)
+ans =
+     3
+>> store(m,ocEP);(*@\index{Command!continuation!\lstinline+store+}@*)
+\end{matlab}
+Finally only three equilibria are left. Inspecting these equilibria more closely we see that the first and third equilibrium are equal
+\begin{matlab}
+>>  ocEP{[1 3]}
+ans =
+ocmatclass: dynprimitive
+modelname: fishery2D
+Equilibrium:
+     0
+    20
+     0
+     0
+Arcidentifier:
+     0
+ans =
+ocmatclass: dynprimitive
+modelname: fishery2D
+Equilibrium:
+     0
+    20
+     0
+     0
+Arcidentifier:
+     1
+\end{matlab}
+but their arc-identifiers, i.e. the unique number denoting a specific case of active and inactive constraints, are different
+\begin{matlab}
+>> arcargument(ocEP{1})(*@\index{Command!dynprimitive!\lstinline+arcargument+}@*)
+ans =
+     0
+>> arcargument(ocEP{3})
+ans =
+     1
+\end{matlab}
+Why does the same equilibrium appear with two different arc-identifiers? This happens since the canonical system specified for inactive $h>0$ (arc-identifier $0$) and active control constraints $h=0$ (arc-identifier $1$) exhibit the same equilibrium. The difference becomes obvious when we consider the corresponding stable paths. In the first case the control values of a stable path are positive, i.e., $h(t)>0,\ t\ge0$ with $\lim_{t\to\infty}h(t)=0$. Whereas the control value of a stable path in the latter case is already zero (the control constraint is active), i.e., $h(t)=0,\ t\in[t_s,\infty)$ and $t_s\ge0$. Thus, even though the values of the equilibria are the same, the properties of the corresponding stable path is different, and therefore have to be distinguished.
+
+Furthermore, the equilibria are saddle-points with two-dimensional stable manifolds
+\begin{matlab}
+>> [b dim]=issaddle(ocEP{:})(*@\index{Command!dynprimitive!\lstinline+issaddle+}@*)
+b =
+     1     1     1
+dim =
+     2     2     2
+\end{matlab}
+Therefore, without further inspection, all three equilibria have to be considered for the computation of the optimal path. To answer the question, which of these equilibria (corresponding state values) are equilibria of the optimal system, the stable paths have to be computed.
+
+\subsection{Saddle-path}
+\label{sec:numanalysis_saddlepath2D}
+We will draw the attention of the user to an important aspect that was disguised in the one state model. In the latter case the stable-path of an equilibrium and its stable manifold can, in a sloppy way, be used synonymously. But in fact these are different objects. The stable-path is a function in time (trajectory), whereas the stable manifold is a geometric object consisting of all points for which a trajectory, starting at these points, converges to the equilibrium. This differentiation becomes specifically important in the detection of indifference thresholds.
+
+Usually it is not necessary to reconstruct the ``entire'' stable manifold, see e.g. the work of Hinke Osinga\footnote{\url{http://www.math.auckland.ac.nz/~hinke/}} and Bernd Krauskopf\footnote{\url{http://www.math.auckland.ac.nz/~berndk/}}, but it suffices to calculate ``significant'' stable-paths that allow an inference on the global behavior. What ``significant'' means is model-specific and cannot be answered in general. But with the number of analyzed models and experience the user will be able to answer this question on a case-by-case basis.
+
+To exemplify the notion of a significant path for \FM, we try to answer the two following questions
+\begin{itemize}
+	\item What is the optimal path for a solution with initial states $F(0)\gg0$ and $A(0)=A_0>0$?
+	\item What is the optimal path for a solution with initial states $F(0)=0$ and $A(0)=A_0\ge0$?
+	\item What is the optimal path for a solution with initial states $F(0)=\varepsilon$?
+\end{itemize}
+For an answer to the first question we say, that large value for the initial stock of fish is ten times the equilibrium value, yielding approximately $F(0)=7$. For the stock of algae we take the extreme case of $A(0)=0$. Next we compute the stable path corresponding to the second (inner)\footnote{The term inner refers to the state space $F\ge0,\ A\ge 0$} equilibrium.
+\begin{matlab}
+>> opt=setocoptions('OCCONTARG','MaxStepWidth',2);
+>> sol=initocmat_AE_EP(m,ocEP{2},1:2,[7 1e-3],opt,'TruncationTime',100);(*@\index{Command!continuation!\lstinline+initocmat_AE_EP+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);(*@\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 49
+ Continuation parameter: 0.00147688
+
+
+ Continuation step No.: 44
+ stepwidth: 2
+ Newton Iterations: 1
+ Mesh size: 148
+ Continuation parameter: 1.00003
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'extremal2ep');(*@\index{Command!continuation!\lstinline+store+}@*)
+\end{matlab}
+Thus, a path was found that completely lies in the interior of the region for the control values, i.e., $h(t)>0$. Next we answer the question if this qualitative behavior (staying in the interior of the control region) changes for larger initial values $A_0$. Therefore, the continuation is started with the last solution function to find the path starting at $F(0)=7$ and $A(0)=10$.
+\begin{matlab}
+>> ocAsym=extremalsolution(m);
+>> sol=initocmat_AE_AE(m,ocAsym{1},1:2,[7 10],opt);(*@\index{Command!continuation!\lstinline+initocmat_AE_AE+}@*)
+\end{matlab}
+The first command returns the solution(s) (as a cell array of \lstinline+ocasymptotic+ objects) found by the previous continuation(s). The command  \lstinline+initocmat_AE_AE+ initializes a stable path continuation starting with a (previously calculated) stable path. The \BVP\ continuation is called as usual.
+\begin{matlab}
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 148
+ Continuation parameter: 5.84272e-008
+
+ Continuation step No.: 52
+ stepwidth: 2
+ Newton Iterations: 1
+ Mesh size: 119
+ Continuation parameter: 1.08747
+Residual tolerance 0.000010 is not met, but mesh is accepted with residual 0.000012
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'extremal2ep');
+\end{matlab}
+\begin{remark}
+The option to check the admissibility of the path during the continuation process is set 'on' by default
+\begin{matlab}
+>> getocoptions(opt,'OCCONTARG','CheckAdmissibility')
+ans =
+on
+\end{matlab}
+Therefore the so far calculated paths satisfy the constraints and are admissible.
+\end{remark}
+To answer the second question we note that with $F(0)=0$ also $F(t)=0$ for all $t\ge0$ follows (see \cref{eq:harvest2D2}). Thus, it is not possible to find a stable path starting with $F(0)=0$ and converging to the second equilibrium with $\hat F>0$. Furthermore, the optimal harvest (control) has to be zero (see \cref{eq:harvest2D1}) and therefore the constraint is active, yielding the third equilibrium as the long-run optimal solution for any solution starting with $F(0)=0$.\footnote{From an ecological (applied) perspective this case is of no interest. In fact a sea without fish would not correctly be covered by this model. From the mathematical perspective it is necessary to analyze these extreme cases as well, not least to determine the limits of the model's explanatory power.} 
+
+To answer the last question, what happens for the case with $F(0)>\varepsilon$ (small but positive), the objective function \cref{eq:harvest2D1} has to be considered. It is immediately clear that for a very small stock of fishes it is always better not to fish (i.e. $h(t)=0$). This implies that fish recovers, i.e., $F(t)>0$ for all $t\ge0$ if $F(0)>0$. Thus, the optimal path for $F(0)>0$ will always converge to the inner equilibrium. Furthermore we expect that for small values of $F$ the control constraint becomes active (binding). We (numerically) prove this proposition by determining the solution path with $F(0)=0.01$ and $A(0)=0.1$
+\begin{matlab}
+>> sol=initocmat_AE_EP(m,ocEP{2},1:2,[0.01 0.1],opt,'TruncationTime',100);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 42
+ Continuation parameter: 0.00546785
+
+
+ Continuation step No.: 20
+ stepwidth: 1.46192
+ Newton Iterations: 1
+ Mesh size: 153
+ Continuation parameter: 0.884803
+
+Non admissible solution detected, reduce stepwidth.
+
+ Continuation step No.: 21
+ stepwidth: 0.950248
+ Newton Iterations: 1
+ Mesh size: 130
+ Continuation parameter: 0.907923
+
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 30)
+
+ Continuation step No.: 30
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 111
+ Continuation parameter: 0.915442
+>> store(m,'extremal2ep');ocAsym=extremalsolution(m);
+\end{matlab}
+The output in the \MATL\ command window during the continuation process reveals that between step $20$ and $21$ the solution becomes inadmissible. Therefore, the step width is reduced and the continuation pursued with a smaller step width. This procedure is repeated until the minimum step width is reached. Then the process is aborted the last detected solution returned.
+
+To check, where the solution becomes non-admissible the control values of the last path can be displayed
+\begin{matlab}
+>> control(m,ocAsym{3})
+ans =
+  Columns 1 through 20
+   -0.0000    0.0002    0.0004    0.0007    0.0010    0.0016    0.0022    0.0027    0.0037    0.0047    0.0060    0.0075    0.0093    0.0114    0.0139    0.0166    0.0195    0.0226    0.0271    0.0303
+
+
+  Columns 101 through 111
+    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603    0.2603
+\end{matlab}
+This shows that the control of the solution path becomes zero at the initial point. Thus, a path starting with a lower initial value of $F$ consists of two arcs, split at some time $\tau$. For the first arc, $t\in[0,\tau]$, the control constraint is active, i.e. the system is driven by the canonical system with arc number $1$. At time $\tau$ the system switches to system where the control is non-negative and converges to the equilibrium. This problem can be formulated as a multi-point \BVP\ or equivalently as a two-point \BVP\ \citep[see][]{grass2012}.
+\begin{matlab}
+>> trj=partialarc(ocAsym{3},[1 1]);trj.arcarg=1;(*@\index{Command!continuation!\lstinline+partialarc+}@*)
+>> ocAsymN=addarc(ocAsym{3},trj);(*@\index{Command!continuation!\lstinline+addarc+}@*)
+>> sol=initocmat_AE_AE(m,ocAsymN,1:2,[0.01 0.1],opt);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 113
+ Continuation parameter: 0.000567554
+
+
+ Continuation step No.: 33
+ stepwidth: 2
+ Newton Iterations: 1
+ Mesh size: 134
+ Continuation parameter: 1.00451
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'extremal2ep');
+\end{matlab}
+The purpose of the two commands \lstinline+partialarc+ and \lstinline+addarc+ is the composition of a function that serves as an initial function for the \BVP\ solver. Therefore, the first point of the last solution \lstinline+cAsym{3}+ is taken twice \lstinline+[1 1]+. An arc has to consist at least of two points, one point for the initial time and one for the end time. Thus \lstinline+trj+ is a ``trivial'' arc, where the initial time equals the end time yielding
+\begin{matlab}
+>> trj
+trj = 
+              x: [0 0]
+              y: [4x2 double]
+         arcarg: 1
+    arcinterval: [0 0]
+    arcposition: [1 2]
+>> trj.y
+ans =
+    0.0672    0.0672
+    0.2063    0.2063
+    1.0000    1.0000
+    0.0606    0.0606
+\end{matlab}
+This ``trivial'' arc is appended to the last solution at position $1$
+\begin{matlab}
+>> ocAsymN.octrajectory
+ans = 
+                 x: [1x113 double]
+                 y: [4x113 double]
+            arcarg: [1 0]
+       arcposition: [2x2 double]
+       arcinterval: [0 0 100]
+                x0: 0
+     linearization: []
+            solver: ''
+       timehorizon: 100
+         modelname: 'fishery2D'
+    modelparameter: [0.0300 0.0500 1 1 1 1 1 0 2]
+        solverinfo: [1x1 struct]
+          userinfo: []
+     violationinfo: []
+\end{matlab}
+This new function consists of two arcs, in the order \lstinline+[1 0]+. Restarting the continuation with this initial function yields the final result, the admissible path starting at $F(0)=0.01,\ A(0)=0.1$ and converging to the inner equilibrium. 
+
+What happens for a small initial stock of fish and large stock of algae?\footnote{The denomination of ``large'' and ``small'' is meant within the mathematical context not necessarily from a real world point of view.} This can easily be answered. Therefore, the last solution is used and a continuation is started for the path with initial states $F(0)=0.01$ and $A(0)=10$.
+\begin{matlab}
+>> ocAsym=extremalsolution(m);
+>> sol=initocmat_AE_AE(m,ocAsym{4},1:2,[0.01 10],opt);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 135
+ Continuation parameter: 0.000140805
+
+
+ Continuation step No.: 42
+ stepwidth: 2
+ Newton Iterations: 1
+ Mesh size: 128
+ Continuation parameter: 1.03122
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+\end{matlab}
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{10}{./fig/UniqueFishery2DContinuation_}{01}{46}
+\caption{The continuation process for the determination of the saddle-path starting at $F(0)=7$ and $A(0)=0$. The continuation starts with the equilibrium solution and the initial states follow along the (connecting) line (dashed gray).}
+\label{fig:uniquefm2int}
+\end{figure}
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{10}{./fig/UniqueFishery2DContinuationVaryA_}{01}{54}
+\caption{Continuation with fixed $F(0)=7$.}
+\label{fig:uniquefm2intva}
+\end{figure}
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{10}{./fig/UniqueFishery2DContinuationMultiArc_}{01}{67}
+\caption{Find and calculate a solution with active and inactive control constraints.}
+\label{fig:uniquefm2intma}
+\end{figure}
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{10}{./fig/UniqueFishery2DContinuationMultiArcCtrl_}{01}{67}
+\caption{Illustrates the detection of an admissible solution and the continuation process of a solution with two arcs.}
+\label{fig:uniquefm2intmac}
+\end{figure}
+
+\subsection{Calculation of an Indifference Threshold Curve\index{indifference threshold!curve}}
+\label{sec:numanalysis_calcindthrcv}
+This section addresses, in detail, the calculation of an indifference threshold curve, i.e. the one dimensional analogon to the indifference threshold presented in \cref{sec:numanalysis_detindthr}. The entire process is illustrated in an animation, see \cref{fig:uniquefm2citc}. The basic steps are those from the one-state example
+\begin{enumerate}
+	\item Choose two saddle points $\hat E_{1,2}$, where the dimension of the corresponding stable manifolds equals the number of states, i.e., two in our example. 
+	\item Calculate the saddle-path starting at the state value of the second equilibrium and converging to the first equilibrium. If an indifference threshold exists such a path does not exist. Usually the saddle-path bends back (limit point) and the continuation process (ideally) stops if the maximum number of continuation steps is reached. Otherwise the user can interrupt the continuation process, pressing the stop button in the ``User Stop'' window.\label{en:ind_th_cu2}
+	\item Repeat the previous step with interchanged roles of the equilibria.
+	\item If a region (in the state space) exists, where both saddle paths exist an indifference threshold may exist in this region. To find this point the Hamiltonian is evaluated along both saddle-paths. A possible intersection point denotes the indifference threshold.\footnote{Note that the objective value is given by the Hamiltonian multiplied by the reciprocal of the discount rate $r$ \citep{michel1982}.}
+\end{enumerate}
+The equilibria (interior and boundary of state space) from the previous section satisfy the properties of the first step. Anyhow, the detailed analysis revealed that the optimal path for positive initial states always converge to the equilibrium in the interior. Thus, we have to find parameter values for which multiple equilibria in the interior exist. The detection of such parameter values is a topic for itself. At the moment we content ourselves with the result of such an analysis.
+\begin{matlab}
+>> m=stdocmodel('fishery2D');
+>> m=changeparametervalue(m,'C,d,e,n',[0.55 0.05 1.5 30]);(*@\index{Command!stdocmodel!changeparametervalue}@*)
+>> ocEP=calcep(m);b=isadmissible(ocEP,m,[],'UserAdmissible');ocEP(~b)=[];
+>> ocEP([1 5])=[];store(m,ocEP);
+>> [b dim]=issaddle(ocEP{:})
+b =
+     1     1     1
+dim =
+     2     1     2
+\end{matlab}
+For the chosen parameter values two equilibria, in the interior of the state space, with two-dimensional stable manifold exist. These are our candidates for an indifference threshold. Next we make sure that there exists a point in the state space, where the solution paths converging to these different equilibria yield the same objective value. Recalling the procedure for model \MoM\ in \cref{sec:numanalysis_detindthr} we compared the Hamiltonian functions evaluated along the saddle-paths. The intersection point then yielded the indifference threshold. At this point it was crucial that the (points of the) saddle-path coincided with the stable manifold. This is obviously not the case for a stable path and a two-(or higher-) dimensional stable manifold. 
+
+In the following remark this point is discussed in detail. Moreover, an object (slice manifold) is introduced along which the Hamiltonian is evaluated. These functions (for each equilibrium and continuation) can then be compared to find an indifference threshold.
+\begin{remark}[Objective Value and Slice Manifold]\index{slice manifold|indexbf}
+\label{rem:objval_sliceman}
+The user should remember that the objective value of a saddle-path $(F(\cdot),A(\cdot),\lambda_1(\cdot),\lambda_2(\cdot))$ is given by
+\begin{equation*}
+	V(F(\cdot),A(\cdot),h(\cdot))=\frac{1}{r}\Ha^\opt(F(0),A(0),\lambda_1(0),\lambda_2(0)).
+\end{equation*}
+Thus the objective value of a saddle-path\footnote{In \citet{michel1982} this equation is only proved for an optimal solution path, but this equation already holds for solution candidates as proved in \citet{feichtingerhartl1986}.} (of the canonical system) is already determined by its initial (co)states. This property together with the result of the continuation process can easily be used to determine the objective value for all intermediately detected saddle-paths. 
+
+Therefore, the initial points (states/costates) are stored in an object called ``slice manifold''. This name refers to the fact that the initial points, by definition, are elements of the stable manifold. Furthermore, the set of these points yield a discrete approximation of a slice through the stable manifold. In the one-state case the slice manifold coincides (on an interval in the state space) with the stable manifold.
+\end{remark}
+Evaluating the Hamiltonian along the slice manifolds for the two continuation processes of \cref{en:ind_th_cu2}. The continuation processes of our example 
+\begin{matlab}
+>> opt=setocoptions('OCCONTARG','MaxStepWidth',2,'Singularities',1);
+>> sol=initocmat_AE_EP(m,ocEP{3},1:2,ocEP{1}.y(1:2),opt,'TruncationTime',100);(*@\index{Command!continuation!\lstinline+initocmat_AE_EP+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 50
+ Continuation parameter: 0.000262048
+
+ label=LP
+ Continuation parameter=0.638567
+
+ Continuation step No.: 69
+ stepwidth: 2
+ Newton Iterations: 1
+ Mesh size: 105
+ Continuation parameter: 0.636698
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 77)
+
+ Continuation step No.: 77
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 105
+ Continuation parameter: 0.634402
+>> store(m,'extremal2ep');
+\end{matlab}
+During the first continuation, to find the saddle-path starting at the state values of the first equilibrium and converging to the third equilibrium a limit point solution (\lstinline+label=LP+ in the command window output) is detected, and the process is aborted afterward due to a non-admissible solution. A limit point solution usually designates the ``last'' solution that has to be considered as a candidate for an optimal solution.\footnote{Examples exist where solutions after two or more limit point bifurcations are again optimal.} Therefore, the result is stored and the reversed continuation is started.
+\begin{matlab}
+>> sol=initocmat_AE_EP(m,ocEP{1},1:2,ocEP{3}.y(1:2),opt,'TruncationTime',100);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 41
+ Continuation parameter: 0.000386109
+
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 26)
+
+ Continuation step No.: 26
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 58
+ Continuation parameter: 0.0873862
+>> store(m,'extremal2ep');
+\end{matlab}
+This process is also aborted due to the non-admissibility of the solution. This time no limit point solution is detected. Therefore, the continuation is pursued for a path consisting of two arcs (active and inactive control constraint), see the example in the previous \cref{sec:numanalysis_saddlepath2D}.
+\begin{matlab}
+>> ocAsym=extremalsolution(m);
+>> trj=partialarc(ocAsym{2},[1 1]);trj.arcarg=1;
+>> ocAsymN=addarc(ocAsym{2},trj);
+>> sol=initocmat_AE_AE(m,ocAsymN,1:2,ocEP{3}.y(1:2),opt);(*@\index{Command!continuation!\lstinline+initocmat_AE_AE+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 60
+ Continuation parameter: 0.000387836
+
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 62)
+
+ Continuation step No.: 62
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 122
+ Continuation parameter: 0.91282
+>> store(m,'extremal2ep');
+\end{matlab}
+Again the continuation is aborted due to a non-admissible solution without reaching a limit point. Anyhow, instead of pursuing the continuation process this time with a three arc solution (inactive/active/inactive control constraint) we test if the Hamiltonian functions corresponding to the two slice manifolds already intersect. 
+\begin{matlab}
+>> it=findindifferencepoint(m,1,3)(*@\index{Command!stdocmodel!\lstinline+findindifferencepoint+}@*)
+it =
+    0.7368
+   29.6692
+\end{matlab}
+The arguments \lstinline+1+ and \lstinline+3+ refer to the slice manifolds of the first and third continuation. Remember that the continuation for the saddle-path converging to the first equilibrium has been done in two steps, taking the two arc solution into account. Thus, in fact three continuation process were started and  stored. Given, that the solution of the last continuation has to be considered yields three as the second argument.
+
+Next an initial solution (function) for the \BVP\ describing the indifference threshold curve has to be computed. This solution can be taken as the paths starting at the indifference threshold \lstinline+it+. Thus the continuation process are repeated with initial state \lstinline+it+.
+\begin{matlab}
+>> ocAsym=extremalsolution(m);
+>> sol=initocmat_AE_EP(m,ocEP{3},1:2,it,opt,'TruncationTime',100);(*@\index{Command!continuation!\lstinline+initocmat_AE_EP+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');
+>> sol=initocmat_AE_AE(m,ocAsym{3},1:2,it,opt);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+>> store(m,'extremal2ep');
+>> ocAsym=extremalsolution(m);
+\end{matlab}
+The reader may wonder why the second continuation started at the already detected solution \lstinline+ocAsym{3}+, whereas the first continuation started at the equilibrium and not with \lstinline+ocAsym{1}+. It was a pragmatic decision. The solution \lstinline+ocAsym{1}+ occurred after a limit point bifurcation and therefore changed the direction of continuation. To start with \lstinline+ocAsym{1}+ and reach \lstinline+it+ from the ``correct'' direction the continuation direction at the beginning would have to be reversed. This can be done by setting (try it)
+\begin{matlab}
+>> opt=setocoptions('OCCONTARG','Backward',1);
+\end{matlab}
+The results of the stored fourth and fifth continuation process (\lstinline+ocAsym(4:5)+) is used as an initial solution to the \BVP\ underlying the indifference threshold continuation. The continuation is done along the second state variable ($A$) and ideally until $A=0$ is reached. Some options are set, where, importantly, the computation of the Jacobian for the boundary conditions and dynamics is forced to be done numerically.
+\begin{matlab}
+>> opt=setocoptions('OCCONTARG','MaxStepWidth',0.5,'MinStepWidth',1e-5,'SBVPOC','BCJacobian',0,'FJacobian',0);
+>> sol=initocmat_AE_IS(m,ocAsym(4:5),2,0,opt);
+>> c=bvpcont('indifferencesolution',sol,[],opt);(*@\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 208
+ Continuation parameter: 0.000131963
+
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 143)
+
+ Continuation step No.: 143
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 226
+ Continuation parameter: 0.704442
+
+>> store(m,'indifferencesolution');(*@\index{Command!continuation!\lstinline+store+}@*)
+>> sol=initocmat_AE_IS(m,ocAsym(4:5),2,35,opt);
+>> opt=setocoptions(opt,'OCCONTARG','MaxStepWidth',0.25);
+>> c=bvpcont('indifferencesolution',sol,[],opt);
+>> store(m,'indifferencesolution');
+\end{matlab}
+The indifference threshold continuation stops before $A=0$ is reached, because one of the saddle-paths becomes non-admissible. To adapt this non-admissible saddle-path and restart the continuation is left as an exercise.
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor,timeline=./fig/MultiFishery2DFindDetectThreshCurve.txt]{15}{./fig/MultiFishery2DFindDetectThreshCurve_}{001}{425}
+\caption{The procedure for the detection of an indifference threshold is depicted. Thereafter, an initial solution and the continuation process for the indifference threshold curve is illustrated.}
+\label{fig:uniquefm2citc}
+\end{figure}
+
+\section{Initialization and Numerical analysis of model CRM}
+\label{sec:initandnumanacrm}
+For demonstration purpose the initialization file for \CRM\ includes entries that need not to be provided since they are set by default. The section \lstinline+Type+ is new and set to \lstinline+standardmodel+ , in fact the only type that is implemented so far. In the \lstinline+Variable+ section the variable names for the independent variable (usually time) is explicitly set to $t$, which is the default name. Also the variable names for the \lstinline+costate+ and Lagrangian multipliers \lstinline+lagrangemultcc+ are set to their default names and could therefore be omitted. Furthermore in the section \lstinline+Objective+ the entry \lstinline+expdisc::r+, with the meaning that the objective value is exponentially discounted and the variable name is \lstinline+r+, which is the usual assumption if nothing else is stated. 
+\begin{matlab} 
+Type
+standardmodel
+
+Description
+fishery model with fish, algae and coral as state variables
+
+Variable
+independent::t
+state::F,A,C
+control::h
+costate::lambda1,lambda2,lambda3
+lagrangemultcc::lm % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::DF=(sigma*F*(1-F/(m*A))-gamma/(C+tau)*(F^theta1/(1+F^theta2))-eta*h*F)/epsilon
+ode::DA=(n-d*A-e*A*F)/epsilon
+ode::DC=psi*C/(kappa*C+s*A+w)-l*C
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*h*F-phi*h^2+mu*C
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=ulow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands
+% for the unconstrained case.
+% underscores indicate that multiple solutions of the maximizing
+% Hamiltonian exist for a specific constraint combination 
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.02
+gamma::1
+d::0.05
+e::1
+epsilon::1
+eta::1
+m::10
+n::1
+p::1
+phi::1
+sigma::1
+tau::0.25
+theta1::2
+theta2::2
+ulow::0
+l::0.1
+mu::1
+psi::1
+s::3
+w::1
+kappa::1
+\end{matlab}
+The initialization process is as usual.
+\begin{matlab}
+>> ocStruct=processinitfile('harvest3D');
+>> modelfiles=makefile4ocmat(ocStruct);
+>> moveocmatfiles(ocStruct,modelfiles)
+\end{matlab}
+Now the numerical analysis can be started. Our goal is the calculation of an indifference threshold curve. In fact we have an indifference threshold surface and the reader is invited to extend these calculations to compute part of this surface.
+
+First an instance of the model is created, and the equilibria are calculated.
+\begin{matlab}
+>> m=stdocmodel('harvest3D');
+>> m=changeparametervalue(m,'r,l,s,w',[0.1 1 0.325 0]);(*@\index{Command!stdocmodel!changeparametervalue}@*)
+>> ocEP=calcep(m);b=isadmissible(ocEP,m,[],'UserAdmissible');ocEP(~b)=[];(*@\index{Command!stdocmodel!calcep}\index{Command!dynprimitive!isadmissible}@*)
+>> [b dim]=issaddle(ocEP{:})(*@\index{Command!dynprimitive!issaddle}@*)
+b =
+     0     1     1     1     0
+
+dim =
+     0     3     3     2     0
+>> ocEP(~b)=[];store(m,ocEP);
+>> ocEP=equilibrium(m);ocEP{:}(*@\index{Command!stdocmodel!equilibrium}@*)
+ans =
+ocmatclass: dynprimitive
+modelname: harvest3D
+Equilibrium:
+    0.2346
+    3.5137
+         0
+    0.1145
+    0.0001
+    4.8842
+Arcidentifier:
+     0
+ans =
+ocmatclass: dynprimitive
+modelname: harvest3D
+Equilibrium:
+    1.8186
+    0.5352
+    0.8261
+    0.7055
+    0.1977
+    1.5850
+Arcidentifier:
+     0
+ans =
+ocmatclass: dynprimitive
+modelname: harvest3D
+Equilibrium:
+    0.2821
+    3.0108
+    0.0215
+    0.8011
+   -0.2381
+   14.8250
+Arcidentifier:
+     0
+\end{matlab}
+Thus, three equilibria exist, where the first two have three dimensional stable manifold, and the third equilibrium has a two dimensional stable manifold. Therefore, we expect the first two equilibria as candidates for the limitsets of optimal paths\footnote{To be exact, we expect the states of these equilibria as locally stable equilibria of the optimal system. Their basin of attractions separated by the indifference threshold surface.} To check this presumption (at least numerically) stable paths of the first two equilibria have to be computed.
+
+The strategy for the detection of an indifference threshold is the same as in the two previous examples in \cref{sec:numanalysis_detindthr,sec:numanalysis_calcindthrcv}. We try to find a stable path starting at the states of the first equilibrium and converging to the second equilibrium and vice versa. If one of these saddle paths exist the corresponding (states of the) equilibrium is globally stable (in the optimal system). Otherwise an indifference threshold may exist.
+\begin{matlab}
+>> opt=setocoptions('OCCONTARG','MaxStepWidth',1,'GENERAL','BVPMethod','bvp6c');
+>> opt=setocoptions(opt,'OCCONTARG','MaxContinuationSteps',100);
+\end{matlab}
+The change of the options for the maximum step width, the \BVP\ solver and the maximum number of continuation steps is an ex post decision, after some computational trials and the reader is invited to test different values.
+\begin{matlab}
+>> sol=initocmat_AE_EP(m,ocEP{1},1:3,ocEP{2}.y(1:3),opt,'TruncationTime',1000);(*@\index{Command!stdocmodel!\lstinline+initocmat_AE_EP+}@*)
+>> c=bvpcont('extremal2ep',sol,[],opt);(*@\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.01
+ Newton Iterations: 1
+ Mesh size: 45
+ Continuation parameter: 0.000250665
+
+
+ Continuation step No.: 100
+ stepwidth: 1
+ Newton Iterations: 1
+ Mesh size: 81
+ Continuation parameter: 0.0350385
+>> store(m,'extremal2ep');
+>> opt=setocoptions(opt,'OCCONTARG','InitStepWidth',1e-3);
+>> sol=initocmat_AE_EP(m,ocEP{2},1:3,ocEP{1}.y(1:3),opt,'TruncationTime',1000);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.001
+ Newton Iterations: 1
+ Mesh size: 62
+ Continuation parameter: 0.00341219
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 30)
+
+ Continuation step No.: 30
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 42
+ Continuation parameter: 0.220018
+>> store(m,'extremal2ep');
+>> ocAsym=extremalsolution(m);
+>> trj=partialarc(ocAsym{2},[1 1]);trj.arcarg=1;
+>> ocAsymN=addarc(ocAsym{2},trj);
+>> sol=initocmat_AE_AE(m,ocAsymN,1:3,ocEP{1}.y(1:3),opt);(*@\index{Command!stdocmodel!\lstinline+initocmat_AE_AE+}@*)
+>> opt=setocoptions('OCCONTARG','MaxStepWidth',10);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.001
+ Newton Iterations: 1
+ Mesh size: 42
+ Continuation parameter: 0.000176209
+
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 68)
+
+ Continuation step No.: 68
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 102
+ Continuation parameter: 0.967644
+>> store(m,'extremal2ep');
+\end{matlab}
+Comparing the objective values (Hamiltonian) along the slice manifolds\index{slice manifold} of the first and third continuation we find an indifference threshold (see \cref{fig:multipleharvest3Dit}).
+\begin{matlab}
+>> it=findindifferencepoint(m,1,3);(*@\index{Command!stdocmodel!findindifferencepoint}@*)
+>> sol=initocmat_AE_AE(m,ocAsymN,1:3,it,opt);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.001
+ Newton Iterations: 1
+ Mesh size: 42
+ Continuation parameter: 0.000182929
+
+
+ Continuation step No.: 56
+ stepwidth: 31.1206
+ Newton Iterations: 1
+ Mesh size: 87
+ Continuation parameter: 1.00081
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'extremal2ep');
+>> sol=initocmat_AE_EP(m,ocEP{1},1:3,it,opt,'TruncationTime',1000);
+>> c=bvpcont('extremal2ep',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.001
+ Newton Iterations: 1
+ Mesh size: 32
+ Continuation parameter: 0.000642533
+
+
+ Continuation step No.: 29
+ stepwidth: 1.55029
+ Newton Iterations: 1
+ Mesh size: 40
+ Continuation parameter: 1.09851
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'extremal2ep');
+\end{matlab}
+The two optimal solutions starting at the indifference threshold \lstinline+it+ can be used to initialize an indifference threshold continuation. Actually a continuation can only be carried out for one free parameter, yielding a curve. Since the indifference threshold manifold is a two-dimensional manifold one coordinate (in the state space) is fixed and the continuation is done along the two free state coordinates. In our example the state value of the second coordinate is fixed \lstinline+initocmat_AE_IS(...,2);+ (see \cref{fig:multipleharvest3Ditc}).
+\begin{matlab}
+>> ocAsym=extremalsolution(m);
+>> opt=setocoptions('OCCONTARG','InitStepWidth',0.1,'MaxStepWidth',20);
+>> opt=setocoptions(opt,'SBVPOC','BCJacobian',0,'FJacobian',0);
+>> sol=initocmat_AE_IS(m,ocAsym(4:5),[1 2],[1.5 it(2)],opt);
+>> c=bvpcont('indifferencesolution',sol,[],opt);(*@\index{Command!continuation!\lstinline+bvpcont+}@*)
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.1
+ Newton Iterations: 1
+ Mesh size: 241
+ Continuation parameter: 0.000238947
+
+
+
+ Continuation step No.: 96
+ stepwidth: 20
+ Newton Iterations: 2
+ Mesh size: 334
+ Continuation parameter: 1
+Residual tolerance 0.000010 is not met, but mesh is accepted with residual 4.702457
+Residual tolerance 0.000010 is not met, but mesh is accepted with residual 0.000068
+
+ Target value hit.
+ label=HTV
+ Continuation parameter=1
+>> store(m,'indifferencesolution');
+>> sol=initocmat_AE_IS(m,ocAsym(4:5),[2 3],[it(2) 0.1],opt);
+>> c=bvpcont('indifferencesolution',sol,[],opt);
+first solution found
+tangent vector to first solution found
+
+ Continuation step No.: 1
+ stepwidth: 0.1
+ Newton Iterations: 1
+ Mesh size: 255
+ Continuation parameter: 0.000284509
+
+ 
+Non admissible solution detected, reduce stepwidth.
+Current step size too small (point 32)
+
+ Continuation step No.: 32
+ stepwidth: 1e-005
+ Newton Iterations: 1
+ Mesh size: 289
+ Continuation parameter: 0.399232
+>> store(m,'indifferencesolution');
+\end{matlab}
+\begin{figure}
+\centering
+\includegraphics[scale=\scalefactor]{./fig/MultiHarvest3DIndifferenceThreshold}
+\caption{The Hamiltonian evaluated along the slice manifolds intersect in an indifference threshold.}
+\label{fig:multipleharvest3Dit}
+\end{figure}
+\begin{figure}
+\centering
+\animategraphics[controls,scale=\scalefactor]{15}{./fig/MultipleHarvest3DIndifferenceThresholdContinuation_}{001}{132}
+\caption{The indifference threshold solutions are continued for fixed algae state $A$.}
+\label{fig:multipleharvest3Ditc}
+\end{figure}
+
+%\section{Displaying the Results}
+%Another important feature of \OCMAT\ is the possibility to plot the computed results in a simple way. Therefore the native plotting commands of \MATL\ are overloaded for the classes in \OCMAT. The basic command is the \lstinline+line+ command, for a detailed description of its syntax see \cref{sec:plot_command_sel_com}.

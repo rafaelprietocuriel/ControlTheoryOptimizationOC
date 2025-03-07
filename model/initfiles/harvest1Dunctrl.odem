@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+harvest1Dunctrl
+
+Description
+The uncontrolled fishery model with fish
+
+Variable
+state::F
+
+Dynamics
+ode::DF=sigma*F*(1-m*F/A)-gamma/(C+tau)*(F^theta1/(1+F^theta2))-eta*h*F
+
+Parameter
+gamma::1
+eta::1
+m::1
+A::50
+sigma::1
+tau::0
+theta1::2
+theta2::2
+h::0
+C::1000

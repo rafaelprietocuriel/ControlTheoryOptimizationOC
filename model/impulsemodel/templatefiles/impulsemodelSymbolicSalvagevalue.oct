@@ -1,0 +1,8 @@
+//
+// impulsemodelSymbolicSalvagevalue.oct
+//
+function out=$MODELNAME$SymbolicSalvagevalue($ARCVAR$)
+% returns the symbolic salvage value function
+$INFODETAILS$
+	
+$SYMBOLICSALVAGEVALUE$

@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+aart
+
+Description
+metronomic chemotherapy with constant controls from schaettlerledzewicz2015 p. 254ff
+
+Variable
+state::u,v
+
+Dynamics
+ode::Du=((1-alpha*A^((sigma-1)/sigma)*u^(1/sigma-1))*((gh-ge)/(1+((gh-g0)/(g0-ge))*exp((1-sigma)/sigma*(gh-ge)*t))+ge+v-u))*u
+ode::Dv=(gamma^(-1)*(alpha*A^((sigma-1)/sigma)*u^(1/sigma)-rho)+v-u)*v
+
+
+Parameter
+gamma::2
+rho::0.03
+sigma::0.5
+gh::0.02
+ge::0
+alpha::0.3
+A::1
+g0::0.01

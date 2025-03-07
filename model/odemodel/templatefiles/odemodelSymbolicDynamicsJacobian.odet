@@ -1,0 +1,6 @@
+function out=$MODELNAME$SymbolicDynamicsJacobian($ARCVAR$)
+% returns the symbolic expression for the Jacobian of the ODE.
+$INFODETAILS$
+
+	
+$SYMBOLICDYNAMICSJACOBIAN$

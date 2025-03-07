@@ -1,0 +1,61 @@
+//
+// ppdemodelOOPDE1D.opdt
+//
+
+classdef $MODELNAME$OOPDE1D < pde
+%
+% Class to return the finite element matrices of $MODELNAME$ using OOPDE.
+% This class is mainly used when calling 'generatefemdata'
+%
+% OOPDE provides a class library for solving partial differential equation in Matlab using finite elements of the following type:
+%
+% d(z)*d_t x(t,z)=f(x(t,z),t,z) + b(z)*dz x(t,z) + dz c(z) dz x(t,z)
+%
+% with Robin boundary conditions
+%
+% n*(c(z) dz x(t,z)) + q(z) x(t,z) = g
+%
+% For more details see
+% http://www.mathe.tu-freiberg.de/nmo/mitarbeiter/uwe-pruefert/oopde
+$INFODETAILS$
+	
+	methods(Access = protected)
+		function val = df()
+			% this function is necessary for the class definition in OOPDE, but has no further meaning in the OCMat context
+			val = [];
+		end
+	end
+	methods(Access = public)
+		function initialize($OOPDEOBJ$,$PARVAR$,$FEMDATA$)
+			$PARAMETERVALUES$
+	
+			if isstruct($FEMDATA$)
+				$OOPDEOBJ$.grid=Interval(linspace($LEFTINTERVALLIMIT$,$RIGHTINTERVALLIMIT$,$FEMDATAGRIDNUM$));
+				$OOPDEOBJ$.fem=Lagrange11D;
+			else
+				$OOPDEOBJ$.grid=Interval($FEMDATA$);
+				$OOPDEOBJ$.fem=Lagrange11D;
+			end
+	
+			% Boundary conditions:
+			% We assume that all BCs are homogeneous Neumann.
+	
+			% the mass matrix is generated when calling the FEM type, here 'Lagrange11D'
+			$KRONECKERMASSMATRIXDEFINITION$
+	
+			% Mass matrix to evaluate the nonlinearity, i.e. f(x(t,z),t,z) is approximated by M*f(x(t,z_i),t,z_i)
+			$OOPDEOBJ$.M=kron($KRONECKERMASSMATRIX$,$OOPDEOBJ$.mass);
+	
+			% Assemble stiffness matrix
+			% assema($OOPDEOBJ$.grid,d,c,f)
+			% if f is a constant or only depending on z, assema generates the according vector, in general we use the method for a nonlinear f described above. Therefore f=0 in the call of assema.
+			[K,~,~]=$OOPDEOBJ$.fem.assema($OOPDEOBJ$.grid,1,1,0);
+	
+			% Diffusion matrix of the finite element approximation
+			$KRONECKERDIFFUSIONMATRIXDEFINITION$
+			$OOPDEOBJ$.A=-kron($KRONECKERDIFFUSIONMATRIX$,K);
+	
+		end 
+	end
+end
+

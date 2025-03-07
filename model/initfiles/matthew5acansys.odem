@@ -1,0 +1,25 @@
+Type
+odemodel
+
+Modelname
+matthew5acansys
+
+Description
+full model
+
+Variable
+state::K,lambda1
+
+Dynamics
+ode::DK=1/2*(lambda1-1)/a/lambda1-1/4/a*(lambda1-1)^2/lambda1^2-delta*K
+ode::Dlambda1=r*lambda1-b-h-2*K*m+delta*lambda1
+
+Parameter
+r::0.03
+m::0.2
+b::0.1
+delta::0.2
+h::0.1
+a::0.2
+Imin::0
+C::0

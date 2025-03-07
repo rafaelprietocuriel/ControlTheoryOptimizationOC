@@ -1,0 +1,32 @@
+//
+// standardmodel2LagrangianDUDX.oct
+//
+function [out,coord]=$MODELNAME$D2LagrangianDUDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$D2LAGRANGIANDUDX returns the second order derivative of the Lagrangefunction with respect
+% to the generalized control, i.e. control and active Lagrangemultiplier and generalized state, i.e.
+% state and costate.
+%
+% LUX=$UPPERMODELNAME$D2LAGRANGIANDUDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) let m=#implicit controls,
+% N=#state + #costate and n=#time grid, then LUX is of size m*N x n.
+%
+% [LUX,COORD]=$UPPERMODELNAME$D2LAGRANGIANDUDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$) argument COORD returns the
+% index of the implicit controls.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$D2LAGRANGIANDUDX$
+		coord=$IMPLICITINDEX$;
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$D2LAGRANGIANDUDX$
+coord=$IMPLICITINDEX$;
+!ENDIF!

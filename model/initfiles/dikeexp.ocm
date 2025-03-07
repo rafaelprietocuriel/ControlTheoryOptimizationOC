@@ -1,0 +1,52 @@
+Type
+impulsemodel
+
+Description
+An Impulse Control Approach to Dike Height Optimization (chahimetal2013b)
+
+Modelname
+dikeexp
+
+Variable
+state::H
+icontrol::v
+
+Statedynamics
+ode::DH=0
+evt::DH=v
+
+Objective
+int::-P0*V0*exp(beta*t-theta*H)
+sum::-(c0+b0*v)*exp(a0*(HL+v))
+
+Salvagevalue
+func::-P0*V0*exp(beta*T-theta*HR)/r
+
+Parameter
+r::0.04
+P0::1/906
+V0::22656.5
+alpha::0.0574
+eta::0.76
+zeta::0.002032
+a0::0.01
+b0::2.1304
+c0::324.6287
+gamma::0.02
+beta::alpha*eta+gamma
+theta::alpha-zeta
+
+
+% @Article{chahimetal2013b,
+  % author =      {M.~Chahim and R.C.M.~Brekelmans and D.~den Hertog and P.M.~Kort},
+  % title =       {An Impulse Control Approach to Dike Height Optimization},
+  % journal =     {Optimization Methods and Software},
+  % year =        {2013},
+  % volume =      {28},
+  % number =      {3},
+  % pages =       {458--477},
+  % institution = {Tilburg University},
+  % owner =       {dieter},
+  % timestamp =   {2011.10.05},
+  % type =        {CentER Discussion Paper}
+% }

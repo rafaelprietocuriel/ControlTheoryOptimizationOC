@@ -1,0 +1,43 @@
+Type
+standardmodel
+
+Modelname
+harvest1Dbistable
+
+Description
+fishery model with fish
+
+Variable
+state::v
+control::k
+
+Statedynamics
+ode::Dv=-sigma*(v-tau)*(v-beta)*(v-1)-gamma*k
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*v^alpha*k^(1-alpha)-c*k
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::k>=klow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] denotes the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC
+
+
+Parameter
+r::0.02
+alpha::0.5
+gamma::1
+sigma::1
+beta::0.5
+c::1
+p::1
+tau::1e-4
+klow::0

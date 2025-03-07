@@ -1,0 +1,10 @@
+//
+// ppdemodelCanonicalSystemJacobianNumerical.opdt
+//
+function out=$MODELNAME$CanonicalSystemJacobianNumerical($TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$)
+% calculates the Jacobian of the canonical system with respect to the dependent variables numerically.
+$INFODETAILS$
+	
+numJacOpt.diffvar=2;
+numJacOpt.vectvars=[];
+out=numjaccsd(@$MODELNAME$CanonicalSystem,{$TIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$FEMDATA$},$JACOBIANEQUATIONNUM$,numJacOpt);

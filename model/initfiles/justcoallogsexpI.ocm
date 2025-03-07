@@ -1,0 +1,168 @@
+Type
+standardmodel
+
+Modelname
+justcoallogsexpI
+
+% fN=KN
+% fR=KR
+% fC=KC
+%
+% production function
+% YI=KP^alpha*(thetat*wE^beta+(1-thetat)*wC^beta)^((1-alpha)/beta)
+%
+% pollution function
+% P=phiC*fC+phiN*fN+wC+HC+phi0
+%
+% electricity
+% E=fN+fR
+%
+% electricity budget
+% BE=E-wE-HE
+%
+% coal budget
+% BC=fC-fN-wC-HC
+%
+% governmental expenditures
+% G=YI-H+PE*BE+PC*BC-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2
+%
+% social welfare function
+% G^alpha1*H^alpha2*(theta*HC^kappa+(1-theta)*HE^kappa)^(alpha3/kappa)*P^(-alpha4)
+
+Variable
+state::KC,KR,KN,KP,c2
+control::IC,IR,IN,IP,wE,wC
+
+Statedynamics
+ode::DKC=epsilon+facC*IC-deltaC*KC
+ode::DKR=epsilon+facR*IR-deltaR*KR
+ode::DKN=epsilon+facN*IN-deltaN*KN
+ode::DKP=epsilon+facP*IP-deltaP*KP
+ode::Dc2=a-c2*b
+
+Objective
+int::alpha1*log(KP^alpha*(thetat*(tauwE+wE)^beta+(1-thetat)*(tauwC+wC)^beta)^((1-alpha)/beta)-H+P*PE*(KN+KR-wE-HE)+P*PC*(KC-KN-wC-HC)-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2)+alpha2*log(H+tauH)+alpha3/kappa*log(theta*HC^kappa+(1-theta)*HE^kappa+tauH)-alpha4*log(phiC*KC+phiN*KN+wC+HC+phi0)
+
+Salvagevalue
+func::tau*(KC+KR+KN+KP)
+
+Controlconstraint
+CC1::ineq::IC>=IC0
+CC2::ineq::IR>=IR0
+CC3::ineq::IN>=IN0
+CC4::ineq::IP>=IP0
+CC5::ineq::wE>=wE0
+CC6::ineq::wC>=wC0
+
+Optimization
+type::max
+method::bvp
+
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC4
+5::CC5
+6::CC6
+7::CC5,CC6
+8::CC3,CC5,CC6
+9::CC1,CC3,CC5,CC6
+10::CC1,CC5,CC6
+11::CC2,CC5,CC6
+12::CC4,CC5,CC6
+13::CC3,CC6
+14::CC1,CC3,CC6
+15::CC1,CC3
+16::CC1,CC3,CC5
+17::CC1,CC2,CC3
+18::CC1,CC2,CC3,CC6
+19::CC2,CC3
+
+Control
+0::*::implicit
+1::IC::explicit
+1::IR,IN,IP,wE,wC::implicit
+2::IR::explicit
+2::IC,IN,IP,wE,wC::implicit
+3::IN::explicit
+3::IC,IR,IP,wE,wC::implicit
+4::IP::explicit
+4::IC,IR,IN,wE,wC::implicit
+5::wE::explicit
+5::IC,IR,IN,IP,wC::implicit
+6::wC::explicit
+6::IC,IR,IN,IP,wE::implicit
+7::wC,wE::explicit
+7::IC,IR,IN,IP::implicit
+8::IN,wC,wE::explicit
+8::IC,IR,IP::implicit
+9::IC,IN,wC,wE::explicit
+9::IR,IP::implicit
+10::IC,wC,wE::explicit
+10::IR,IN,IP::implicit
+11::IR,wC,wE::explicit
+11::IC,IN,IP::implicit
+12::IP,wC,wE::explicit
+12::IC,IR,IN::implicit
+13::IN,wC::explicit
+13::IC,IR,IP,wE::implicit
+14::IC,IN,wC::explicit
+14::IR,IP,wE::implicit
+15::IC,IN::explicit
+15::IR,IP,wE,wC::implicit
+16::IC,IN,wE::explicit
+16::IR,IP,wC::implicit
+17::IC,IR,IN::explicit
+17::IP,wE,wC::implicit
+18::IC,IR,IN,wC::explicit
+18::IP,wE::implicit
+19::IR,IN::explicit
+19::IC,IP,wE,wC::implicit
+
+Parameter
+r::0.03
+a::0.01
+b::0.01
+kappa::0.45
+alpha::0.5
+alpha1::0.5
+alpha2::0.5
+alpha3::0.5
+alpha4::2
+beta::0.45
+theta::0.5
+thetat::0.5
+deltaC::0.05 % 5-40%
+deltaR::0.05% 5-40%
+deltaN::0.05 % 5-40%
+deltaP::0.05 % 5-40%
+c1::10 % 10-150 USD/T/y
+c3::30 % 30-250 USD/T/y
+c4::40 % 40-150 USD/T/y
+P::1
+PE::30 % 30-450 USD/MWh
+PC::40 % 40-450 USD/MWh
+IC0::0
+IR0::0
+IN0::0
+IP0::0
+phiC::1
+phiN::1
+wE0::0
+wC0::0
+tau::0
+tauwE::1e-2
+tauwC::1e-2
+phi0::0
+HC::0
+HE::0
+H::0
+epsilon::0
+tauH::0
+facC::1
+facR::1
+facN::1
+facP::1

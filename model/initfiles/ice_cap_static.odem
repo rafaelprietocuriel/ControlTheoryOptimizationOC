@@ -1,0 +1,56 @@
+Type
+odemodel
+
+Description
+model heraldetal2013 and north1984
+
+Modelname
+ice_cap_static
+
+Variable
+state::T,F
+independent::x
+
+Dynamics
+ode::DT=F
+ode::DF=(-(Q*(1-S*(3*x^2-1)/2)*a-A-B*T)/D+2*x*F)/((1-(x-epsilon)^2))
+
+Parameter
+D::0.30
+Q::1367/4
+A::201.4
+a1::0.38
+a2::0.68
+Ts::-10
+B::1.45
+S::0.482
+epsilon::0.05
+a::0
+
+% solar constant: 1367 W/m^2
+% the parameter values are taken from north1984
+% epsilon is an artificial constant to avoid a singularity at x=1 
+% a is a dummy variable for the file generation, it has then to be replaced by a discontinuous function:
+% a=a1 for T<Ts and a=a2 for T>Ts
+
+% @Article{heraldetal2013,
+  % author  = {Herald, Christopher M. and Kurita, Satoko and Telyakovskiy, Aleksey S.},
+  % title   = {Simple Climate Models to Illustrate How Bifurcations Can Alter Equilibria and Stability},
+  % journal = {Journal of Contemporary Water Research \& Education},
+  % year    = {2013},
+  % volume  = {152},
+  % number  = {1},
+  % pages   = {14-21},
+  % doi     = {10.1111/j.1936-704X.2013.03162.x},
+% }
+
+% @Article{north1984,
+  % author  = {North, Gerald R.},
+  % title   = {The Small Ice Cap Instability in Diffusive Climate Models},
+  % journal = {Journal of the Atmospheric Sciences},
+  % year    = {1984},
+  % volume  = {41},
+  % number  = {23},
+  % pages   = {3390--3395},
+  % doi     = {10.1175/1520-0469(1984)041<3390:TSICII>2.0.CO;2},
+% }

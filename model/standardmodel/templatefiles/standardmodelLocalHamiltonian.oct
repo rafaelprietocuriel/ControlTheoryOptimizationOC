@@ -1,0 +1,12 @@
+//
+// standardmodelLocalHamiltonian.oct
+//
+
+function out=$MODELNAME$LocalHamiltonian($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$)
+% returns the derivative of the Hamiltonian with respect to the control variables $MODELNAME$
+$INFODETAILS$
+
+	
+$PARAMETERVALUES$
+	
+$HAMILTONIAN4GRAD$

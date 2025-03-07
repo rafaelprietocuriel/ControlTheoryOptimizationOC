@@ -1,0 +1,15 @@
+function out=$MODELNAME$SymbolicOptimalControl($ARCVAR$)
+% returns the symbolic expression of the optimal control values for $MODELNAME$
+$INFODETAILS$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICOPTIMALCONTROLVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$SYMBOLICOPTIMALCONTROLVALUE$
+!ENDIF!

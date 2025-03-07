@@ -1,0 +1,18 @@
+//
+// standardmodelSymbolicCostate.oct
+//
+function out=$MODELNAME$SymbolicCostate($ARCVAR$)
+% returns the symbolic expression of the optimal control value
+$INFODETAILS$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICOPTIMALCOSTATEVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$SYMBOLICOPTIMALCOSTATEVALUE$
+!ENDIF!

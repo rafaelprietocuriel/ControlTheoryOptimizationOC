@@ -1,0 +1,12 @@
+//
+// impulsemodelDiscountedSalvagevalue.oct
+//
+function out=$MODELNAME$DiscountedSalvagevalue($ENDTIME$,$LRDEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the salvage value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LRDEPENDENTVAR2R$
+	
+$DISCOUNTEDSALVAGEVALUE$

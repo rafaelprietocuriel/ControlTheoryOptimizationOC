@@ -1,0 +1,10 @@
+//
+// standardmodelLocalSalvagevalue.oct
+//
+function out=$MODELNAME$LocalSalvagevalue($ENDTIME$,$LOCSTATE$,$PARVAR$)
+% returns the discounted salvage value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$LOCALSALVAGEVALUE$

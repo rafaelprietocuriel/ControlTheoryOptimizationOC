@@ -1,0 +1,65 @@
+Type
+impulsemodel
+
+Description
+Based on the models of (viglione2014) and (baldassarreetal2013) we build an economic framework to analyze the firms behavior using Impulse Control Theory applied in (chahimetal2013b).
+
+Modelname
+floodfirm0SimpleIII
+
+Variable
+state::K,H
+control::IK
+icontrol::u
+
+Statedynamics
+ode::DK=IK-deltaK*K
+ode::DH=0
+evt::DK=0
+evt::DH=u
+
+Objective
+int::w*log(1-P0*exp(alphaF*((W0+eta*t+xiH*H)/(alphaD*D)-H)))*(K^alpha*A^beta*D^(-1)-alphaK*IK^2)-P0*exp(alphaF*((W0+eta*t+xiH*H)/(alphaD*D)-H))*(1-exp(-(W0+eta*t+xiH*H)/(alphaD*D)))*(sigma+sigma1*K)-tau*IK^2
+
+sum::-(theta1+theta2*u)*exp(theta3*(HL+u))
+
+Salvagevalue
+func::(w*log(1-P0*exp(alphaF*((W0+eta*T+xiH*HR)/(alphaD*D)-HR)))*KR-P0*exp(alphaF*((W0+eta*T+xiH*HR)/(alphaD*D)-HR))*(1-exp(-(W0+eta*T+xiH*HR)/(alphaD*D)))*(sigma+sigma1*KR))/r
+
+Controlconstraint
+CC1::ineq::IK>=IKmin
+CC2::ineq::IK<=IKmax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0.03
+D::0.3
+A::1
+alpha::0.3
+beta::0.7
+alphaK::0.01 %later: sensitivity within interall (0.01, 0.5)
+alphaH::0.01 %later: sensitivity within interall (0.01, 0.5)
+deltaK::0.05
+deltaH::0.05
+theta1::100
+theta2::0.5
+theta3::0.005
+zetaH::0.5   % wo kommt das vor?
+alphaD::10
+deltaF::0.8
+alphaF::0.05
+kappamin::0
+xiH::0.3 %later: sensitivity within interall (0, 0.5)
+P0::0.014 %instead of w1=10
+W0::0
+eta::0.5
+IKmin::0
+sigma::1
+sigma1::1
+IKmax::100
+tau::0
+w::1

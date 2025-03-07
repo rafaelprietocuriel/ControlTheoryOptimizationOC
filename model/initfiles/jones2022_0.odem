@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+jones2022_0
+
+Description
+Tuberculosis model see castillo-chavezfeng1997 and vandendriesschewatmough2002
+
+Variable
+state::x,n
+
+Dynamics
+ode::Dx=beta-lambda*n*x
+ode::Dn=-(barb-delta-n)^2*((r+beta/x)*((epsilon+gamma)/r-1/(barb-delta-n))-gamma)
+
+
+Parameter
+r::1/90
+barb::0.049
+beta::2
+delta::1/90
+epsilon::0.26
+lambda::0.75
+gamma::0.375
+sigma::1

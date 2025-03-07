@@ -1,0 +1,63 @@
+Type
+standardmodel
+
+Modelname
+justcoalminlog
+
+% fN=KN
+% fR=KR
+% fC=KC
+%
+% production function
+% YI=sqrt(KP)*(thetat*sqrt(facwE*wE)+(1-thetat)*sqrt(wC))
+%
+% pollution function
+% P=phiC*fC+phiN*fN+wC+HC
+%
+% electricity
+% E=fN+fR
+%
+% electricity budget
+% BE=E-facwE*wE-HE
+%
+% coal budget
+% BC=fC-fN-wC-HC
+%
+% governmental expenditures
+% G=YI-H+PE*BE+PC*BC-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2
+%
+% social welfare function
+% G*sqrt(H)*(theta*sqrt(HC)+(1-theta)*sqrt(HE))*P^(-2)
+
+Variable
+state::K
+control::I
+
+Statedynamics
+ode::DK=I-delta*K
+
+Objective
+int::log(K^alpha-c*I^2)
+
+
+Controlconstraint
+CC::ineq::I>=I0
+
+Optimization
+type::max
+method::bvp
+
+ArcDefinition
+0::[]
+1::CC
+
+Control
+0::*::implicit
+1::*::explicit
+
+Parameter
+r::0.03
+alpha::0.5
+delta::0.05 % 5-40%
+c::10 % 10-150 USD/T/y
+I0::0

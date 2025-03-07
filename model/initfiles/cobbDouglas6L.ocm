@@ -1,0 +1,62 @@
+Type
+standardmodel
+
+Modelname
+cobbDouglas6L
+
+Variable
+state::K
+control::Ic
+
+
+Statedynamics 
+% growth rate for K: Matthew-Cobb-Douglas Function g(K,I)=a1*M1(K)*I^alpha1, M1(K) s-shaped
+% ode::DK=a1*(K+tau1)^theta1/(b1+(K+tau1)^theta1)*Ic^alpha1 - delta*K       					% general
+ode::DK=a1*(K+tau1)^theta1/(b1+(K+tau1)^theta1)*sqrt(Ic) - delta*K       					% sqrt          
+
+Objective
+% int::(LINEAR*a2*K + QUADRATIC*(a3*K^2+a4*K) + CONVCONC*(a5*(K+tau2)^theta2/(b5+(K+tau2)^theta2))) * (K+tau2)^beta2 - c1*Ic^2-c2*Ic             % general
+% int::(LINEAR*a2*K + QUADRATIC*(a3*K^2+a4*K) + CONVCONC*(a5*(K+tau2)^theta2/(b5+(K+tau2)^theta2))) * sqrt(K+tau2) - c1*Ic^2-c2*Ic              % sqrt
+						% Matthew weighted Cobb-Douglas function P(K,I)=P(K)=M(K)*K^beta2
+int::a2*K * sqrt(K+tau2) - c1*Ic^2-c2*Ic              % sqrt
+
+Optimizationtype
+max
+
+Controlconstraint
+CC1::ineq::Ic>=IMin
+CC2::ineq::Ic<=IMax
+
+ArcDefinition
+0::[]_1
+1::[]_2
+2::[]_3
+3::CC1
+4::CC2
+
+Parameter
+% LINEAR::1	% define type of Matthew weighting in OF; exactly one of LINEAR, QUADRATIC, CONVCONC must be 1, else 0
+% QUADRATIC::0
+% CONVCONC::0
+
+delta::0.1  	% parameters for state 
+a1::1
+theta1::2
+b1::1
+alpha1::0.5
+tau1::1e-3
+
+r::0.05  	% parameters for OF 
+a2::1
+a3::1
+a4::0
+a5::2
+theta2::2
+b5::1
+beta2::0.5
+c1::1
+c2::0
+tau2::1e-3
+
+IMin::0
+IMax::1

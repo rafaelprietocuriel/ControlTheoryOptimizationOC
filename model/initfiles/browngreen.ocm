@@ -1,0 +1,94 @@
+Type
+standardmodel
+
+Description
+Optimal Controls in Models of Economic Growth and the Environment (Moser 2010)
+% @MASTERSTHESIS{moser2010,
+% author = {E.~Moser},
+% title = {Optimal Controls in Models of Economic Growth and the Environment},
+% school = {Institut f\"ur Wirtschaftsmathematik, Technische Universit\"at Wien},
+% year = {2010}}
+
+Variable
+independent::t
+state::K,G
+control::RK,RG
+endtime::T
+costate::lambda1,lambda2
+lagrangemultcc::lm1:lm3 % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::DK=d*K^delta1*RK^delta2-phi*K
+ode::DG=e*G^sigma1*RG^sigma2-psi*G
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::log(b*K^alpha1*G^alpha2-w*(RK+RG)-a*epsilon^beta*K+tau)
+
+Salvagevalue
+
+Optimizationtype
+max
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::RK>=RKlow
+CC2::ineq::RG>=RGlow
+CC3::ineq::b*K^alpha1*G^alpha2-w*(RK+RG)-a*epsilon^beta*K>=low
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% these properties can depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+0::*::implicit
+1::RK::explicit
+1::RG::implicit
+2::RK::implicit
+2::RG::explicit
+3::RK::implicit
+3::RG::explicit
+4::*::explicit
+5::*::explicit
+
+% information on the used equations for the derivation of explicit analytical expressions of the Hamiltonian optimizing conditions.
+% Secondly also the variables, for which analytical expressions can be derived, are provided
+MaximizingDerivativeVariable
+3::RK,lm3
+
+MaximizingExplicitVariable
+3::lm3,RG
+
+Parameter
+r::0.05
+a::1
+b::1
+d::1
+e::1
+w::0.1
+alpha1::0.6
+alpha2::0.2
+beta::2
+delta1::0.3
+delta2::0.5
+sigma1::0.3
+sigma2::0.4
+phi::0.05
+psi::0.05
+epsilon::0.4
+RKlow::0
+RGlow::0
+tau::1
+low::0

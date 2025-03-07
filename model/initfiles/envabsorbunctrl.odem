@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Description
+self-regenerating environmental absorption efficiency and the soylent green scenario
+pollution stock (P), environmental absorption efficiency rate (A), emission rate (e), restoration effort (w)
+
+Modelname
+envabsorbunctrl
+
+Variable
+state::P,A
+
+Dynamics
+ode::DP=e-delta*A*P
+ode::DA=alpha+kappa*w-gamma*P
+
+Parameter
+alpha::0.0001
+gamma::0.05
+delta::1
+kappa::1
+w::0
+e::0

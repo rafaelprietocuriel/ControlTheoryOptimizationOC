@@ -1,0 +1,27 @@
+Type
+odemodel
+
+Description
+A simple 3-box carbon model
+
+Modelname
+carbon
+
+Variable
+state::na,nm,nd
+
+Dynamics
+ode::Dna= E+(kma*(Nm+xi*nm))-(kam*(Na+na))
+ode::Dnm=(kam*(Na+na))-(kma*(Nm+xi*nm))+(kdm*(Nd+nd))-(kmd*(Nm+nm))
+ode::Dnd=(kmd*(Nm+nm))-(kdm*(Nd+nd))
+
+Parameter
+E::0
+kma::1/7.53
+kam::1/9.73
+kmd::1/22.7
+kdm::1/1127
+Na::280
+Nm::kam/kma*Na
+Nd::kmd/kdm*Nm
+xi::10

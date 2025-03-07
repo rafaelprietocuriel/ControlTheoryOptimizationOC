@@ -1,0 +1,22 @@
+Type
+odemodel
+
+Modelname
+shallowlakeunctrl
+
+Description
+shallow lake model
+
+Variable
+state::P
+
+Dynamics
+ode::DP=n*u-b*P+rho*P^q/(m^q+P^q)
+
+Parameter
+b::0.55
+n::2
+rho::1
+m::1
+q::2
+u::1

@@ -1,0 +1,29 @@
+//
+// impulsemodelPlotContinuation.oct
+// this file is called during the continuation process if the 'OCCONTARG' option 'PlotCont' is set 'on'.
+
+function h=$MODELNAME$PlotContinuation($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,freepar,tangent,plotflag)
+% plotting commands called during the continuation process
+% the user can adapt this file to her/his needs
+$INFODETAILS$
+	
+global OCMATCONT IOCMATFTE
+	
+numarc=numel($ARCVAR$);
+color=$ARCCOLOR$;
+leftarcindex=OCMATCONT.HE.TIMEDDATA.leftarcindex;
+rightarcindex=OCMATCONT.HE.TIMEDDATA.rightarcindex;
+h=zeros(1,numarc);
+	
+for ii=1:numarc
+	h(ii)=plot(depvar(1,leftarcindex(ii):rightarcindex(ii)),depvar(2,leftarcindex(ii):rightarcindex(ii)));
+	set(h(ii),'Color',color($ARCVAR$(ii)+1,:));
+	if ii==1
+		hold on
+	end
+end
+plot(freepar(IOCMATFTE.initialdepvarcoord(1)),freepar(IOCMATFTE.initialdepvarcoord(2)),'xr',freepar(IOCMATFTE.enddepvarcoord(1)),freepar(IOCMATFTE.enddepvarcoord(2)),'xk')
+hold off
+	
+xlabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')

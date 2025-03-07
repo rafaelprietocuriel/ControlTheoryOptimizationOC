@@ -1,0 +1,17 @@
+//
+// standardmodelSwitchingFunction.oct
+//
+function out=$MODELNAME$SwitchingFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the values for the switching conditions for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$SWITCHINGVALUE$
+!ENDADDARCCASE!
+end

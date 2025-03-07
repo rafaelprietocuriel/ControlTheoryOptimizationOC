@@ -1,0 +1,18 @@
+//
+// standarddiffmodelSymbolicCanonicalSystemMap.oct
+//
+
+function out=$MODELNAME$SymbolicCanonicalSystemMap($ARCVAR$,$SUBSFLAG$)
+% returns the implicit expressions for the canonical systems map
+$INFODETAILS$
+
+	
+$SYMBOLICCANONICALSYSTEMMAP$
+	
+if $SUBSFLAG$
+	$CONTROL$=$MODELNAME$SymbolicOptimalControl($ARCVAR$);
+!IF $CONSTRAINTNUM$!
+	[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$SymbolicLagrangeMultiplier($ARCVAR$);
+!ENDIF!
+	$CONTROLVALUESUBSTITUTION$
+end

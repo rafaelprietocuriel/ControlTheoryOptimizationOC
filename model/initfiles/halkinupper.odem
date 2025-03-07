@@ -1,0 +1,22 @@
+Type
+odemodel
+
+Modelname
+halkinupper
+
+Description
+full model
+
+Variable
+state::x,lambda,d3lambda
+
+Dynamics
+ode::Dx=umax+x*(delta-x/a)
+ode::Dlambda=1-lambda*(delta-2*x/a-r)
+ode::Dd3lambda=((r*lambda+1-lambda*(delta-2*x/a))*(r-delta+2*x/a)+2/a*(umax+x*(delta-x/a))*lambda)*(r-delta+2*x/a)-2/a*(umax+x*(delta-x/a))*(r*lambda+1-lambda*(delta-2*x/a))+4/a*((umax+x*(delta-x/a))*(delta-x/a)-2*x/a*(umax+x*(delta-x/a)))*lambda
+
+Parameter
+r::0
+delta::1
+a::1
+umax::1

@@ -1,0 +1,31 @@
+Type
+standardmodel
+
+Description
+the second stage after a period of recession
+
+Variable
+state::X
+control::p
+
+Statedynamics
+ode::DX=kappa*(gamma1*p-X)
+
+Objective
+int::p*(m-p/X^beta1)-C
+
+Controlconstraint
+CC::ineq::m-p/X^beta1>=Qlow % Q:=m-p/X^beta
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.04
+m::3
+beta1::0.5
+C::7.5
+Qlow::0
+kappa::2
+gamma1::5

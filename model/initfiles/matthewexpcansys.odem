@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Description
+uncontrolled coin model 
+Modelname
+matthewexpcansys
+
+Variable
+state::K,lambda1
+Dynamics
+ode::dK=1-c2/lambda1/phi-delta*K+a-d/(K+tau)
+ode::dlambda1=r*lambda1-c1/(K+f)-lambda1*(-delta+d/(K+tau)^2)
+
+Parameter
+r::0.03
+a::1
+delta::0.1
+c1::1
+c2::0.5
+d::0
+f::1
+phi::1
+tau::1e-3

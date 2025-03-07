@@ -1,0 +1,34 @@
+Type
+ppdemodel
+
+Description
+test model for non-local ODEs
+
+Variable
+state::S(p,t),I(p,t),J(t)
+control::u(p,t)
+space::p
+
+Spacegeometry
+intvl::[0,1] % 1D, interval
+
+Exogenousfunction
+sigmap::sigma0+sigma*p
+alphap::alpha*sigmap
+
+Statedynamics
+ode::DtS=-sigmap*J*S+u*I
+ode::DtI=sigmap*J*S-u*I
+int::J=Int[alphap*I]Dp
+Objective
+expdisc::r 
+int::Int[-q*S+c*u^2*I]DtDp
+
+
+Parameter
+sigma0::0.5
+sigma::1
+c::0.5
+alpha::0.5
+q::1
+r::0.05

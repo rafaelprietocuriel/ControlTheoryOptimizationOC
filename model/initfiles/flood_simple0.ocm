@@ -1,0 +1,48 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::ky,kd
+control::c
+
+
+
+Statedynamics
+%introducing tau for a better numeric solution, kappa is weighting the damage of k_d, jota general&constant:
+ ode::Dky=A*ky^alpha-c-deltay*ky  -    omega*0.5*(1+(Wbase-(1-zetad)*kd)+tau2)/sqrt((Wbase-(1-zetad)*kd+tau2)^2+tau1)*(1-1/(1+Wbase^2))*ky  %investmentcosts*exp(theta*kd)
+ ode::Dkd=                                  -deltad*kd-kappa*omega*0.5*(1+((Wbase-(1-zetad)*kd)+tau2)/sqrt((Wbase-(1-zetad)*kd+tau2)^2+tau1))*(1-1/(1+Wbase^2))*kd
+
+
+Objective
+expdisc::rho 
+int::log(c)
+
+Controlconstraint % i_dentifier has to contain an alphabetic character
+CC1::ineq::c>=clow
+CC2::ineq::c<=A*ky^alpha
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+rho::0.03 
+alpha::0.7
+deltay::0.1
+deltad::0.01
+A::0.8
+zetad::0.5
+clow::0
+eta::50
+kappa::1
+tau1::1
+tau2::0
+kappam::1
+kappas::10
+i_dlow::0
+Wbase::0
+omega::1

@@ -1,0 +1,35 @@
+Type
+odemodel
+
+Modelname
+cancertreatment_metro_cc
+
+Description
+metronomic chemotherapy with constant controls from schaettlerledzewicz2015 p. 254ff
+
+Variable
+state::p,q,r %,B
+
+Dynamics
+ode::Dp=-xi*p*log((p+tau*tau1)/(q+tau*tau2))-theta*p*r-phi1*p*u
+ode::Dq=b*p-(mu+d*(p+tau*tau1)^(2/3))*q-phi2*q*u
+ode::Dr=alpha*(p-beta*p^2)*r+gamma-delta*r+phi3*r*u
+
+
+Parameter
+alpha::0.0529
+beta::0.00291
+gamma::0.05
+delta::0.3743
+theta::1
+xi::0.0347
+b::5
+d::0.0667
+mu::0
+u::0
+phi1::0.005
+phi2::0.06
+phi3::0.02
+tau::0
+tau1::0.001
+tau2::0.001

@@ -1,0 +1,23 @@
+function out=$MODELNAME$CanonicalSystemImplicitNumericalParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of canonical system together with the control dynamics 
+% for the implicitly given controls.
+$INFODETAILS$
+	
+out = jacobiancsd(@$MODELNAME$CanonicalSystemImplicit,$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+function A=jacobiancsd(fun,$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% JACOBIANCSD    Complex Step Jacobian
+%
+% By Yi Cao at Cranfield University, 02/01/2008
+%
+z=fun($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$); % function value
+	
+n=numel($PARVAR$);        % size of dependent variable
+m=numel(z);                     % size of output argument
+A=zeros(m,n);                   % allocate memory for the Jacobian matrix
+h=n*eps;                        % differentiation step size
+for k=1:n                       % loop for each dependent variable
+	$PARVAR$1=$PARVAR$;                       % reference point
+	$PARVAR$1(k)=$PARVAR$1(k)+h*i;            % increment in kth dependent variable
+	A(:,k)=imag(fun($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$1,$ARCVAR$))/h; % complex step differentiation
+end

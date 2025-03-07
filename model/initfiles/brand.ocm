@@ -1,0 +1,41 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::X
+control::p
+
+Statedynamics
+ode::DX=kappa*(gamma1*p-X)
+
+Objective
+expdisc::rho
+int::varmu*(c2*sqrt(X))+lambda2*p*(m-alpha-p/X^beta1)
+
+Controlconstraint
+CC1::ineq::m-alpha-p/X^beta1>=Qlow % Q:=m-alpha-p/X^beta
+CC2::ineq::p>=plow % Q:=m-alpha-p/X^beta
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0.04
+m::3
+beta1::0.5
+Qlow::0
+kappa::2
+gamma1::5
+varmu::0.5
+delta::0.1
+alpha::0.8
+plow::0
+c1::1
+c2::1
+rho::r+varmu
+lambda2::varmu*c1/(r+varmu-delta)

@@ -1,0 +1,36 @@
+Type
+standardmodel
+
+Description
+model of the firm with option to sell immediately
+
+
+Variable
+state::K
+control::I
+costate::l
+
+Statedynamics
+ode::DK=I-delta*K
+
+Objective
+int::a*K-b/2*K^2-c*I-I^2/2
+
+Salvagevalue
+func::s*K+m
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::I>=0
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+r::0.1
+b::1
+c::100
+a::100
+s::150
+m::18000
+delta::0.2

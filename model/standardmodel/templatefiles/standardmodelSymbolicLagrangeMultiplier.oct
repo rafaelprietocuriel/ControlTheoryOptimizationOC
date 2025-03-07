@@ -1,0 +1,44 @@
+function [$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$SymbolicLagrangeMultiplier($ARCVAR$)
+% returns the symbolic expressions for the Lagrangian multipliers for inequality constraints for $MODELNAME$
+$INFODETAILS$
+	
+$LAGRANGEMULTCC$=$MODELNAME$SymbolicControlLagrangeMultiplier($ARCVAR$);
+$LAGRANGEMULTSC$=$MODELNAME$SymbolicStateLagrangeMultiplier($ARCVAR$);
+	
+%-------------------------------------------------------------------------
+function out=$MODELNAME$SymbolicControlLagrangeMultiplier($ARCVAR$)
+% returns the symbolic expressions for the Lagrangian multipliers for (mixed) control inequality constraints for $MODELNAME$
+	
+!IF $CONTROLCONSTRAINTNUM$!
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERLAGRANGEMULTIPLIER$
+		$SYMBOLICCONTROLLAGRANGEMULTIPLIER$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!ENDIF!
+!IF ~$CONTROLCONSTRAINTNUM$!
+out=sym('[]');
+!ENDIF!
+	
+	
+%-------------------------------------------------------------------------
+function out=$MODELNAME$SymbolicStateLagrangeMultiplier($ARCVAR$)
+% returns the symbolic expressions for the Lagrangian multipliers for pure state inequality constraints for $MODELNAME$
+	
+!IF $STATECONSTRAINTNUM$!
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERLAGRANGEMULTIPLIER$
+		$SYMBOLICSTATELAGRANGEMULTIPLIER$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!ENDIF!
+!IF ~$STATECONSTRAINTNUM$!
+out=sym([]);
+!ENDIF!

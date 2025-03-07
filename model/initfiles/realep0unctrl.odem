@@ -1,0 +1,33 @@
+Type
+odemodel
+
+Description
+Resource allocation for optimal control of epidemics: Can treatment compete?
+
+Modelname
+realep0unctrl
+
+Variable
+state::S,I,T
+
+Dynamics
+ ode::DS=etaS+b*(S+I+T)-(beta0-Cbeta*pr)*(I+gamma*T)*S/(S+I+T)-dS*S
+ ode::DI=etaI+(beta0-Cbeta*pr)*(I+gamma*T)*S/(S+I+T)-(nu0+Cnu*tr)-dI*I
+ ode::DT=etaT+(nu0+Cnu*tr)-dT*T
+ 
+Parameter
+b::0.015
+beta0::0.018
+Cbeta::1e-4
+dS::0.03
+dI::0.04
+dT::0.02
+nu0::1e3
+Cnu::12
+gamma::0.05
+pr::1e5
+tr::1e5
+etaS::129500
+etaI::22000
+etaT::0
+

@@ -1,0 +1,23 @@
+Type
+odemodel
+
+Modelname
+cancertreatmentunc
+
+Description
+4-state multi-drug cancer treatment model with infinite horizon
+
+Variable
+state::N1,N2,N3
+
+Dynamics
+ode::DN1=-a1*N1+2*a3*(1-u)*N3
+ode::DN2=a1*N1-a2*(1-v)*N2
+ode::DN3=a2*(1-v)*N2-a3*N3
+
+Parameter
+a1::0.197
+a2::0.395
+a3::0.107
+u::0
+v::0

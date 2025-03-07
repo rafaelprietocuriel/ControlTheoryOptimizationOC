@@ -1,0 +1,31 @@
+//
+// standardmodelImplicitControlDynamics.oct
+//
+function [dudt,dudx,coord]=$MODELNAME$ImplicitControlDynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% $UPPERMODELNAME$IMPLICITCONTROLDYNAMICS returns the dynamics of the implicit control and the deriviative with respect to the generalized state.
+%
+% DUDT=$UPPERMODELNAME$IMPLICITCONTROLDYNAMICS($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%
+% [DUDT,DUDX,COORD]=$UPPERMODELNAME$IMPLICITCONTROLDYNAMICS($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+$INFODETAILS$
+	
+[luu,coord]=$MODELNAME$D2LagrangianDU2($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+dim=$IMPLICITCONTROLNUM$; % number of implicit controls
+if dim($ARCVAR$+1)
+	lux=$MODELNAME$D2LagrangianDUDX($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	dxdt=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+	luu=reshape(luu,dim($ARCVAR$+1),dim($ARCVAR$+1),[]);
+	lux=reshape(lux,dim($ARCVAR$+1),$STATECOSTATENUM$,[]);
+	dudx=zeros(dim($ARCVAR$+1),$STATECOSTATENUM$,length(t));
+	dudt=zeros(dim($ARCVAR$+1),length(t));
+	for ii=1:length(t)
+		dudx(:,:,ii)=-luu(:,:,ii)\lux(:,:,ii);
+		dudt(:,ii)=dudx(:,:,ii)*dxdt($STATECOSTATECOORD$,ii);
+	end
+else
+	dudt=[];
+	dudx=[];
+end
+%dudt2=$MODELNAME$ExplicitControlDynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);

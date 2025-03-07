@@ -1,0 +1,25 @@
+Type
+odemodel
+
+Modelname
+siw
+
+Description
+uncontrolled model for resurgent epidemics
+
+Variable
+state::S,I,W
+
+Dynamics
+ode::DS=upsilon*(S+I+W)-alpha*I*S+(1-eta)*vartheta*I+psi*W-mu*S
+ode::DI=alpha*I*S-(vartheta+delta+mu)*I
+ode::DW=eta*vartheta*I-(psi+mu)*W
+
+Parameter
+alpha::0.175
+upsilon::1/(70*365)
+mu::1/(70*365)
+delta::0.00225
+vartheta::1/10
+psi::0.0002
+eta::0.85

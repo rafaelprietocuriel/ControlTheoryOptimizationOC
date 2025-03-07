@@ -1,0 +1,29 @@
+Type
+odemodel
+
+Modelname
+seirpopc
+
+Description
+Global analysis of an SEIR model with varying population size and vaccination, sunhsieh2010
+
+Variable
+state::S,E,I,R
+
+Dynamics
+ode::DS=b*(S+E+I+R)-l*(1-a)*S*I/((S+E+I+R))-(1-sigma)*a*l*S*I/(S+E+I+R)-(sigma*a+d)*S
+ode::DE=l*(1-a)*S*I/(S+E+I+R)+(1-sigma)*a*l*S*I/(S+E+I+R)-(d+epsilon+dE)*E
+ode::DI=epsilon*E-(alpha+beta+d)*I
+ode::DR=sigma*a*S+beta*I-d*R
+
+
+Parameter
+b::0.03507
+beta:: 0.0859
+d::0.03507
+dE::0.0003366
+alpha::0.0031
+l:: 0.299
+epsilon:: 0.034
+sigma::0.8
+a::0.5

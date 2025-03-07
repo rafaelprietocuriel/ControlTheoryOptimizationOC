@@ -1,0 +1,22 @@
+//
+// standardmodelNonsmoothJacobian.oct
+//
+function out=$MODELNAME$NonsmoothJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the value of the exogenously given functions
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$
+		$NONSMOOTHJACOBIANTERM$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$NONSMOOTHJACOBIANTERM$
+!ENDIF!

@@ -1,0 +1,22 @@
+//
+// standardmodelImplicitG.oct
+//
+function out=$MODELNAME$ImplicitG($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$CONTROLDYNAMICSVAR$)
+%
+% returns the value of the function G. The input argument '$CONTROLDYNAMICSVAR$' denotes 
+% the value of the control dynamics of the implicit controls.
+
+$PARAMETERVALUES$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$IMPLICITG$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$IMPLICITG$
+!ENDIF!

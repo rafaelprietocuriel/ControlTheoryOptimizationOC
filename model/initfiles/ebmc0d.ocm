@@ -1,0 +1,64 @@
+Type
+standardmodel
+
+Modelname
+ebmc0d
+
+Description
+An energy balance climate model with exponential damage function in 0D
+
+Modelname
+ebmc0d
+
+Variable
+state::k,T,M,S
+control::c,q
+
+Statedynamics
+ode::Dk=L0^alphaL*k^alphaK*q^alphaq-(delta+g)*k-c
+ode::DT=-B*T+xi*log(M/Mpre) % T denotes the temperature anomaly, which is the difference between the temperature at a given benchmark period (Tpre=14) and the current period. 
+ode::DM=m*(Mpre-M)+q
+ode::DS=-q
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'rho'
+int::exp(-D*(1-gamma)*T)*c^(1-gamma)/(1-gamma)-tau*S
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::c<=L0^alphaL*k^alphaK*q^alphaq
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+a::0
+r::0.03
+alphaL::0
+alphaK::0.3
+alphaq::0.03
+delta::0.03
+L0::1
+m::2
+gamma::0.5
+D::1
+Mpre::596
+n::0
+xi::5.35
+B::2
+tau::0
+epsilon::1
+epsilon1::0
+epsilon2::0
+g::(a+alphaL*n)/(1-alphaK)
+rho::r-gamma*n-(1-gamma)*g
+
+% the parameter values are taken from brocketal2013
+% @Article{brocketal2013,
+  % Title                    = {Energy balance climate models and general equilibrium optimal mitigation policies},
+  % Author                   = {W.A.~Brock and G.~Engstr\"om and D.~Grass and A.~Xepapadeas},
+  % Journal                  = {Journal of Economic Dynamics and Control},
+  % Year                     = {2013},
+  % Number                   = {12},
+  % Pages                    = {2371--2396},
+  % Volume                   = {37}}

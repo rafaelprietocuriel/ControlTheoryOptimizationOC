@@ -1,0 +1,32 @@
+Type
+standardmodel
+
+Modelname
+dsge
+
+Description
+Is protecting the charismatic species really enough? Tourism strategies to optimally balance recreation and conservation in a predator-prey system
+
+Variable
+state::x
+control::u1,u2
+
+Statedynamics
+ode::Dx=(alpha*A*x^(alpha-1)*u2^(1-alpha)-rho)*x+(1-alpha)*A*x^alpha*u2^(-alpha)*u2-u1
+
+Objective
+int::(u1*(1-u2)^psi)^(1-gamma)/(1-gamma)
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% these properties can depend on the constraint combination, therefore the syntax is given by
+% arcid::controlvariable::property
+Control
+0::*::implicit
+
+Parameter
+r::0.0105
+A::1
+alpha::0.4
+rho::0.0196
+gamma::2
+psi::1.8011

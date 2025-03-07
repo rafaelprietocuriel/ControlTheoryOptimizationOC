@@ -1,0 +1,30 @@
+//
+// impulsemodelCanonicalSystem.oct
+//
+// Template file for the canonical system of a standard model
+// this file is used for the automatic file generation
+// empty lines and lines starting with // are ignored 
+// terms between $...$ are variables which are replaced during file generation
+// terms between !...! are commands for the file generation, possible commands are 
+// !IF ...!,!ENDIF! ... corresponds to a usual if clause
+// !STARTADDARCCASE!,!ENDADDARCCASE!, lines between these commands are repeated in a 
+// switch case statement for any specific arc
+// a tabulator is interpreted as an empty line in the corresponding generated file
+function out=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the canonical systems dynamics
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+%$EXOGENOUSFUNCTIONDX$=$MODELNAME$D1ExogenousFunctionDx($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+$CANONICALSYSTEMDYNAMICS$

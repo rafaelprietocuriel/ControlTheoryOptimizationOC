@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Modelname
+dynamo0p1unctrl
+
+Description
+Rosenzweig Mac Arthur version for DYNAMO
+Variable
+state::R,P
+
+Dynamics
+ode::DR=a*R*(1-R/Rmax)-b*R/(m+b*q*R)*P
+ode::DP=tau+c*b*R/(m+b*q*R)*P-d*P-k*u*P
+
+Parameter
+a::0.182173392445796
+c::0.005909181533081
+d::0.691674487750153
+q::0.005148080493056
+Rmax::295163
+b::0.005
+k::1
+tau::0
+m::1
+u::0

@@ -1,0 +1,21 @@
+function J=$MODELNAME$BCJacobian4Guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,pararg,switchtime,$ARCVAR$,edge,arc,arcoffset)
+% returns the Jacobian of the guard boundary conditions for the saddle path continuation
+%$INFODETAILS$
+	
+if ~arcoffset
+	J=-$MODELNAME$BCJacobian4GuardArc($DEPENDENTVAR$b(:,arc),pararg,switchtime,edge(1,arc));
+else
+	J=$MODELNAME$BCJacobian4GuardArc($DEPENDENTVAR$a(:,arc+1),pararg,switchtime,edge(2,arc));
+end
+	
+%--------------------------------------------------------------------------
+function J=$MODELNAME$BCJacobian4GuardArc($DEPENDENTVAR$,pararg,switchtime,$ARCVAR$,$JUMPVAR$)
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERALGEBRAICEQUATION$
+		J=$ZEROSNUMEQ$;
+		J(1,1:$STATECOSTATENUM$)=$MODELNAME$DHamiltonianDx(switchtime,$DEPENDENTVAR$,pararg,$ARCVAR$,$JUMPVAR$);
+	
+!ENDADDARCCASE!
+end

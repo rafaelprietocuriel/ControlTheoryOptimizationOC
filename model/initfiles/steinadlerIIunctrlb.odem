@@ -1,0 +1,20 @@
+Type
+odemodel
+
+Description
+The uncontrolled Steinadler model
+
+Variable
+state::H,S
+
+Dynamics
+ode::DH=a*(1-H/omega)*H-b*H/(1+q*H)*S
+ode::DS=(m*b*H/(1+q*H)-d)*S
+
+Parameter
+a::1.1037
+b::15.0084
+d::0.001
+q::1
+m::1
+omega::3831

@@ -1,0 +1,114 @@
+function out=$MODELNAME$4SaddlePathContinuation()
+%
+% main function for the bvpcont saddle path continuation process
+$INFODETAILS$
+	
+out{1}=@dynamics;
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{2}{3}=@derivativetime;
+!ENDIF!
+out{3}{1}=@hessian;
+out{3}{2}=@parameterhessian;
+out{5}{1}=@bcinitial;
+out{5}{2}=@bcasymptotic;
+out{6}{1}=@bcjacobianinitial;
+out{6}{2}=@bcjacobianasymptotic;
+% functions for hybrid structure and its discretization
+out{7}{1}=@hybridinfo;
+out{7}{2}=@domain;
+out{7}{3}=@domaindiscretization;
+out{7}{4}=@timesettransformation;
+	
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function dxdt=dynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+dxdt=$MODELNAME$Dynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function J=jacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!IF ~$ISAUTONOMOUS$!
+	
+%--------------------------------------------------------------------------
+function J=derivativetime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsDerivativeTime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function res=bcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$a(targetcoordinate,1)-initialstate;
+	
+%--------------------------------------------------------------------------
+function res=bcasymptotic($DEPENDENTVAR$b,asymptoticmatrix,saddlepoint)
+res=asymptoticmatrix($STATECOORD$,:)'*($DEPENDENTVAR$b($STATECOORD$,end)-saddlepoint($STATECOORD$));
+
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianinitial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector)
+Ja=[];
+Jb=[]; 
+Jpar=[];
+if length(targetcoordinate)==1
+	Ja(targetcoordinate,targetcoordinate)=1;
+	Jpar(targetcoordinate,1)=-continuationvector;
+	Jb=$ZEROSONESTATENUM$; 	
+end
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianasymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint)
+Ja=[];
+Jb=[]; 
+Jpar=[];
+if size(asymptoticmatrix,1)==2
+	Ja=$ZEROSTWOSTATENUM$;
+	Jb(:,$STATECOORD$)=asymptoticmatrix(:,$STATECOORD$); 	
+end
+	
+%--------------------------------------------------------------------------
+function infoH=hybridinfo()
+
+infoH.arcarg=$ARCARGUMENT$; % replaces name of arcnum arcidentifier
+infoH.edge=$EDGES$; % each row represents a possible transition between the states of the hybrid system    
+	
+%--------------------------------------------------------------------------
+function infoD=domain($ARCVAR$)
+% returns general information about the domain for each arc
+infoD=$MODELNAME$ArcInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function infoD=domaindiscretization($ARCVAR$)
+% returns information about the discretization for each arc
+infoD=$MODELNAME$ArcDiscretizationInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function infoT=timesettransformation()
+infoT.normalization=1; % the timenterval of the nth arc is normalized to [n,n+1]
+%infoT.infinity=-0.1; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1]
+%infoT.asymptoticapproximation=inf;
+infoT.infinity=0; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1], infoT.infinity<0
+infoT.asymptoticapproximation=100;
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent)
+h=$MODELNAME$PlotContinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','$MODELTYPE$','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

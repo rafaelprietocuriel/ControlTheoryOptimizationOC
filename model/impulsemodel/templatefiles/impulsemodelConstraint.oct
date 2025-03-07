@@ -1,0 +1,23 @@
+//
+// impulsemodelConstraint.oct
+//
+
+function out=$MODELNAME$Constraint($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the values of the constraints that have to be satisfied
+$INFODETAILS$
+
+	
+!IF $CONSTRAINTNUM$!
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+	
+$CONSTRAINT$
+!ENDIF!
+!IF ~$CONSTRAINTNUM$!
+out=[];
+!ENDIF!

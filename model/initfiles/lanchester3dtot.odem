@@ -1,0 +1,21 @@
+Type
+odemodel
+
+Modelname
+lanchester3dtot
+
+Description
+a descriptive model
+
+Variable
+state::I0,I1,I2
+
+Dynamics
+ode::DI0=-y1*I1-y2*I2
+ode::DI1=-y0*I0-(1-y2)*I2
+ode::DI2=-(1-y0)*I0-(1-y1)*I1
+
+Parameter
+y0::0.5
+y1::0.5
+y2::0.5

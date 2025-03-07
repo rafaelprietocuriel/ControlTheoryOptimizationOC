@@ -1,0 +1,29 @@
+//
+// standarddiffmodelObjectiveFunctionJacobian.oct
+//
+function [Jx Jl]=$MODELNAME$ObjectiveFunctionJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the derivative of the objective function (with replaced control values from the maximizing condition) with respect to state and costate
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$DISCOBJECTIVEFUNCTIONJACOBIANX$
+			
+		$DISCOBJECTIVEFUNCTIONJACOBIANL$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$DISCOBJECTIVEFUNCTIONJACOBIANX$
+	
+$DISCOBJECTIVEFUNCTIONJACOBIANL$
+!ENDIF!

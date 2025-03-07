@@ -1,0 +1,144 @@
+\begin{theindex}
+
+  \item Classes
+    \subitem dynprimitive, \hyperindexformat{\indexbf}{94}
+    \subitem octrajectory, \hyperindexformat{\indexbf}{92}
+    \subitem stdocmodel, \hyperindexformat{\indexbf}{91}
+  \item Command
+    \subitem \lstinline+stdocmodel+, \hyperpage{5}, \hyperpage{17}, 
+		\hyperindexformat{\indexbf}{42}
+    \subitem continuation
+      \subsubitem \lstinline+addarc+, \hyperpage{22}, 
+		\hyperindexformat{\indexbf}{66}
+      \subsubitem \lstinline+bvpcont+, \hyperpage{9}, \hyperpage{12}, 
+		\hyperpage{20}, \hyperpage{31}, \hyperpage{35}, 
+		\hyperpage{38}, \hyperindexformat{\indexbf}{63}
+      \subsubitem \lstinline+delete+, \hyperindexformat{\indexbf}{64}
+      \subsubitem \lstinline+initocmat_AE_AE+, \hyperpage{20}, 
+		\hyperpage{30}, \hyperindexformat{\indexbf}{63}
+      \subsubitem \lstinline+initocmat_AE_EP+, \hyperpage{8}, 
+		\hyperpage{11}, \hyperpage{20}, \hyperpage{28}, 
+		\hyperpage{30}, \hyperindexformat{\indexbf}{61}
+      \subsubitem \lstinline+partialarc+, \hyperpage{22}, 
+		\hyperindexformat{\indexbf}{66}
+      \subsubitem \lstinline+store+, \hyperpage{9}, \hyperpage{18}, 
+		\hyperpage{20}, \hyperpage{31}, 
+		\hyperindexformat{\indexbf}{64}
+    \subitem dynprimitive
+      \subsubitem \lstinline+arcargument+, \hyperpage{19}, 
+		\hyperindexformat{\indexbf}{56}
+      \subsubitem \lstinline+calcep+, \hyperpage{7}, \hyperpage{17}, 
+		\hyperindexformat{\indexbf}{51}
+      \subsubitem \lstinline+canonicalsystem+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{60}
+      \subsubitem \lstinline+control+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{60}
+      \subsubitem \lstinline+costate+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{59}
+      \subsubitem \lstinline+dependentvar+, \hyperpage{7}, 
+		\hyperindexformat{\indexbf}{56}
+      \subsubitem \lstinline+eig+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{58}
+      \subsubitem \lstinline+equilibrium+, 
+		\hyperindexformat{\see{stdocmodel, \lstinline+equilibrium+}}{56}
+      \subsubitem \lstinline+hamiltonian+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{60}
+      \subsubitem \lstinline+imag+, \hyperindexformat{\indexbf}{57}
+      \subsubitem \lstinline+isadmissible+, \hyperpage{8}, 
+		\hyperpage{18}, \hyperindexformat{\indexbf}{54}
+      \subsubitem \lstinline+issaddle+, \hyperpage{8}, \hyperpage{19}, 
+		\hyperindexformat{\indexbf}{58}
+      \subsubitem \lstinline+jacobian+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{60}
+      \subsubitem \lstinline+lagrangemultiplier+, 
+		\hyperindexformat{\indexbf}{60}
+      \subsubitem \lstinline+real+, \hyperindexformat{\indexbf}{56}
+      \subsubitem \lstinline+remspuriousimag+, 
+		\hyperindexformat{\indexbf}{57}
+      \subsubitem \lstinline+state+, \hyperpage{8}, 
+		\hyperindexformat{\indexbf}{59}
+      \subsubitem \lstinline+store+, 
+		\hyperindexformat{\see{stdocmodel, \lstinline+store+}}{55}
+      \subsubitem isadmissible, \hyperpage{34}, \hyperpage{70}
+      \subsubitem issaddle, \hyperpage{34}, \hyperpage{70}
+    \subitem Initialization
+      \subsubitem \lstinline+makefile4ocmat+, \hyperpage{4}, 
+		\hyperpage{17}, \hyperindexformat{\indexbf}{43}
+      \subsubitem \lstinline+moveocmatfiles+, \hyperpage{5}, 
+		\hyperpage{17}, \hyperindexformat{\indexbf}{44}
+      \subsubitem \lstinline+processinitfile+, \hyperpage{3}, 
+		\hyperpage{16}, \hyperindexformat{\indexbf}{41}
+    \subitem octrajectory
+      \subsubitem \lstinline+line+, \hyperindexformat{\indexbf}{74}
+      \subsubitem \lstinline+plot+, \hyperindexformat{\indexbf}{75}
+      \subsubitem \lstinline+plot3+, \hyperindexformat{\indexbf}{75}
+    \subitem options
+      \subsubitem \lstinline+getocoptions+, 
+		\hyperindexformat{\indexbf}{72}
+      \subsubitem \lstinline+loadocoptions+, 
+		\hyperindexformat{\indexbf}{73}
+      \subsubitem \lstinline+setocoptions+, 
+		\hyperindexformat{\indexbf}{72}
+      \subsubitem \lstinline+showocoptions+, 
+		\hyperindexformat{\indexbf}{73}
+    \subitem stdocmodel
+      \subsubitem \lstinline+addmodelpath+, 
+		\hyperindexformat{\indexbf}{46}
+      \subsubitem \lstinline+canonicalsystem+, 
+		\hyperindexformat{\indexbf}{50}
+      \subsubitem \lstinline+changeparametervalue+, 
+		\hyperindexformat{\indexbf}{45}
+      \subsubitem \lstinline+control+, \hyperindexformat{\indexbf}{49}
+      \subsubitem \lstinline+costate+, \hyperindexformat{\indexbf}{49}
+      \subsubitem \lstinline+diary+, \hyperindexformat{\indexbf}{71}
+      \subsubitem \lstinline+equilibrium+, 
+		\hyperindexformat{\indexbf}{56}
+      \subsubitem \lstinline+findindifferencepoint+, \hyperpage{11}, 
+		\hyperpage{30}, \hyperindexformat{\indexbf}{68}
+      \subsubitem \lstinline+hamiltonian+, 
+		\hyperindexformat{\indexbf}{49}
+      \subsubitem \lstinline+history+, \hyperindexformat{\indexbf}{71}
+      \subsubitem \lstinline+initocmat_AE_AE+, \hyperpage{36}
+      \subsubitem \lstinline+initocmat_AE_EP+, \hyperpage{35}
+      \subsubitem \lstinline+initocmat_AE_IS+, 
+		\hyperindexformat{\indexbf}{69}
+      \subsubitem \lstinline+lagrangemultiplier+, 
+		\hyperindexformat{\indexbf}{49}
+      \subsubitem \lstinline+load+, \hyperindexformat{\indexbf}{48}
+      \subsubitem \lstinline+parametervalue+, 
+		\hyperindexformat{\indexbf}{44}
+      \subsubitem \lstinline+plot3cont+, 
+		\hyperindexformat{\indexbf}{80}
+      \subsubitem \lstinline+plot3limitset+, 
+		\hyperindexformat{\indexbf}{82}
+      \subsubitem \lstinline+plotcont+, \hyperindexformat{\indexbf}{79}
+      \subsubitem \lstinline+plotlimitset+, 
+		\hyperindexformat{\indexbf}{81}
+      \subsubitem \lstinline+remark+, \hyperindexformat{\indexbf}{70}
+      \subsubitem \lstinline+rmmodelpath+, 
+		\hyperindexformat{\indexbf}{46}
+      \subsubitem \lstinline+save+, \hyperindexformat{\indexbf}{47}
+      \subsubitem \lstinline+state+, \hyperindexformat{\indexbf}{49}
+      \subsubitem \lstinline+store+, \hyperindexformat{\indexbf}{55}
+      \subsubitem \lstinline+subsparametervalue+, \hyperpage{7}, 
+		\hyperindexformat{\indexbf}{46}
+      \subsubitem calcep, \hyperpage{34}, \hyperpage{70}
+      \subsubitem changeparametervalue, \hyperpage{28}, \hyperpage{34}
+      \subsubitem equilibrium, \hyperpage{34}
+      \subsubitem findindifferencepoint, \hyperpage{37}
+    \subitem tools
+      \subsubitem \lstinline+gettag+, \hyperindexformat{\indexbf}{83}
+      \subsubitem \lstinline+remark+, \hyperindexformat{\indexbf}{71}
+
+  \indexspace
+
+  \item indifference threshold, \hyperpage{9}, \hyperpage{11}
+    \subitem curve, \hyperpage{24}
+
+  \indexspace
+
+  \item Skiba point, 
+		\hyperindexformat{\see{indifference threshold}}{11}
+  \item slice manifold, \hyperindexformat{\indexbf}{28}, \hyperpage{37}
+
+\end{theindex}

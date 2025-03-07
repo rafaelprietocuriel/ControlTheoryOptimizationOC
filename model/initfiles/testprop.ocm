@@ -1,0 +1,35 @@
+Type
+standardmodel
+
+Modelname
+testprop
+
+Description
+test proposition 6 of optcont
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::x=u-1
+
+
+Objective
+int::x+u-c/2*u^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u<=p
+
+Salvagevalue
+func::kappa*x
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+r::0.1
+c::1
+p::1
+kappa::1

@@ -1,0 +1,10 @@
+//
+// standardmodelStateConstraintBC.oct
+//
+function out=$MODELNAME$StateConstraintBC($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,edge)
+% returns the optimal control values for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$STATECONSTRAINT$

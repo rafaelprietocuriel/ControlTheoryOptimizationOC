@@ -1,0 +1,43 @@
+Type
+standardmodel
+
+Modelname
+ramsey
+
+Description
+Optimal Control Model
+
+Variable
+state::k
+control::c
+
+Statedynamics
+ode::Dk=A*k^alpha-delta*k-c
+
+Objective
+int::(c^(1-eta)-1)/(1-eta)
+
+Controlconstraint
+CC1::ineq::c<=A*k^alpha %
+CC2::ineq::c>=clb %
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::k>=klb,1
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::SC1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+3::k
+
+Parameter
+r::0.03
+A::10
+delta::0.3
+alpha::1/3
+eta::0.5
+clb::0
+klb::100

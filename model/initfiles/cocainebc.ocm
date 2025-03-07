@@ -1,0 +1,77 @@
+Type
+standardmodel
+
+Modelname
+cocainebc
+
+Description
+a variant of the cocaine epidemics model presented in Behrens (1998) with inequality budget constraint
+
+Variable
+independent::t
+state::L,H
+control::u,v
+
+Statedynamics
+ode::DL=(h+(1-h)*exp(-m*v))*(tau+s*L*exp(-q*H/L))-(a+b)*L
+ode::DH=b*L-g*H-(c*(u/(H+epsilon))^d)*H
+
+Objective
+int::-(kappa+gamma)*(kl*L+kh*H)-u-v
+
+Salvagevalue
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u-ulow>=0
+CC2::ineq::v-vlow>=0
+CC3::ineq::u+v<=gamma*(kl*L+kh*H)
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+6::CC2,CC3
+
+% if no properties for the control variables are provided 'explicit' and 'nonlinear' are assumed 
+% note that these properties may depend on the constraint combination, therefore the syntax is
+% arcid::controlvariable::property
+Control
+0::*::implicit
+1::u::explicit
+1::v::implicit
+2::v::explicit
+2::u::implicit
+3::u::explicit
+3::v::implicit
+4::*::explicit
+5::*::explicit
+6::*::explicit
+
+Parameter
+r::0.04
+h::0.84
+m::2.37e-9
+d::0.6
+a::0.163
+b::0.024
+c::0.0005
+tau::50000
+epsilon::1e-5
+g::0.062
+kappa::113
+kh::118.93
+kl::16.42
+gamma::5.31
+s::0.61
+q::7
+ulow::0
+vlow::0

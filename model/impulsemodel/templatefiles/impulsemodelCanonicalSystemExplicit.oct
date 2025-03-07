@@ -1,0 +1,44 @@
+function out=$MODELNAME$CanonicalSystemExplicit($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the canonical system, algebraic equations are replaced by its total time derivatives. 
+% This approach makes it necessary to compute the inverse of the Hessian of the Pontryaginfunction 
+% with respect to the control variables. The explicit symbolical computation may result in huge 
+% algebraic expressions that slows down computation time. For a version where the inverse and products
+% is computed for the numerical matrices see
+%		$MODELNAME$CanonicalSystemImplicit
+	
+$PARAMETERVALUES$
+	
+!IF $IMPLICITNUM$!	
+$CONTROL$=$MODELNAME$OptimalControlImplicit($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+!IF ~$IMPLICITNUM$!	
+$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!ENDIF!
+	
+out=$CANONICALSYSTEM$
+	
+!IF $NUMBEROFARCS$-1!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCANONICALSYSTEMJACOBIAN$
+		$OPTIMALCONTROLDYNAMICS$
+	
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$OPTIMALCONTROLDYNAMICS$
+!ENDIF!
+out=[out;dudt];

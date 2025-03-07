@@ -1,0 +1,50 @@
+Type
+standardmodel
+
+Modelname
+harvest1D
+
+Description
+fishery model with fish
+
+Variable
+independent::t
+state::F
+control::h
+costate::lambda
+lagrangemultcc::lm % Lagrange multiplier for control constraints
+
+Statedynamics
+ode::DF=sigma*F*(1-m*F/A)-gamma/(C+tau)*(F^theta1/(1+F^theta2))-eta*h*F
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*h*F-phi*h^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=ulow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] denotes the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]
+1::CC
+
+
+Parameter
+r::0.02
+gamma::1
+eta::1
+m::10
+A::1
+p::1
+phi::1
+sigma::1
+tau::0.25
+theta1::2
+theta2::2
+ulow::0
+C::1

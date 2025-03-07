@@ -1,0 +1,45 @@
+Type
+standarddiffmodel
+
+Description
+discrete time fishery model with fish and algae as state variables
+
+Variable
+independent::t
+state::F,A
+control::h
+
+Statedynamics
+diff::F_tp1=(sigma*F_t*(1-F_t/A_t)-1/C*(F_t^q/(1+F_t^q)))*Delta-(h_tp1*Delta-1)*F_t
+diff::A_tp1=(n-d*A_t-e*A_t*F_t)*epsilon*Delta+A_t
+
+Objective
+expdisc::r*Delta % expdisc, exponential discounting with discountrate 'r'
+sum::(p*h_tp1*F_t-h_tp1^2)*Delta
+
+Salvagevalue
+expdisc::r*Delta % expdisc, exponential discounting with discountrate 'r'
+func::0
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h_tp1>=ulow
+
+Maptype
+implicit
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.03
+d::0.05
+e::1
+n::1
+epsilon::1
+p::1
+sigma::1
+ulow::0
+C::2
+Delta::1
+q::2

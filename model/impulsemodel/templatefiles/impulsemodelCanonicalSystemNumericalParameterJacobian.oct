@@ -1,0 +1,10 @@
+//
+// CanonicalSystemParameterJacobian.oct
+//
+function out=$MODELNAME$CanonicalSystemParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the Jacobian of the canonical system with respect to parameters.
+$INFODETAILS$
+	
+numJacOpt.diffvar=3;
+numJacOpt.vectvars=[];
+out=numjaccsd(@$MODELNAME$CanonicalSystem,{$INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$(:),$ARCVAR$},$EQUATIONNUMIMPLICIT$,numJacOpt);

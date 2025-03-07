@@ -1,0 +1,7 @@
+function out=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the value of the exogenously given functions
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$EXOGENOUSFUNCTIONTERM$

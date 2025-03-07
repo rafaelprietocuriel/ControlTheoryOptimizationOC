@@ -1,0 +1,26 @@
+Type
+odemodel
+
+Description
+A simple 3-box carbon model
+
+Modelname
+carbon1
+
+Variable
+state::na,nm,nd
+
+Dynamics
+ode::Dna= funcS+(kma*(xi*nm))-(kam*(na))+epsilon*na
+ode::Dnm=(kam*(na))-(kma*(xi*nm))+(kdm*(nd))-(kmd*(nm))
+ode::Dnd=(kmd*(nm))-(kdm*(nd))
+
+Exogenousfunction
+funcS::-0.12*((t-1882.5)/76.35)^6-0.039*((t-1882.5)/76.35)^5+0.74*((t-1882.5)/76.35)^4+0.9*((t-1882.5)/76.35)^3+0.38*((t-1882.5)/76.35)^2+0.47*((t-1882.5)/76.35)+0.28
+Parameter
+kam::0.132802124833997
+kma::0.102774922918808
+kmd::0.044052863436123
+kdm::8.873114463176575e-04
+xi::10
+epsilon::0

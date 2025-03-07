@@ -1,0 +1,14 @@
+// 
+// odemodelDynamicsJacobian.oct
+//
+function out=$MODELNAME$DynamicsJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the ODEs for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+!IF $EXOGENOUSFUNCTIONNUM$!
+$EXOGENOUSFUNCTION$=$MODELNAME$ExogenousFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!ENDIF!
+$DYNAMICSJACOBIAN$

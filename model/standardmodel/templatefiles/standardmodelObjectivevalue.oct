@@ -1,0 +1,12 @@
+//
+// standardmodelObjectivevalue.oct
+//
+function out=$MODELNAME$Objectivevalue($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the discounted salvage value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+H0=$MODELNAME$Hamiltonian($INDEPENDENT$(1),$DEPENDENTVAR$(:,1),$PARVAR$,$ARCVAR$(1));
+HT=$MODELNAME$Hamiltonian($INDEPENDENT$(end),$DEPENDENTVAR$(:,end),$PARVAR$,$ARCVAR$(end));
+out=(H0-exp(-$DISCOUNTRATE$*$INDEPENDENT$(end))*HT)/$DISCOUNTRATE$;

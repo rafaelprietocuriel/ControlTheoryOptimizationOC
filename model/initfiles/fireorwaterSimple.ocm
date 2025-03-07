@@ -1,0 +1,41 @@
+Type
+standardmodel
+
+Description
+terror model, with two different types of counter terror actions
+
+Modelname
+fireorwaterSimple
+
+Variable
+state::x
+control::u,v
+
+Statedynamics
+ode::Dx=(v-2*v^2+6*v^3)*k*sqrt(x)-beta*u*sqrt(x)-nu*v*x
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::-x-u^2-v^2
+
+Salvagevalue
+func::-kappa*x
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+CC2::ineq::v>=vlb
+
+ArcDefinition
+0::[]_2
+1::CC1_2
+2::CC2
+3::CC1,CC2
+
+Parameter
+r::0.1
+k::0.5
+beta::0.1
+nu::0.5
+kappa::1
+ulb::0
+vlb::0

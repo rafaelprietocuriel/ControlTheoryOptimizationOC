@@ -1,0 +1,15 @@
+//
+// standardmodelDLagrangeFunctionDuParameterJacobianDAE.oct
+//
+function out=$MODELNAME$DLagrangeFunctionDuParameterJacobianDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the Jacobian with respect to the parameters of the Lagrange function derivative for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$);
+!IF $CONTROLCONSTRAINTNUM$!
+$LAGRANGEMULTCC$=$DEPENDENTVAR$($LAGRANGEMULTCCCOORDINATE$,:);
+!ENDIF!
+	
+$DLAGRANGEFUNCTIONDUPARAMETERJACOBIAN$

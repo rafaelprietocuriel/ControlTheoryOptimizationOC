@@ -1,0 +1,182 @@
+\section{The Model Structure Variable}
+\label{sec:ocStruct}
+All the information about the model is collected in the \MATL\ structure \ocStruct. The main concerns for building up this structure were an adequate mapping of the problem structure together with the possibility of a concise way of extension to different model types. The general structure of a (dynamic) optimization problem is given by 
+\begin{subequations}
+\label{eq:gen_opt_prob}
+\begin{align}
+	&\max(G(X(\cdot),\modelpar)\label{eq:gen_opt_prob1}\\
+	&X(\cdot)\in F(X(\cdot),\modelpar),\label{eq:gen_opt_prob2}
+\end{align}
+\end{subequations}
+where \refeq{eq:gen_opt_prob1} denotes the objective value that has to be maximized and \refeq{eq:gen_opt_prob2} states the constraints under which the maximization has to be carried out. The term $X(\cdot)$ includes the endogenous variables of the problem, whereas $\modelpar$ denotes the exogenously given variables.
+
+This structure is covered by the main fields of \ocStruct
+\begin{description}
+	\item[variable:] This field includes control, state, costate, etc. variables. The control and state are ``basic'' variables whereas, e.g., costate is a ``derived'' variable.
+	\item[constraint:] This field includes dynamic constraints, given by \ODEs\ as well as e.g. inequality constraints, integral constraints etc.
+	\item[objective:] This field includes a (discounted) integral and possible salvage value for the standard model.
+	\item[parameter:] This field includes all exogenously given parameter variables and values for the actual model.
+\end{description}
+Further fields can be assigned to general model information
+\begin{description}
+	\item[modelname:] Name of the model, that is usually derived from the name of the initialization file. But it can also explicitly be provided by the user.
+	\item[modeltype:] Type of the optimization problem, where the \lstinline+standardmodel+ is the default value.
+	\item[description:] Here the user can provide a further description of the model.
+\end{description}
+and derived model information
+\begin{description}
+	\item[pontryaginfunction:] The basic function used for the derivation of first order necessary optimality conditions using the ``Lagrangian'' approach.
+	\item[arc:] This field is specific to the approach used in \OCMAT, where the solution path consists of different segments (arcs) corresponding to different combinations of active and inactive constraints.
+	\item[foc:] This field contains the first order necessary optimality conditions (foc) a solution of the model has to satisfy.
+\end{description}
+
+\subsubsection{Fields representing algebraic terms}
+\label{sec:FieldsRepresentingAlgebraicTerms}
+The general structure of fields consisting of algebraic terms, e.g., \lstinline+constraint+, \lstinline+objective+, are of the following form
+\begin{center}
+	\lstinline+mainfieldname.maintype.subtype...(subsubtype).term+
+\end{center}
+The terms are either characters or cells of characters. The latter case is used if the terms potentially appear as vector expressions, even if in the actual case the vector may be reduced to a single value. Examples for that are
+\begin{matlab}
+ocStruct.objective.integral.function.term: 'x^2+c*u^2'
+ocStruct.objective.integral.discountfactor.term: 'exp(-r*t)'
+ocStruct.constraint.derivative.state.term{1,1}: 'x-x^3+u'
+ocStruct.pontryaginfunction.derivative.Dx.term: '2*x+lambda1*(1-3*x^2)'
+\end{matlab}
+In case that the term is arc dependent, i.e, the actual term expression depends on the constraint combination the arc has to be specified yielding
+\begin{center}
+	\lstinline+mainfieldname.maintype.arc...(subsubtype).term+
+\end{center}
+Again this representation is used already in cases where no further constraints, beside the usual dynamic constraints (\ODEs), appear and a solution only can consist of one single arc. Examples for that are
+\begin{matlab}
+ocStruct.foc.adjointsystem.dynamics.arc0.ode.term{1,1}: 
+		'r*lambda1-(2*x+lambda1*(1-3*x^2))'
+ocStruct.foc.value.control.arc0.term{1,1}: '-1/2*lambda1/c'
+\end{matlab}
+
+\section{Template Files}
+\label{sec:TemplateFiles}
+Template files provide the general structure for the \MATL\ function files that has then to be adapted to the specific models. For the standard model \lstinline+stdocmodel+ the template files can be found in the folder
+\begin{pathlisting}
+\ocmat\model\standardmodel\templatefiles
+\end{pathlisting}
+These files are pure ASCII files with the extension '.oct'. As an example for a template file we consider the file used to generate the \mfile\ for the canonical system
+%\begin{octlisting}
+%//
+%// standardmodelCanonicalSystem.oct
+%//
+%// Template file for the canonical system of a standard model
+%// this file is used for the automatic file generation
+%// empty lines and lines starting with // are ignored 
+%// terms between $...$ are variables which are replaced during file generation
+%// terms between !...! are commands for the file generation, possible commands are 
+%// !IF ...!,!ENDIF! ... corresponds to a usual if clause
+%// !STARTADDARCCASE!,!ENDADDARCCASE!, lines between these commands are repeated in a 
+%// switch case statement for any specific arc
+%// a tabulator is interpreted as an empty line in the corresponding generated file
+%function out=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+%% returns the canonical systems dynamics for $MODELNAME$
+%$INFODETAILS$
+%%*$\rightarrow$*)	
+%$PARAMETERVALUES$
+%%*$\rightarrow$*)	
+%$CONTROL$=$MODELNAME$OptimalControl($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+%%*$\rightarrow$*)	
+%!IF $CONSTRAINTNUM$!
+%[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+%%*$\rightarrow$*)	
+%!ENDIF!
+%$CANONICALSYSTEMDYNAMICS$
+%!IF $ALGEBRAICEQUATIONNUM$!
+%%*$\rightarrow$*)	
+%switch $ARCVAR$
+%!STARTADDARCCASE!
+	%case $ARCIDENTIFIERALGEBRAICEQUATION$
+		%$CANONICALSYSTEMALGEBRAICEQUATION$
+%%*$\rightarrow$*)	
+%!ENDADDARCCASE!
+%end
+%out=[out;outae];
+%!ENDIF!
+%\end{octlisting}
+Values, names, terms that have to be replaced by model specific expressions are denoted by variables (upper case letters), further referred to as template variables, enclosed by \%, like e.g., \lstinline+MODELNAME+, \lstinline+PARAMETERVALUES+, etc.. For the model \MoM\ these values are then replaced by
+\begin{matlab}
+$MODELNAME$ : 'mom
+$PARAMETERVALUES$ :
+r=par(1);
+c=par(2);
+\end{matlab}
+Furthermore, some simple language structure are provided. These are if-clauses, for-next loops and a switch structure. The signal words for these language structures are enclosed by an exclamation mark (!) and will be explained next.
+
+\paragraph{If-clause}
+\label{sec:IfClause}
+%\begin{octlisting}[showtabs=false]
+%!IF $VALUE$!
+%Statement1
+%.
+%Statementn	
+%!ENDIF!
+%\end{octlisting}
+%where \lstinline+VALUE+ is a model specific variable and replaced during the auto-generation of the model files. If this value is not zero for the actual model the statements between the \lstinline+!IF $VALUE$!+ and the \lstinline+!ENDIF!+ lines are written into the actual \mfile. For the previous example 
+%\begin{octlisting}[showtabs=false]
+%!IF $CONSTRAINTNUM$!
+%[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+%!ENDIF!
+%\end{octlisting}
+%this means that in case of a model with constraints the line
+%\begin{octlisting}[showtabs=false]
+%[lagmcc,lagmsc]=harvest2DLagrangeMultiplier(t,depvar,par,arcid);
+%\end{octlisting}
+%is written into the canonical systems file, otherwise it is omitted.
+%
+%A more involved case is given by
+%\begin{octlisting}[showtabs=false]
+%!IF $ALGEBRAICEQUATIONNUM$!
+%switch $ARCVAR$
+%!STARTADDARCCASE!
+	%case $ARCIDENTIFIERALGEBRAICEQUATION$
+		%$CANONICALSYSTEMALGEBRAICEQUATION$
+%!ENDADDARCCASE!
+%end
+%out=[out;outae];
+%!ENDIF!
+%\end{octlisting}
+%In this example the if-clause is nested with a further language structure \lstinline+!STARTADDARCCASE!+ which is explained next.
+%
+%\paragraph{Switch-structure}
+%\label{sec:SwitchStructure}
+%The signal word \lstinline+!STARTADDARCCASE!+ allows the switching to arc dependent expressions. Thus in an expression
+%\begin{octlisting}[showtabs=false]
+%!STARTADDARCCASE!
+	%case $ARCIDENTIFIER4EXPRESSION$
+		%$EXPRESSION$
+%!ENDADDARCCASE!
+%\end{octlisting}
+%the variable has to consist of a cell of arcidentifiers and for each of these arcidentifiers an arc specific expression \lstinline+!EXPRESSION!+ has to be provided. As an example for a model with three arcs (two inequality constraints) this may yield
+%\begin{octlisting}[showtabs=false]
+	%case 0
+		%out=[termarc01; ...
+			%termarc02];
+	%case 1
+		%out=termarc1;
+	%case 2
+		%out=termarc2;
+%\end{octlisting}
+
+\paragraph{For-Next Loop}
+\label{sec:ForNextLoop}
+The third language element is the implementation of a simple for-next loop
+%\begin{octlisting}[showtabs=false]
+%!FOR COUNTER=1:$NUMBER$!
+%statements(COUNTER)
+%!ENDFOR!
+%\end{octlisting}
+%The statements between the lines \lstinline+!FOR COUNTER=1:$NUMBER$!+ and \lstinline+!ENDFOR!+ are written into the actual \mfile, where the variable \lstinline+!COUNTER!+ appearing in the statements is replaced by the actual value. The RHS of the for line can be build by any vector in \MATL\ notation, with possible template variables.
+%
+%An example can be found in the template file for the calculation of the boundary conditions Jacobian
+%\begin{octlisting}[showtabs=false]
+%!FOR !COUNTER!=$STATECOORD$!
+		%Jar(targetcoordinate(!COUNTER!),targetcoordinate(!COUNTER!))=1;
+%!ENDFOR!
+%\end{octlisting}
+

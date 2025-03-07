@@ -1,0 +1,25 @@
+Type
+standardmodel
+
+Description
+a model of moderation, simple one state model with indifference solutions
+
+Variable
+state::P
+control::u
+
+Statedynamics
+ode::DP=P*(Pl-P)*(Pr+P)+u
+
+Objective
+int::-P*(P-s)-c*u^2
+
+Optimizationtype
+max
+
+Parameter
+r::1
+c::2
+Pl::1
+Pr::2
+s::0

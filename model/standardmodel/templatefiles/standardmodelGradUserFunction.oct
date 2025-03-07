@@ -1,0 +1,11 @@
+//
+// standardmodelGradUserFunction.oct
+//
+
+function out=$MODELNAME$GradUserFunction($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$LOCCOSTATE$,$PARVAR$)
+% the output of this file is called by userfunction(ocObj,ocElement)
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+out=[];

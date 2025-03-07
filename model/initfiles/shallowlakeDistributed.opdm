@@ -1,0 +1,39 @@
+Type
+ppdemodel
+
+Modelname
+shallowlakeDistributed
+
+Description
+distributed shallow lake model
+
+Variable
+state::P % space distributed variable
+control::u
+space::x
+
+Spacegeometry
+intvl::[-L,L] % 1D, interval
+
+Statedynamics
+pde::Dt.P=n*u-b*P+r*P^q/(m^q+P^q)+D*D2.P
+
+Boundarycondition
+nm::intvl::Dn.P=0
+
+Objective
+expdisc::rho 
+int::a*log(u)-c*P^2
+
+
+Parameter
+rho::0.03
+a::1
+b::0.55
+c::0.5
+n::1
+r::1
+m::1
+q::2
+D::0.5
+L::2*pi/0.44

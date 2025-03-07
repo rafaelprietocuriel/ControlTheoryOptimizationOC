@@ -1,0 +1,41 @@
+Type
+standardmodel
+
+Modelname
+pendulumII
+
+Description
+this model is taken from arutyunov2010
+
+Variable
+state::x1,x2
+control::u
+
+Statedynamics
+ode::Dx1=x2
+ode::Dx2=u-c*x1
+
+Objective
+int::-u+epsilon*u^2
+
+Optimizationtype
+max
+
+Controlconstraint
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0
+c::0
+epsilon::1e-3
+umin::-1
+umax::1
+
+% the time horizon T = 2.792848
+% x(0)=[-1.95 0]

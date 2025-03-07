@@ -1,0 +1,51 @@
+Type
+standardmodel
+
+Description
+fishery model with fish, algae and coral as state variables
+
+Variable
+state::F,C
+control::h
+
+Statedynamics
+ode::DF=sigma*F*(1-F/A)-gamma/(C+tau)*F^theta/(1+F^theta)-eta*h*F
+ode::DC=psi*C/(kappa*C+s*A+w)-l*C
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::p*h*F-phi*h^2+mu*C
+
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::h>=ulow
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands
+% for the unconstrained case.
+% underscores indicate that multiple solutions of the maximizing
+% Hamiltonian exist for a specific constraint combination 
+ArcDefinition
+0::[]
+1::CC
+
+
+Parameter
+r::0.02
+gamma::10
+eta::10
+m::10
+p::1
+phi::1
+sigma::10
+tau::1e-5
+theta::4
+ulow::0
+l::0.05
+mu::93
+psi::1
+s::3.75
+w::1
+kappa::1
+A::5

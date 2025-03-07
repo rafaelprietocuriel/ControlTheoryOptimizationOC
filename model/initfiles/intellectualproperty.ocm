@@ -1,0 +1,47 @@
+Type
+standardmodel
+
+Modelname
+intellectualproperty
+
+Description
+Optimal Control Model
+
+Variable
+state::A,k
+control::G,c
+
+Statedynamics
+ode::Dk=theta*A^(1-alpha)*k^alpha-c-G
+ode::DA=beta*G/((1-tau)*((2*A-1)/(2*A-3))^2+tau*((2*A-1)/(2*A-3)))
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'rho'
+int::log(c)-epsilon*G^2
+
+Controlconstraint
+CC1::ineq::G<=theta*A^(1-alpha)*k^alpha %
+CC2::ineq::G>=Glb %
+CC3::ineq::c<=k+theta*A^(1-alpha)*k^alpha %
+CC4::ineq::c>=clb %
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC4
+5::CC1,CC3
+6::CC1,CC4
+7::CC2,CC3
+8::CC2,CC4
+
+Parameter
+rho::0.04
+theta::1
+tau::0.5
+alpha::0.5
+beta:: 0.01429
+clb::0
+Glb::0
+epsilon::0

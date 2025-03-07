@@ -1,0 +1,48 @@
+Type
+odemodel
+
+Modelname
+sirrvac0
+
+Description
+Hammer or Jabs uncontrolled
+
+Variable
+state::S,I,R1,R2
+
+Dynamics
+ode::DS=nu*(S+I+R1+R2)-S*(beta0+gamma^theta*beta1)*I/(S+I+R1+R2)-mu*S+relr1*R1+relr2*R2-v*(b1+b2*t)*S/(S+kappa*R1+tau)
+ode::DI=S*(beta0+gamma^theta*beta1)*I/(S+I+R1+R2)-(alpha+mu+muI)*I
+ode::DR1=alpha*I-mu*R1-relr1*R1-v*(b1+b2*t)*kappa*R1/(S+kappa*R1+tau)
+ode::DR2=-mu*R2-relr2*R2+v*(b1+b2*t)*(S+kappa*R1)/(S+kappa*R1+tau)
+
+Exogenousfunction
+%Exogenousdynamics
+func1::5000*(xi1*p*I+xi2*log(1+exp(zeta*(p*I-Imax)))/zeta)
+% func2::gamma^sigma*K*(S+R)^sigma
+% func3::-cl/2*u^2
+% func4::-epsilon/(1+tau-gamma)
+% func5::-B*z*(1-gamma)
+
+
+Parameter
+alpha::1/15
+beta0::0
+beta1::2/15
+nu::0
+mu::0
+muI::0
+gamma::1
+relr1::0
+relr2::0
+v::0
+b1::0.001
+b2::0
+theta::2
+p::0.02311
+zeta::5000
+Imax::0.000176
+xi1::0.45/15
+xi2::0.55/15
+kappa::1
+tau::1e-5

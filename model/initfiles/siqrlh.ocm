@@ -1,0 +1,74 @@
+Type
+standardmodel
+
+Modelname
+siqrlh
+
+Description
+SIQR model with imperfect quarantine (erdemetal2017) and high and low risk groups
+
+Variable
+state::Sl,Sh,Il,Ih,Ql,Qh,R
+control::ul,uh
+
+Statedynamics
+ode::DSl=mu-betal*Sl*(Il+epsilonh*Ih+rholl*(1-sigma*sigmal)*Ql+rholh*(1-sigma*sigmah)*Qh)/(1-sigmal*Ql-sigmah*Qh)-mu*Sl
+ode::DSh=mu-betah*Sh*(Ih+epsilonl*Il+rhohl*(1-sigma*sigmal)*Ql+rhohh*(1-sigma*sigmah)*Qh)/(1-sigmal*Ql-sigmah*Qh)-mu*Sh
+ode::DIl=betal*Sl*(Il+epsilonh*Ih+rholl*(1-sigma*sigmal)*Ql+rholh*(1-sigma*sigmah)*Qh)/(1-sigmal*Ql-sigmah*Qh)-(ul+gammal+mu)*Il
+ode::DIh=betah*Sh*(Ih+epsilonl*Il+rhohl*(1-sigma*sigmal)*Ql+rhohh*(1-sigma*sigmah)*Qh)/(1-sigmal*Ql-sigmah*Qh)-(uh+gammah+mu)*Ih
+ode::DQl=ul*Il-(alphal+mu)*Ql
+ode::DQh=uh*Ih-(alphah+mu)*Qh
+ode::DR=gammal*Il+gammah*Ih+alphal*Ql+alphah*Qh-mu*R
+
+
+Objective
+int::-B1l*Il-B1h*Ih-B2l*Ql-B2h*Qh-cl/2*ul^2-ch/2*uh^2
+
+Salvagevalue
+func::-kappa*G1l*Il-kappa*G1h*Ih-kappa*G2l*Ql-kappa*G2h*Qh
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::ul>=ulmin
+CC2::ineq::uh>=uhmin
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC1,CC2
+
+Parameter
+r::0
+alphal::0.5
+alphah::0.1
+betal::0.5
+betah::2
+sigma::1
+sigmal::1
+sigmah::1
+mu::1/3650
+rholl::0.5
+rholh::0.2
+rhohl::0.05
+rhohh::0.05
+gammal::0.3
+gammah::0.01
+epsilonh::0.01
+epsilonl::0.7
+B1l::1
+B1h::1
+B2l::1
+B2h::1
+cl::0.01
+ch::0.01
+G1l::1
+G1h::1
+G2l::1
+G2h::1
+kappa::0
+ulmin::0
+uhmin::0
+
+% S: Susceptible individuals;
+% Q: Quarantined individuals;
+% I: infected individuals;
+% R: Recovered individuals; 

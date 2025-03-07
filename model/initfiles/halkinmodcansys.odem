@@ -1,0 +1,23 @@
+Type
+odemodel
+
+Modelname
+halkinmodcansys
+
+Description
+full model
+
+Variable
+state::x,lambda
+
+
+Dynamics
+ode::Dx=u+x*(delta-x/a)
+ode::Dlambda=lambda0-lambda*(delta-2*x/a-r)
+
+Parameter
+r::0
+delta::1
+a::1
+u::1
+lambda0::1

@@ -1,0 +1,166 @@
+//
+// impulsemodel4LimitCycleContinuation.oct
+// 
+function out=$MODELNAME$4LimitCycleContinuation()
+%
+% main function for the bvpcont continuation process of limit cycles
+$INFODETAILS$
+	
+out{1}=@canonicalsystem;
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{2}{3}=@derivativetime;
+!ENDIF!
+out{5}{1}=@bclimitcycle;
+out{6}{1}=@bcjacobianlimitcycle;
+% functions for hybrid structure and its discretization
+out{7}{1}=@hybridinfo;
+out{7}{2}=@domain;
+out{7}{3}=@guard;
+out{7}{4}=@reset;
+out{7}{5}=@switchtime;
+out{7}{7}=@jacobianguard;
+out{7}{8}=@jacobianreset;
+out{7}{9}=@domaindiscretization;
+out{7}{10}=@timesettransformation;
+out{8}{1}=@objectivefunction;
+out{8}{2}=@objectivefunctionjacobian;
+out{8}{3}=@objectivefunctionparameterjacobian;
+	
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function dxdt=canonicalsystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+dxdt=$MODELNAME$CanonicalSystem($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+%--------------------------------------------------------------------------
+function J=jacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+J=$MODELNAME$CanonicalSystemJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!IF ~$ISAUTONOMOUS$!
+%--------------------------------------------------------------------------
+function J=derivativetime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+J=$MODELNAME$CanonicalSystemDerivativeTime($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+J=$MODELNAME$CanonicalSystemParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+%--------------------------------------------------------------------------
+function H=hessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+H=$MODELNAME$CanonicalSystemHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+%--------------------------------------------------------------------------
+function H=parameterhessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+H=$MODELNAME$CanonicalSystemTotalHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+%--------------------------------------------------------------------------
+function O=objectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+O=$MODELNAME$ObjectiveFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+
+%--------------------------------------------------------------------------
+function objectivefunctionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+O=$MODELNAME$ObjectiveFunctionJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+
+%--------------------------------------------------------------------------
+function objectivefunctionparameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+O=$MODELNAME$ObjectiveFunctionParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+%--------------------------------------------------------------------------
+function val=guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc)
+% condition on the (continuous) variables (states, costates) when a
+% switching from $ARCVAR$1 to $ARCVAR$2 takes place. edge=[$ARCVAR$1 $ARCVAR$2]
+% this condition determines the switching time
+if isempty(edge)
+	val=[];
+else
+	val=$MODELNAME$Hamiltonian(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc))-$MODELNAME$Hamiltonian(switchtimes(arc),$DEPENDENTVAR$b(:,arc),$PARVAR$,edge(1,arc));
+end
+	
+%--------------------------------------------------------------------------
+function val=reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,freepar,$ARCVAR$,edge,arc)
+%transformation of the (continuous) variables (states, costates) when
+%switching from $ARCVAR$1 to $ARCVAR$2. edge=[$ARCVAR$1 $ARCVAR$2] 
+
+if isempty(edge)
+	val=[];
+else
+	val=$DEPENDENTVAR$a(:,arc+1)-$DEPENDENTVAR$b(:,arc);
+end
+	
+%--------------------------------------------------------------------------
+function res=bclimitcycle($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+res=$DEPENDENTVAR$a(:,1)-$DEPENDENTVAR$b(:,end);
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianlimitcycle($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+Ja=[]; 
+Jb=-Ja; 
+Jpar=[];
+	
+%--------------------------------------------------------------------------
+function J=jacobianguard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function J=jacobianreset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc,arcoffset)
+J=$MODELNAME$BCJacobian4Reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes(arc),$ARCVAR$,edge,arc,arcoffset);
+	
+%--------------------------------------------------------------------------
+function infoH=hybridinfo()
+
+infoH.arcarg=$ARCARGUMENT$; % replaces name of arcnum arcidentifier
+infoH.edge=$EDGES$; % each row represents a possible transition between the states of the hybrid system    
+	
+%--------------------------------------------------------------------------
+function infoD=domain($ARCVAR$)
+% returns general information about the domain for each arc
+infoD=$MODELNAME$ArcInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function val=switchtime(edge)
+% here a fixed switchtime for a specific edge can be specified, otherwise
+% it is determined by the guard
+val=[];
+	
+%--------------------------------------------------------------------------
+function infoD=domaindiscretization($ARCVAR$)
+% returns information about the discretization for each arc
+infoD=$MODELNAME$ArcDiscretizationInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function infoT=timesettransformation()
+infoT.normalization=1; % the timenterval of the nth arc is normalized to [n,n+1]
+%infoT.infinity=-0.1; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1]
+%infoT.asymptoticapproximation=inf;
+infoT.infinity=0; % for an infinite time horizon problem the last interval [N,inf)->[N,N+1], infoT.infinity<0
+infoT.asymptoticapproximation=100;
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent)
+h=$MODELNAME$PlotContinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function [out labelS]=testadmissibility($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+	
+out=$MODELNAME$Admissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!FOR COUNTER=1:$NUMBEROFARCS$!
+labelS(COUNTER).$ARCVAR$=!EVAL(COUNTER-1)!;
+labelS(COUNTER).info='';
+!ENDFOR!
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

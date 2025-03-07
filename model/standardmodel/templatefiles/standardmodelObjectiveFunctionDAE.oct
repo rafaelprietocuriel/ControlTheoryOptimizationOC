@@ -1,0 +1,12 @@
+//
+// standardmodelObjectiveFunctionDAE.oct
+//
+function out=$MODELNAME$ObjectiveFunctionDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the objective function for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$,:);
+	
+$DISCOBJECTIVEFUNCTION$

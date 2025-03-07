@@ -1,0 +1,51 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::ky,kd
+control::c,jota
+
+
+
+Statedynamics
+%simple without damage to obtain initial solution
+ ode::Dky=(A*ky^alpha-c)*(1-jota)-delta*ky
+ ode::Dkd=(A*ky^alpha-c)*jota-delta*kd
+
+%Exogenousfunction not needed in this case
+%W::t
+
+Objective
+% the term kappa*Ef^2 is only introduced to derive the necessary optimality conditions automatically, even though the case of linear controls is not implemented up to now
+expdisc::rho 
+int::log(c)-epsilon*jota^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::c>=clow
+CC2::ineq::c<=A*ky^alpha
+CC3::ineq::jota>=jotalow
+CC4::ineq::jota<=jotahigh
+
+ArcDefinition
+0::[]_1
+1::[]_2
+2::CC1
+3::CC2
+4::CC3
+5::CC4
+6::CC1,CC3
+7::CC1,CC4
+8::CC2,CC3
+
+Parameter
+rho::0.03 
+alpha::0.7
+delta::0.1
+A::0.8
+clow::0
+epsilon::0.001
+jotalow::0
+jotahigh::1

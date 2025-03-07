@@ -1,0 +1,46 @@
+Type
+standardmodel
+
+Modelname
+envabsorb
+
+Description
+self-regenerating environmental absorption efficiency and the soylent green scenario
+pollution stock (P), environmental absorption efficiency rate (A), emission rate (e), restoration effort (w)
+
+Modelname
+envabsorb
+
+Variable
+state::P,A 
+control::w,e 
+
+Statedynamics
+ode::DP=e-A*P
+ode::DA=alpha+w-gamma*P
+
+Objective
+int::a*log(e)-c*P^2/2-w^2/2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::w>=ulow
+CC2::ineq::e<=ehigh
+CC3::ineq::e>=elow
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+
+Parameter
+r::0.05
+a::0.001
+c::0.01
+alpha::0.0001
+gamma::0.05
+ulow::0
+ehigh::1000
+elow::0

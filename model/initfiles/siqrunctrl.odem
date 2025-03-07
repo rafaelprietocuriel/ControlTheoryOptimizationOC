@@ -1,0 +1,33 @@
+Type
+odemodel
+
+Modelname
+siqrunctrl
+
+Description
+SIQR model with imperfect quarantine (erdemetal2017)
+
+Variable
+state::S,I,Q,R
+
+Dynamics
+ode::DS=mu-beta*S*(I+r*(1-sigma)*Q)/(1-sigma*Q)-mu*S
+ode::DI=beta*S*(I+r*(1-sigma)*Q)/(1-sigma*Q)-(theta+gamma+mu)*I
+ode::DQ=theta*I-(alpha+mu)*Q
+ode::DR=gamma*I+alpha*Q-mu*R
+
+
+
+Parameter
+alpha::0.4
+beta::11.2186
+sigma::0.9973971
+mu::1/3650
+r::0.11
+gamma::0.5
+theta::4
+
+% S: Susceptible individuals;
+% Q: Quarantined individuals;
+% I: infected individuals;
+% R: Recovered individuals; 

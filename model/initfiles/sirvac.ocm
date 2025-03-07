@@ -1,0 +1,83 @@
+Type
+standardmodel
+
+Modelname
+sirvac
+
+Description
+How to Distribute the Jabs: Coordinating Lockdowns and the Allocation of Scarce COVID Vaccines
+
+Variable
+state::S,I,R,gamma
+control::u,v
+
+Statedynamics
+ode::DS=nu*(S+I+R)-S*(beta0+gamma^theta*beta1)*I-mu*S+relr*R-v*(b1+b2*t)
+ode::DI=S*(beta0+gamma^theta*beta1)*I-(alpha+mu+muI)*I
+ode::DR=alpha*I-mu*R-relr*R+v*(b1+b2*t)
+ode::Dgamma=u
+
+%Exogenousfunction
+%Exogenousdynamics
+% func1::-M*(xi1*p*I+xi2*log(1+exp(zeta*(p*I-Imax)))/zeta)
+% func2::gamma^sigma*K*(S+R)^sigma
+% func3::-cl/2*u^2
+% func4::-epsilon/(1+tau-gamma)
+% func5::-B*z*(1-gamma)
+
+Objective
+int::-M*(p*xi1*I+log(1+exp(zeta*(p*xi2*I-Imax)))/zeta)+gamma^sigma*K*(S+R)^sigma-c/2*u^2-epsilon*v^2
+
+Salvagevalue
+func::S0*gamma^sigma1*K*(S+R)^sigma1
+
+
+Controlconstraint
+CC1::ineq::v>=vmin
+CC2::ineq::v<=vmax
+CC3::ineq::S-v*(b1+b2*t)>=Smin
+
+Stateconstraint
+SC1::ineq::gamma<=gammamax,1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+4:7::gamma
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::SC1
+5::SC1,CC1
+6::SC1,CC2
+7::SC1,CC3
+
+Parameter
+r::0
+alpha::1/15
+beta0::0
+beta1::2/15
+nu::0
+mu::0
+muI::0
+p::0.02311
+zeta::5000
+Imax::0.000176
+sigma::2/3
+sigma1::2/3
+K::1
+M::50000
+xi1::0.45/15
+xi2::0.55/15
+S0::365
+c::1000
+gammamax::1
+relr::0
+vmin::0
+vmax::1
+b1::0.001
+b2::0
+epsilon::1
+Smin::0
+theta::2

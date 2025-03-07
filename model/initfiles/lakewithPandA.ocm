@@ -1,0 +1,33 @@
+Type
+standardmodel
+
+Description
+M.~Genkai-Kato and S.R.~Carpenter: Eutrophication due to phosphorus recycling in relation to lake morphometry, temperature, and macrophytes, Ecological Society of America
+Modelname
+lakewithPandA
+
+Variable
+state::X,P
+control::l
+
+Statedynamics
+ode::DX=b*P*X-(g+s/ze+h)*X
+ode::DP=lmin+l+r+e*g*X-b*X*P-h*P
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'rho'
+int::log(l)-c*P^2
+
+
+Parameter
+rho::0.0425
+b::0.9
+c::0.1736
+h::0.0006
+r::0.019
+g::0.03
+A0::1
+ze::6.95*A0^0.185
+s::0.085
+lmin::0.02
+e::0.65

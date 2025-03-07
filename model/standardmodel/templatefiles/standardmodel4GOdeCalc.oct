@@ -1,0 +1,80 @@
+function out=$MODELNAME$4GOdeCalc()
+%
+% main function for the calcoc gradient solver
+$INFODETAILS$
+	
+out{1}=@statedynamics;
+out{2}=@adjointdynamics;
+out{3}=@gradienthamiltonian;
+out{4}=@objectivefunction;
+out{5}=@initialstate;
+out{6}=@transversalitycondition;
+	
+out{11}=@plotcalcoc;
+out{12}=@datapath;
+out{13}=@saveintermediatefiles;
+	
+%--------------------------------------------------------------------------
+function out=statedynamics($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$)
+$PARAMETERVALUES$
+
+$STATEDYNAMICS$
+	
+%--------------------------------------------------------------------------
+function out=adjointdynamics($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$)
+$PARAMETERVALUES$
+
+$ADJOINTDYNAMICS$
+	
+%--------------------------------------------------------------------------
+function out=gradienthamiltonian($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$)
+$PARAMETERVALUES$
+
+$GRADIENTHAMILTONIAN$
+	
+%--------------------------------------------------------------------------
+function out=objectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$)
+$PARAMETERVALUES$
+
+$OBJECTIVEFUNCTION$
+	
+%--------------------------------------------------------------------------
+function out=initialstate($DEPENDENTVAR$)
+$PARAMETERVALUES$
+
+out=$DEPENDENTVAR$(1:$STATENUM$);
+
+%--------------------------------------------------------------------------
+function out=transversalitycondition($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$)
+$PARAMETERVALUES$
+
+$TRANSVERSALITYCONDITION$
+
+%--------------------------------------------------------------------------
+function h=plotcalcoc($INDEPENDENT$,$DEPENDENTVAR$,$CONTROL$,$PARVAR$,varargin)
+	
+subplot(2,2,1)
+h(1)=plot($INDEPENDENT$,$DEPENDENTVAR$(1,:));
+xlabel('$$INDEPENDENT$$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+subplot(2,2,2)
+h(2)=plot($INDEPENDENT$,$DEPENDENTVAR$(2,:));
+xlabel('$$INDEPENDENT$$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')
+subplot(2,2,3)
+h(3)=plot($INDEPENDENT$,$CONTROL$(1,:));
+subplot(2,2,4)
+h(4)=plot($DEPENDENTVAR$(1,:),$DEPENDENTVAR$(2,:));
+xlabel('$LATEXUSERDEPENDENTNAMEFIRST$','Interpreter','Latex')
+ylabel('$LATEXUSERDEPENDENTNAMESECOND$','Interpreter','Latex')
+
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stdocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

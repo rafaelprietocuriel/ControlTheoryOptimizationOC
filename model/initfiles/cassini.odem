@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Modelname
+cassini
+
+Description
+Reproducing the Cassini ovals
+
+Variable
+state::x
+
+Dynamics
+ode::Dx=(x^2+p^2)^2-2*c^2*(x^2-p^2)-(a^4-c^4)-b*((d+p)^3)-e*((f+x)^3)
+
+
+Parameter
+a::1.1
+b::0
+c::1
+d::0
+e::0
+f::0
+p::0

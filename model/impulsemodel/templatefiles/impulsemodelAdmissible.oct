@@ -1,0 +1,20 @@
+//
+// impulsemodelAdmissible.oct
+//
+
+function out=$MODELNAME$Admissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the values of the constraint and Lagrangian multiplier, the solution is 
+% admissible if these values are non-negative.
+$INFODETAILS$
+
+	
+constraintval=$MODELNAME$Constraint($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+!IF $CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+out=[constraintval;$LAGRANGEMULTCC$;$LAGRANGEMULTSC$];
+!ENDIF!
+!IF ~$CONSTRAINTNUM$!
+[$LAGRANGEMULTCC$,$LAGRANGEMULTSC$]=$MODELNAME$LagrangeMultiplier($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+out=constraintval;
+!ENDIF!

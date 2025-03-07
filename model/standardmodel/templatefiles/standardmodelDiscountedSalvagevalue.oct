@@ -1,0 +1,10 @@
+//
+// standardmodelDiscountedSalvagevalue.oct
+//
+function out=$MODELNAME$DiscountedSalvagevalue($ENDTIME$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the discounted salvage value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$DISCOUNTEDSALVAGEVALUE$

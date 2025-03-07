@@ -1,0 +1,32 @@
+Type
+odemodel
+
+Modelname
+slir
+
+Description
+SLIR model with a latency period, which is infective
+
+Variable
+state::S,L,I,R
+
+Dynamics
+ode::DS=nu*(S+L+I+R)-S*beta*(I+f*L)/(S+L+I+R)-mu*S+relr*R-v*(b1+b2*t)
+ode::DL=S*beta*(I+f*L)/(S+L+I+R)-mu*L-phi*L
+ode::DI=omega*phi*L-(alpha+mu+muI)*I
+ode::DR=(1-omega)*phi*L+alpha*I-mu*R-relr*R+v*(b1+b2*t)
+
+
+Parameter
+alpha::1/9
+beta::0.2328
+nu::0.01/360
+mu::0.01/360
+muI::13/10800
+phi::1/7.2
+omega::0.6
+f::0.75
+relr::0 % backflow from immunized group (recovered)
+b1::0
+b2::0
+v::0 % rate of vaccination for susceptibles

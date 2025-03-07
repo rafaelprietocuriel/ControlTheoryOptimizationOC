@@ -1,0 +1,35 @@
+Type
+standardmodel
+
+Modelname
+shallowlake1DSimple
+
+Description
+shallow lake model
+
+Variable
+state::P
+control::L
+
+Statedynamics
+ode::DP=a*L-(s+h)*P+r*M*P^2/(m^2+P^2)
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'rho'
+int::log(L)-c*P^2-d*L
+
+Salvagevalue
+func::kappa*P^alpha
+
+Parameter
+rho::0.0425
+a::1
+c::0.1736
+h::0.15
+r::0.019
+m::2.4
+s::0.7
+M::179
+d::0
+kappa::-1
+alpha::1

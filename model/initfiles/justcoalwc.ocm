@@ -1,0 +1,97 @@
+Type
+standardmodel
+
+Modelname
+justcoalwc
+
+Variable
+state::KC,KR,KN,KP
+control::IC,IR,IN,IP,wE,wC,H,HC,HE
+
+Statedynamics
+ode::DKC=IC-deltaC*KC
+ode::DKR=IR-deltaR*KR
+ode::DKN=IN-deltaN*KN
+ode::DKP=IP-deltaP*KP
+
+% fC=KN^alphaC
+% fR=KR^alphaR
+% fD=KC^alphaD
+% fN=KN^alphaN
+%
+% production function
+% YI=KP^alpha*(thetat*wE^beta+(1-thetat)*wC^beta)^((1-alpha)/beta)
+%
+% pollution function
+% P=fC+fN+wC+HC
+%
+% electricity
+% E=fC+fR
+%
+% electricity budget
+% BE=E-wE-HE
+%
+% coal budget
+% BC=fD-fC-wC-HC
+%
+% governmental expenditures
+% G=YI-H+PE*BE+PC*BC-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2
+%
+% social welfare function
+% G^alpha1*H^alpha2*(theta*HC^rho+(1-theta)*HE^rho)^(alpha3/rho)*P^(-alpha4)
+Objective
+int::(KP^alpha*(thetat*wE^beta+(1-thetat)*wC^beta)^((1-alpha)/beta)-H+PE*(KN^alphaC+KR^alphaR-wE-HE)+PC*(KC^alphaD-KN^alphaC-wC-HC)-c1*IC^2-c2*IR^2-c3*IN^2-c4*IP^2)^alpha1*H^alpha2*(theta*HC^rho+(1-theta)*HE^rho)^(alpha3/rho)*(KN^alphaC+KN^alphaN+wC+HC)^(-alpha4)
+
+
+Salvagevalue
+func::tau*(KC+KR+KN+KP)
+
+
+Optimization
+type::max
+method::bvp
+
+Controlconstraint
+CC1::ineq::IC>=IC0
+CC2::ineq::IR>=IR0
+CC3::ineq::IN>=IN0
+CC4::ineq::IP>=IP0
+
+ArcDefinition
+0::CC1,CC2,CC3,CC4
+
+Control
+0::IC,IR,IN,IP::explicit
+0::wC,wE,H,HC,HE::implicit
+
+
+Parameter
+r::0.03
+rho::0.5
+alpha::0.5
+alpha1::0.5
+alpha2::0.5
+alpha3::0.5
+alpha4::2
+alphaC::0.5
+alphaR::0.5
+alphaD::0.5
+alphaN::0.5
+beta::0.5
+theta::0.5
+thetat::0.5
+deltaC::0.1 % 5-40%
+deltaR::0.1 % 5-40%
+deltaN::0.1 % 5-40%
+deltaP::0.1 % 5-40%
+c1::0.1 % 3-12%
+c2::0.1 % 3-12%
+c3::0.1 % 3-12%
+c4::0.1 % 3-12%
+PC::200 % 40-450 USD/MWh
+PE::300 % 30-450 USD/MWh
+IC0::0
+IR0::0
+IN0::0
+IP0::0
+tau::0

@@ -1,0 +1,52 @@
+Type
+standardmodel
+
+Description
+Optimal Control Model
+
+Variable
+state::X,Y
+control::p
+
+Statedynamics
+ode::DX=kappa*(gamma1*p-X)
+ode::DY=p*(m-alpha-p/X^beta1)-C+delta*Y
+
+Exogenousfunction
+S(X)::[]
+
+Objective
+expdisc::rho
+int::varmu*(Y+S(X))
+
+Controlconstraint
+CC1::ineq::m-alpha-p/X^beta1>=Qlow % Q:=m-alpha-p/X^beta
+CC2::ineq::p>=plow % Q:=m-alpha-p/X^beta
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::Y>=Ylb,1
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::SC1_1
+4::SC1_2
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+3,4::Y
+
+Parameter
+r::0.04
+m::3
+beta1::0.5
+C::7.5
+Qlow::0
+kappa::2
+gamma1::5
+varmu::0.5
+delta::0.1
+alpha::0.8
+Ylb::0
+plow::0
+rho::r+varmu

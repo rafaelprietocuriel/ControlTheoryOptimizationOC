@@ -1,0 +1,130 @@
+//
+// standarddiffmodel4IndifferenceSolutionContinuation.doct
+//
+function out=$MODELNAME$4IndifferenceSolutionContinuation()
+%
+% main function for the diffcont continuation process of indifference threshold points
+$INFODETAILS$
+	
+out{1}=@canonicalsystemmap;
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+out{3}{1}=@hessian;
+out{3}{2}=@parameterhessian;
+out{5}{1}=@bcinitial;
+out{5}{2}=@bcasymptotic;
+out{5}{3}=@bctransversality;
+out{5}{4}=@fixpoint;
+out{5}{5}=@bcindifference;
+out{6}{1}=@bcjacobianinitial;
+out{6}{2}=@bcjacobianasymptotic;
+out{6}{3}=@bcjacobiantransversality;
+out{8}{1}=@objectivefunction;
+out{8}{2}=@objectivefunctionjacobian;
+out{8}{3}=@objectivefunctionparameterjacobian;
+	
+out{10}=@findarcposition;
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function Dx=canonicalsystemmap($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+Dx=$MODELNAME$CanonicalSystemMap($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function J=jacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$CanonicalSystemMapJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$CanonicalSystemMapParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function H=hessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+H=$MODELNAME$CanonicalSystemMapHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function H=parameterhessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+H=$MODELNAME$CanonicalSystemMapTotalHessian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function o=objectivefunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+o=$MODELNAME$ObjectiveFunction($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function [Jx Jl]=objectivefunctionjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+[Jx Jl]=$MODELNAME$ObjectiveFunctionJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function res=fixpoint($DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+res=$MODELNAME$FixPointEquation($DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function res=bcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$a(targetcoordinate,1)-initialstate;
+	
+%--------------------------------------------------------------------------
+function res=bcasymptotic($DEPENDENTVAR$b,asymptoticmatrix,saddlepoint)
+res=asymptoticmatrix'*($DEPENDENTVAR$b(:,end)-saddlepoint);
+	
+%--------------------------------------------------------------------------
+function res=bcindifference($DEPENDENTVAR$a,par,arcid,initcoordinate)
+res=$MODELNAME$Hamiltonian([],$DEPENDENTVAR$a(:,initcoordinate(1)),par,arcid(initcoordinate(1)))-$MODELNAME$Hamiltonian([],$DEPENDENTVAR$a(:,initcoordinate(2)),par,arcid(initcoordinate(2)));
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianinitial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector)
+[Ja Jb Jpar]=$MODELNAME$BCJacobian4Initial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector);
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianasymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint)
+[Ja Jb Jpar]=$MODELNAME$BCJacobian4Asymptotic($DEPENDENTVAR$b,$ARCVAR$,asymptoticmatrix,saddlepoint);
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent)
+h=$MODELNAME$PlotContinuation(t,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function [arcpos arcid]=findarcposition($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+!IF $STATENUM$>1!
+counter=0;
+for ii=$ARCARGUMENT$
+	counter=counter+1;
+	newval(counter,:)=double(all($MODELNAME$Admissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,ii)>=0));
+	newval(counter,newval(counter,:)==0)=-inf;
+	H(counter,:)=$MODELNAME$Hamiltonian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,ii);
+	H(counter,newval(counter,:)==-inf)=-inf;
+end
+[dum row]=max(H);
+fidx=find(diff(row));
+Lidx=[1 fidx+1];
+Ridx=[fidx+1 length($INDEPENDENT$)];
+arcid=row(Lidx)-1;
+arcpos=[Lidx;Ridx];
+!ENDIF!
+!IF $STATENUM$==1!
+arcpos=[];
+arcid=[];
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function [out labelS]=testadmissibility($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+	
+out=$MODELNAME$Admissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!FOR COUNTER=1:$NUMBEROFARCS$!
+labelS(COUNTER).$ARCVAR$=!EVAL(COUNTER-1)!;
+labelS(COUNTER).info='';
+!ENDFOR!
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','stddocmodel','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

@@ -1,0 +1,36 @@
+Type
+standardmodel
+
+Modelname
+sisyphus
+
+Description
+shallow lake model
+
+Variable
+state::x
+control::w
+
+Statedynamics
+ode::Dx=x*(w+x-d)
+
+Objective
+int::(1-x)*log(x+tau)-c*w^2+x/(1-x)
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::w>=wmin
+CC2::ineq::w<=wmax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+r::0.1
+d::2
+c::1
+tau::1e-3
+wmin::0
+wmax::1
+

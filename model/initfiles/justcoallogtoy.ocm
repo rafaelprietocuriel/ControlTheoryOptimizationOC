@@ -1,0 +1,93 @@
+Type
+standardmodel
+
+Modelname
+justcoallogtoy
+
+% production function
+% YI=K1^alpha*w^beta
+%
+% pollution function
+% P=phiC*K1+w+HC
+%
+% electricity
+% E=K2
+%
+% governmental expenditures
+% G=YI-c1*I1^2-c2*I2^2
+%
+% social welfare function
+% G^alpha1*P^alpha4
+
+Variable
+state::K1,K2
+control::I1,I2,w,H
+
+Statedynamics
+ode::DK1=I1-delta1*K1
+ode::DK2=I2-delta2*K2
+
+Objective
+int::alpha1*log(K2^alpha*w^(1-alpha)+P*(K1-w)-H-c1*I1^2-c2*I2^2)+alpha2*log(H+tauH)-alpha4*log(l*w+K1+phi0)
+
+
+Salvagevalue
+func::tau*(K1+K2)
+
+Controlconstraint
+CC1::ineq::I1>=I10
+CC2::ineq::I2>=I20
+CC3::ineq::w>=w0
+CC4::ineq::H>=H0
+
+Optimization
+type::max
+method::bvp
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+6::CC2,CC3
+7::CC1,CC2,CC3
+
+Control
+0::*::implicit
+1::I1::explicit
+1::I2,w,H::implicit
+2::I2::explicit
+2::I1,w,H::implicit
+3::w::explicit
+3::I1,I2,H::implicit
+4::I1,I2::explicit
+4::w,H::implicit
+5::I1,w::explicit
+5::I2,H::implicit
+6::I2,w::explicit
+6::I1,H::implicit
+7::H::implicit
+7::I1,I2,w::explicit
+
+Parameter
+r::0.03
+alpha::0.5
+alpha1::0.5
+alpha2::0.5
+alpha4::0.5
+beta::0.5
+delta1::0.05
+delta2::0.05
+P::1
+phi0::1e-2
+tau::0
+c1::10 % 10-150 USD/T/y
+c2::50 % 10-150 USD/T/y
+I10::0
+I20::0
+w0::0
+H0::0
+tauH::1e-2
+l::1

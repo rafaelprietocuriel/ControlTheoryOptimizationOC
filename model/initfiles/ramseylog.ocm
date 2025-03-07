@@ -1,0 +1,38 @@
+Type
+standardmodel
+
+Modelname
+ramseylog
+
+Description
+Optimal Control Model
+
+Variable
+state::k
+control::c
+
+Statedynamics
+ode::Dk=A*k^alpha-delta*k-c
+
+Objective
+int::log(c)
+
+Controlconstraint
+CC1::ineq::c<=A*k^alpha %
+CC2::ineq::c>=clb %
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Optimization
+type::max
+method::bvp,grad
+
+Parameter
+r::0.03
+A::1
+delta::0.03
+alpha::0.5
+clb::0

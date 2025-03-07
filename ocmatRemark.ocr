@@ -1,0 +1,202 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+04-Sep-2012:
+
+INITIALIZATIONFILE
+
+mandatory sections are (the names are case insensitive): 
+                        Variable: defines the used variable names 
+                        Statedynamics: ODEs, PDEs, ... describing the evolution of the states
+                        Objectivefunction: the functional which has to be optimized
+                        Parameter: used parameters and their default values
+in case of constraints additionally: 
+                        Controlconstraint: constraints including controls in form of inequalities, inegrals, ...
+                        Constraintcombination: combinations of active/inactive constraints
+
+optional sections are:
+                        Type: the type of dynamic optimization model described in the initialization file
+                        Description: a short description of the mode
+						Modelname: name of the according problem
+						Control: stating if the control values have to be determined explicitly from the optimizing Hamiltonian condition, stating if the control variable appears linear/nonlinear
+						Salvagevalue: defines a possible salvage value function
+						Optimizationtype: minimization, maximization, timeminimization
+						Controlconstraint: constraints including controls in form of inequalities, inegrals, ...
+						Stateconstraint: constraints where only state variables appear in form of inequalities, inegrals, ...
+
+Syntax of the initialization file:						
+Remarks: are characterized by a preceeding % every text after % and the next line feed is ignored
+every Section starts with a signal word see above, the signal word is case insensitive but no other character may appear in this line, beside a remark
+every Section ends with a double slash \\
+
+Type
+standardmodel % at the moment the only implemented problem
+\\
+Description
+short description of the model
+\\
+Variable
+% mandatory
+independent::t % character defining the independent variable of the ODEs, usually time
+state::x,y,z % characters seperated by commas, each of this character defines a state variable
+control::u,v % characters seperated by commas, each of this character defines a state variable
+% optional
+endtime::T % optional if no salvage value is defined, otherwise it is mandatory, the default name is T
+costate::l1,l2,l3 % optional, if not defined lambda1,lambda2,lambda3, ... is used
+langrangemultcc::mu1,mu2 % optional, if not defined lmcc1,lmcc2, ... is used for every control constraint
+\\
+Control % option section
+u::implicit % for each control variable the properties explicit, implicit, linear, nonlinear can be defined
+u::nonlinear
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+08-Oct-2012:
+the steps for starting the analysis of model harvest2D
+
+%create an initialization file harvest2D.ocm (place it in folder ocmatnew/model/initfiles). Process initialization file from MATLAB command window
+ocStruct=processinitfile('harvest2D');
+% to get some informative messages during the processing step the 'INIT' option 'MessageDisplay' can be set
+opt=setocoptions('INIT','MessageDisplay','on');
+ocStruct=processinitfile('harvest2D',opt);
+%create a (standard) model object
+% this object consists of two fields 'm.Model' and 'm.Result', where m.Model is given by the structure ocStruct (excluding the foc part, i.e. only the basic model description without derived terms). 
+% the entire structure (including the foc part) is stored in the modle folder 'data' during the processing step
+m=stdocmodel('harvest2D');
+%create model m-files and move it to model folder, these folders and model structure were generated during the processing step (ocmatnew/model/harvest2D and ocmatnew/model/harvest2D/data)
+modelfiles=makefile4ocmat(m);
+moveocmatfiles(m,modelfiles);
+%alternatively the commands can be called using ocStruct as an argument
+modelfiles=makefile4ocmat(ocStruct);
+moveocmatfiles(ocStruct,modelfiles)
+% to calculate equilibria with the symbolic toolbox call
+ocEP=calcep(m);
+% initialize the global variables for the continuation process
+sol=initocmat_AE_EP(m,ocEP{2},1:2,[1;7]);
+% set some options
+opt=setocoptions('OCCONTARG','InitStepWidth',1,'MaxStepWidth',5,'Backward',1,'Singularities',1,'SBVPOC','MeshAdaptAbsTol',1e-6,'MeshAdaptRelTol',1e-4,'NEWTON','RelTol',5e-3);
+% start continuation
+c=bvpcont('extremal2ep',sol,[],opt);
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+29-Apr-2013:
+% EXAMPLES
+
+%%%%%%
+%% CONTINUATION OF THE SADDLE PATH FOR A PARAMETER VALUE
+%%%%%
+ 
+load('ExampleSaddlePathCont4Par.mat')
+m=ocObj;
+ocAsym=m.Result.Continuation{1}.ExtremalSolution;
+opt=setocoptions('OCCONTARG','InitStepWidth',1e-2,'MaxStepWidth',0.1,'Backward',0,'HitTargetValue',0,'Singularities',1,'Adapt',50,'MaxContinuationSteps',50,'SBVPOC','MeshAdaptAbsTol',1e-6,'MeshAdaptRelTol',1e-4,'FJacobian',1,'BCJacobian',0,'NEWTON','RelTol',5e-3,'Solver','newtcorr4bvp','GENERAL','BVPMethod','bvp6c');
+sol=initocmat_AE_AE_P(m,ocAsym,2,1:2,opt);
+c=bvpcont('extremalp2ep',sol,[],opt);
+% use the bvp method 'bvp5c'
+soltp=transform2tpbvp(sol,3);
+opt=setocoptions(opt,'OCCONTARG','MaxStepWidth',1,'GENERAL','BVPMethod','bvp5c');
+c=bvpcont('extremalp2ep',soltp,[],opt);
+
+%%%%%%
+%% CONSTRUCTION AND CALCULATION OF SOLUTIONS CONSISTING OF DIFFERENT ARCS
+%%%%%
+par=[0.03 0.05 0.009 0.35 1 1 1 0 0.75];
+m=stdocmodel('fishery2D');
+m=changeparametervalue(m,par);
+ocEP=calcep(m);b=isadmissible(ocEP,m,[],'UserAdmissible');ocEP(~b)=[];
+opt=setocoptions('OCCONTARG','MaxStepWidth',1,'Singularities',1,'GENERAL','BVPMethod','bvp4c');
+opt=setocoptions(opt,'OCCONTARG','CheckAdmissibility','off');
+sol=initocmat_AE_EP(m,ocEP{2},1:2,[0.1 7],opt,'TruncationTime',100);
+c=bvpcont('extremal2ep',sol,[],opt);
+
+% transform solution that hits the target point into an ocasymptotic
+ocAsym=ocasymptotic(c(2).data.sol,ocEP{2});
+
+% find solution points with negative controls
+[rows cols]=find(control(m,ocAsym,1)<0);
+% there exist two NOT connected arcs with negative control values, start with the first arc
+idx=find(abs(diff(cols))>1);
+cols=cols(1:idx);
+trj=partialarc(ocAsym,cols);trj.arcarg=1;
+
+% transform solution path into path with two arcs
+ocAsymN=addarc(ocAsym,trj,cols);
+sol=initocmat_AE_AE(m,ocAsymN,1:2,[0.1 7]');
+
+% calculate path for two arc solution, 'CheckAdmissibility' is turned 'off' since there exists another arc with negative control values
+c=bvpcont('extremal2ep',sol,[],opt);
+ocAsym=ocasymptotic(c(2).data.sol,ocEP{2});
+[rows cols]=find(control(m,ocAsym,1)<-1e-5);
+trj=partialarc(ocAsym,cols);trj.arcarg=1;
+% transform solution path into path with four arcs [1 0 1 0]
+ocAsymN=addarc(ocAsym,trj,cols);
+sol=initocmat_AE_AE(m,ocAsymN,1:2,[0.1 7]');
+opt=setocoptions(opt,'OCCONTARG','CheckAdmissibility','on','GENERAL','AdmissibleTolerance',5e-5);
+% calculate final solution, 'CheckAdmissibility' is turned 'on'
+c=bvpcont('extremal2ep',sol,[],opt);
+
+% store and plot the solution
+m=store(m,'extremal2ep');
+m=store(m,ocEP);
+
+% continue path, using method 'bvp6c'
+ocAsym=ocasymptotic(c(2).data.sol,ocEP{2});
+sol=initocmat_AE_AE(m,ocAsym,1:2,[0.01 7]');
+opt=setocoptions(opt,'GENERAL','BVPMethod','bvp6c');
+c=bvpcont('extremal2ep',sol,[],opt);
+m=store(m,'extremal2ep');
+
+% continue path, using method 'bvp5c'
+opt=setocoptions(opt,'OCCONTARG','MaxStepWidth',10,'GENERAL','BVPMethod','bvp5c','SBVPOC','BCJacobian',1,'FJacobian',1);
+sol=initocmat_AE_AE(m,ocAsym,1:2,[0.005 6.9]');
+% transform multipoint BVP to twopoint BVP solution structure
+soltp=transform2tpbvp(sol,3);
+c=bvpcont('extremal2ep',soltp,[],opt);
+m=store(m,'extremal2ep');
+
+clf; xcoord=1;ycoord=2;zcoord=1;xvar='state';yvar='state';zvar='control';
+h=plot3cont(m,xvar,xcoord,yvar,ycoord,zvar,zcoord,'contfield','ExtremalSolution','Index',2);
+set(h([1 3]),'color',[0 0.5 0])
+set(h([2 4]),'color',[0 0 1])
+hold on
+plot3limitset(m,xvar,xcoord,yvar,ycoord,zvar,zcoord,'limitclass','Equilibrium','Index',2,'Marker','.','MarkerSize',14,'Color',[0 0 1]);
+hold off
+set(gca,'Zlim',[0 0.15])
+figure(gcf)
+
+%%%%%%
+%% INDIFFERENCE CURVE CALCULATION
+%%%%%
+% calculate an indifference curve
+m=stdocmodel('nonlincapitalaccumulation');
+m=changeparametervalue(m,'beta,delta1,delta2,gamma2,theta,eta',[1 0.1 0.15 1 1.605 0.575]);
+ocEP=calcep(m);b=isadmissible(ocEP,m,[],'UserAdmissible');ocEP(~b)=[];
+ocEP=remspuriousimag(ocEP);
+[dum dim]=issaddle(ocEP{:});
+ocEP(dim==1)=[];
+opt=setocoptions('OCCONTARG','InitStepWidth',1e-2,'MaxStepWidth',1,'MaxContinuationSteps',inf,'CheckAdmissibility','on','SBVPOC','MeshAdaptAbsTol',1e-6,'MeshAdaptRelTol',1e-5,'GENERAL','BVPMethod','bvp4c','AdmissibleTolerance',1e-4);
+sol=initocmat_AE_EP(m,ocEP{2},1:2,ocEP{1}.y(1:2),opt,'TruncationTime',200);
+c=bvpcont('extremal2ep',sol,[],opt);
+m=store(m,'extremal2ep');
+sol=initocmat_AE_EP(m,ocEP{1},1:2,ocEP{2}.y(1:2),opt,'TruncationTime',200);
+c=bvpcont('extremal2ep',sol,[],opt);
+m=store(m,'extremal2ep');
+ipt=findindifferencepoint(m,1,2);
+sol=initocmat_AE_EP(m,ocEP{2},1:2,ipt,opt,'TruncationTime',200);
+c=bvpcont('extremal2ep',sol,[],opt);
+m=store(m,'extremal2ep');
+sol=initocmat_AE_EP(m,ocEP{1},1:2,ipt,opt,'TruncationTime',200);
+c=bvpcont('extremal2ep',sol,[],opt);
+m=store(m,'extremal2ep');
+clear ocAsym
+ocAsym{1}=m.Result.Continuation{3}.ExtremalSolution;
+ocAsym{2}=m.Result.Continuation{4}.ExtremalSolution;
+sol=initocmat_AE_IS(m,ocAsym,2,3,opt);
+opt=setocoptions(opt,'OCCONTARG','Backward',1,'MaxStepWidth',0.025,'SBVPOC','FJacobian',1,'BCJacobian',0);
+c=bvpcont('indifferencesolution',sol,[],opt);
+m=store(m,'indifferencesolution');
+
+opt=setocoptions(opt,'OCCONTARG','Backward',0,'GENERAL','BVPMethod','bvp5c');
+soltp=transform2tpbvp(sol,3);
+%soltp=interpguess(soltp);
+c=bvpcont('indifferencesolution',soltp,[],opt);
+m=store(m,'indifferencesolution');

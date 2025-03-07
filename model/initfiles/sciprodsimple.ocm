@@ -1,0 +1,39 @@
+Type
+standardmodel
+
+Description
+Optimal scientific production over the life cycle, version 1 (21.03.19)
+AB 26.03.19
+
+Variable
+state::K
+control::Inv   % I reserved!
+
+Statedynamics
+ode::DK=Inv+a*K/(1+K)-d
+
+Objective
+int::K-c*Inv^2-d   % g(K)=K
+
+Controlconstraint
+CC1::ineq::Inv >= IMin
+CC2::ineq::Inv <= IMax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Salvagevalue
+0
+
+Optimizationtype
+max
+
+Parameter
+r::0.03
+a::0.5
+c::0.5 % ***  % corresponds to d1; paper: 0.5, 2.8, 3
+d::1
+IMin::0
+IMax::2

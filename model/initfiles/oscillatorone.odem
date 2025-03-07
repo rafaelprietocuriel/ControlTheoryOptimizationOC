@@ -1,0 +1,27 @@
+Type
+odemodel
+
+Modelname
+oscillatorone
+
+Description
+full model
+
+Variable
+state::x1,x2
+
+
+Dynamics
+ode::Dx1=x2-0
+ode::Dx2=1/M*(F0-K*x1-Gamma*x2)
+
+%Exogenousfunction
+%F::F0*cos(a*t+b)
+
+Parameter
+M::3
+K::1.5
+Gamma::3
+F0::0
+%a::0
+%b::1

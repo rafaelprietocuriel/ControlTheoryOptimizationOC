@@ -1,0 +1,35 @@
+Type
+standarddiffmodel
+
+Description
+discrete time shallow lake model
+
+Variable
+state::P
+control::u
+independent::t
+
+Statedynamics
+diff::P_tp1=(n*u_tp1-b*P_t+r*P_t^q/(m^q+P_t^q))*Delta+P_t
+
+Objective
+expdisc::rho*Delta % expdisc, exponential discounting with discountrate 'rho'
+sum::(a*log(u_tp1)-c*P_t^2)*Delta
+
+Salvagevalue
+expdisc::rho*Delta % expdisc, exponential discounting with discountrate 'rho'
+func::0
+
+Maptype
+implicit
+
+Parameter
+rho::0.03
+a::1
+b::0.6
+c::1
+n::1
+r::1
+m::1
+q::2
+Delta::1

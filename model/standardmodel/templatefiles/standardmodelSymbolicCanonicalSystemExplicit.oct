@@ -1,0 +1,20 @@
+//
+// SymbolicCanonicalSystemExplicit.oct
+//
+
+function out=$MODELNAME$SymbolicCanonicalSystemExplicit($ARCVAR$,$SUBSFLAG$)
+% returns expression for the canonical systems dynamics for $MODELNAME$
+$INFODETAILS$
+	
+$SYMBOLICCANONICALSYSTEMDYNAMICS$
+!IF $IMPLICITCONTROLS$!
+	
+%switch $ARCVAR$
+%!STARTADDARCCASE!
+%	case $ARCIDENTIFIERALGEBRAICEQUATION$
+%		$SYMBOLICOPTIMALCONTROLDYNAMICS$
+%	
+%!ENDADDARCCASE!
+%end
+%out=[out;dudt];
+!ENDIF!

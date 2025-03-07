@@ -1,0 +1,62 @@
+Type
+standardmodel
+
+Description
+terror model, with two different types of counter terror actions
+
+Modelname
+fireorwater1D
+
+Variable
+state::x
+control::u,v
+
+Statedynamics
+ode::Dx=tau+(v+a)/(1+v)*k*x^alpha-mu*x-beta*u*x^theta-nu*v*x
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::-c*x-cu*u^2-cv*v^2
+
+Salvagevalue
+func::-kappa*x
+
+Optimizationtype
+max
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+CC2::ineq::v>=vlb
+
+Stateconstraint
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the identifiers of constraints defined before, [] stands for the unconstrained case
+% underscores indicate that multiple solutions of the maximizing Hamiltonian exist for a specific constraint combination
+ArcDefinition
+0::[]_1
+1::[]_2
+2::[]_3
+3::CC1_1
+4::CC1_2
+5::CC1_3
+6::CC2
+7::CC1,CC2
+
+Parameter
+r::0.1
+a::0.1
+alpha::0.7
+c::1.4
+k::0.5
+beta::0.01
+mu::0.05
+tau::1e-4
+theta::0.2
+nu::0.02
+kappa::1
+cu::1
+cv::1
+ulb::0
+vlb::0

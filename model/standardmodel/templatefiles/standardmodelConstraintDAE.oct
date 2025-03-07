@@ -1,0 +1,17 @@
+//
+// standardmodelConstraintDAE.oct
+//
+function out=$MODELNAME$ConstraintDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% returns the values of the constraints that have to be satisfied
+$INFODETAILS$
+	
+!IF $CONTROLCONSTRAINTNUM$!
+$PARAMETERVALUES$
+	
+$CONTROL$=$DEPENDENTVAR$($CONTROLCOORDINATE$,:);
+	
+$CONSTRAINT$
+!ENDIF!
+!IF ~$CONTROLCONSTRAINTNUM$!
+out=[];
+!ENDIF!

@@ -1,0 +1,24 @@
+Type
+odemodel
+
+Description
+uncontrolled coin model 
+Modelname
+coinunctrl
+
+Variable
+state::G,I
+
+Dynamics
+ode::DG=-alpha*I+beta
+ode::DI=-gamma*epsilon*G*((epsilon*varmu+(1-epsilon*varmu)*I/P)-theta*(1-epsilon*varmu)*(1-I/P))-gamma0*G*(1-epsilon)*(((1-epsilon)*varmu+(1-(1-epsilon)*varmu)*I/P)-theta*(1-(1-epsilon)*varmu)*(1-I/P))
+
+Parameter
+theta::0.1
+alpha::0.01
+beta::0
+P::1000
+epsilon::0
+gamma0::1
+varmu::0
+gamma::0

@@ -1,0 +1,28 @@
+//
+// standardmodelPlotContinuationDAE.oct
+//
+function h=$MODELNAME$PlotContinuationDAE($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$)
+% plotting commands called during the continuation process the user can adapt this file to her/his needs
+$INFODETAILS$
+	
+subplot(2,2,1)
+h1=plot($INDEPENDENT$,$DEPENDENTVAR$($STATECOORD$,:));
+xlabel('$INDEPENDENTNAME$','Interpreter','Latex')
+ylabel('$STATENAME$','Interpreter','Latex')
+	
+subplot(2,2,2)
+h2=plot($INDEPENDENT$,$DEPENDENTVAR$($COSTATECOORD$,:));
+xlabel('$INDEPENDENTNAME$','Interpreter','Latex')
+ylabel('$COSTATENAME$','Interpreter','Latex')
+	
+subplot(2,2,3)
+h3=plot($INDEPENDENT$,$DEPENDENTVAR$($CONTROLCOORDINATE$,:));
+xlabel('$INDEPENDENTNAME$','Interpreter','Latex')
+ylabel('$CONTROLNAME$','Interpreter','Latex')
+	
+subplot(2,2,4)
+h4=plot($INDEPENDENT$,$DEPENDENTVAR$($LAGRANGEMULTCCCOORDINATE$,:));
+xlabel('$INDEPENDENTNAME$','Interpreter','Latex')
+ylabel('$LAGRANGEMULTCCNAME$','Interpreter','Latex')
+	
+h=[h1;h2;h3;h4];

@@ -1,0 +1,34 @@
+Type  
+standardmodel
+
+Modelname
+maurer
+
+Description
+A quadratic model with state constraint
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=x^2-u
+
+Objective
+int::-c1*x^2-c2*u^2
+
+Stateconstraint
+SC1::ineq::x>=a,1
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+1::x
+
+ArcDefinition
+0::[]
+1::SC1
+
+Parameter
+r::0
+c1::1
+c2::1
+a::0

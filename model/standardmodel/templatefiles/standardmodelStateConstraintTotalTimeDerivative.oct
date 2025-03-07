@@ -1,0 +1,17 @@
+//
+// standardmodelStateConstraintTotalTimeDerivative.oct
+//
+function out=$MODELNAME$StateConstraintTotalTimeDerivative($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$,order)
+% returns the total time derivative for pure state constraints
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+$CONTROL$=$MODELNAME$OptimalControl(0,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+switch order
+!STARTADDCASE!
+	case $STATECONSTRAINTORDER$
+		$STATECONSTRAINTTOTALTIMEDERIVATIVE$
+!ENDADDCASE!
+end

@@ -1,0 +1,10 @@
+//
+// EquilibriumEquationJacobian.oct
+//
+function out=$MODELNAME$EquilibriumEquationJacobian($DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+% returns the Jacobian of the equilibrium equations with respect to the dependent variables.
+$INFODETAILS$
+	
+numJacOpt.diffvar=1;
+numJacOpt.vectvars=[];
+out=numjaccsd(@$MODELNAME$EquilibriumEquation,{$DEPENDENTVAR$,$PARVAR$,$ARCVAR$},$EQUATIONNUMIMPLICIT$,numJacOpt);

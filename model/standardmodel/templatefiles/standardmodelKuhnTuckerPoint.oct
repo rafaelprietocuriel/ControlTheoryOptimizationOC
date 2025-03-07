@@ -1,0 +1,53 @@
+//
+// standardmodelKuhnTuckerPoint.oct
+//
+function [V,lm]=$MODELNAME$KuhnTuckerPoint($INDEPENDENT$,$LOCSTATE$,$LOCCONTROL$,$GRADIENTLOCCONTROL$,$PARVAR$,$PARGAMMA$)
+% returns the solutions of the linear quadratic problem for the Hamiltonian maximizing condition of $MODELNAME$.
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+
+!IF ~$CONTROLCONSTRAINTNUM$!
+	
+V=[];
+lm=[];
+!ENDIF!
+!IF $CONTROLCONSTRAINTNUM$!
+//!IF $LOCCONTROLNUM$>1!
+//!FOR !COUNTER!=1:$LOCCONTROLNUM$!
+	
+$KUHNTUCKERPOINT$
+	
+V=zeros($LOCCONTROLNUM$,length(t));
+for ii=1:$LOCCONTROLNUM$
+	Vtmp=LOCV(:,:,ii);
+	Vtmp(sum(lagm<0,3)+sum(slv<0,3)+sum(abs(imag(slv))>0,3)>0)=NaN;
+	[row,col]=find(~isnan(Vtmp));
+	[col,idx]=unique(col);
+	row=row(idx);
+	V(ii,:)=Vtmp($KUHNTUCKERNUM$*(col-1)+row).';
+end
+	
+lm=zeros($CONTROLCONSTRAINTNUM$,length(t));
+for ii=1:$CONTROLCONSTRAINTNUM$
+	lmtmp=lagm(:,:,ii);
+	lmtmp(sum(lagm<0,3)+sum(slv<0,3)+sum(abs(imag(slv))>0,3)>0)=NaN;
+	[row,col]=find(~isnan(lmtmp));
+	[col,idx]=unique(col);
+	row=row(idx);
+	lm(ii,:)=lmtmp($KUHNTUCKERNUM$*(col-1)+row).';
+end
+//!ENDFOR!
+//!ENDIF!
+//!IF $LOCCONTROLNUM$==1!
+//	
+//$KUHNTUCKERPOINT$
+//	
+//LOCV(sum(lagm<0,3)+sum(slv<0,3)+sum(abs(imag(slv))>0,3)>0)=NaN;
+//[row,col]=find(~isnan(LOCV));
+//[col,idx]=unique(col);
+//row=row(idx);
+//out=LOCV(8*(col-1)+row).';
+//!ENDIF!
+!ENDIF!
+

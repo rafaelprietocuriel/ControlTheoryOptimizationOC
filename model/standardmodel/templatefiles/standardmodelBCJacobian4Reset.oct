@@ -1,0 +1,21 @@
+function J=$MODELNAME$BCJacobian4Reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,pararg,freepar,$ARCVAR$,edge,arc,arcoffset)
+% returns the Jacobian of the guard boundary conditions for the saddle path continuation
+$INFODETAILS$
+	
+if ~arcoffset
+	J=-$MODELNAME$BCJacobian4ResetArc($DEPENDENTVAR$b(:,arc),pararg,freepar,edge(1));
+else
+	J=$MODELNAME$BCJacobian4ResetArc($DEPENDENTVAR$a(:,arc),pararg,freepar,edge(2));
+end
+	
+%--------------------------------------------------------------------------
+function J=$MODELNAME$BCJacobian4ResetArc($DEPENDENTVAR$,pararg,freepar,$ARCVAR$)
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERALGEBRAICEQUATION$
+		J=zeros($STATECOSTATENUM$,$EQUATIONNUM$);
+		J(1:$STATECOSTATENUM$,1:$STATECOSTATENUM$)=eye($STATECOSTATENUM$);
+	
+!ENDADDARCCASE!
+end

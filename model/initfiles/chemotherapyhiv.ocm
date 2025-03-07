@@ -1,0 +1,55 @@
+Type
+standardmodel
+
+Modelname
+chemotherapyhiv
+
+Description
+Optimal control of the chemotherapy of HIV, kirschneretal1997
+
+Variable
+state::T,Tp,Tpp,V
+control::u
+
+Statedynamics
+ode::DT=s/(1+V)-muT*T+r*T*(1-(T+Tp+Tpp)/Tmax)-k1*V*T
+ode::DTp=k1*V*T-muTp*Tp-k2*Tp
+ode::DTpp=k2*Tp-mub*Tpp
+ode::DV=u*N*mub*Tpp-k1*V*T-muV*V
+
+
+Objective
+expdisc::rho
+int::T-B/2*(1-u)^2
+
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter % perelsonetal1993
+rho::0
+r::0.03
+s::10
+Tmax::1500
+muT::0.02
+muTp::0.02
+mub::0.24
+muV::2.4
+k1::2.4e-5
+k2::3e-3
+N::1200
+B::1
+umin::0
+umax::1
+%T0::1000
+%Ncrit::774
+%T Uninfected CD4+ cell population size
+%Tp Latently infected CD4+ helper cell population size
+%Tpp Actively infected CD4+ helper cell population size
+%V HIV population size

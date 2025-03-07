@@ -1,0 +1,87 @@
+\documentclass[11pt]{book}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{upquote}
+\usepackage[]{listings}
+%\usepackage{apacite}
+\usepackage[font=small,labelfont=bf,indention=0.5cm,aboveskip=20pt]{caption}
+\usepackage[amsmath,thmmarks,standard]{ntheorem}
+\usepackage{etex}
+\usepackage{ifthen} 
+\usepackage{graphicx}
+\usepackage[]{subfig}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{makeidx}
+%\usepackage{layout} % this allows to print the layout data of the actual class
+\usepackage[authoryear,round]{natbib}
+\usepackage[avoideditors,withbib,pages]{authorindex} 
+%\usepackage[T1]{fontenc}
+\usepackage[final]{animate}
+\usepackage{tabularx}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{mymath}
+\usepackage{ocmat}
+\makeindex
+%\bibliographystyle{plain}
+%\bibliographystyle{apacite}
+
+% defined for the subfigure command
+\newcommand{\goodgap}{%
+\hspace{\subfigtopskip}%
+\hspace{\subfigbottomskip}}
+
+%\lstset{breaklines=true,language=Matlab,basicstyle=\small,escapeinside={(*@}{@*)}}
+\lstset{breaklines=true,basicstyle=\ttfamily,escapeinside={(*@}{@*)}}
+\begin{document}
+\bibliographystyle{newapa}
+%\layout
+\frontmatter
+\input{ocmat_title}
+\newpage
+\tableofcontents
+\preface{}
+\addcontentsline{toc}{chapter}{Preface}
+
+\part{Standard Optimal Control Model}
+\label{part:user_man}
+\chapter{Introduction}
+\input{ocmat_introduction}
+
+\mainmatter 
+\chapter{Basic Model}
+\label{sec:standardmodel}
+\input{ocmat_onestatemodel}
+
+\chapter{Higher Dimensional Models}
+\label{sec:twostatemodel}
+\input{ocmat_twostatemodel}
+
+\chapter{Selected Commands}
+\label{ch:commands}
+\input{ocmat_commands}
+
+\chapter{Miscellaneous}
+\label{ch:miscellaneous}
+\input{ocmat_miscellaneous}
+
+\appendix
+\chapter{Options}
+\label{sec:options}
+\input{ocmat_options}
+
+\chapter{Class Design}
+\label{sec:classdesign}
+\input{ocmat_classes}
+
+
+\part{Discrete Optimal Control Model}
+\label{part:user_man_discrete}
+\chapter{Introduction}
+\input{ocmat_discrete_introduction}
+\bibliography{myreferences}
+\clearpage
+\printindex
+\end{document}
+

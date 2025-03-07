@@ -1,0 +1,37 @@
+Type
+standardmodel
+
+Description
+shallow lake model
+
+Variable
+state::P,M
+control::u
+
+Statedynamics
+ode::DP=(d*u-P*(h+s)+(k*P^q*M)/(m^q+P^q))/epsilon
+ode::DM=s*P-b*M-(k*P^q*M)/(m^q+P^q)
+
+Objective
+int::a*log(u)-c*P^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC::ineq::u>=ulow
+
+ArcDefinition
+0::[]
+1::CC
+
+Parameter
+r::0.03
+a::1
+b::0.001
+c::1
+d::1
+epsilon::1
+h::0.15
+k::0.019
+m::2.4
+q::8
+s::0.7
+ulow::0

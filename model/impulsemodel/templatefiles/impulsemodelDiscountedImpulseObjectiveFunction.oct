@@ -1,0 +1,20 @@
+//
+// impulsemodelDiscountedImpulseObjectiveFunction.oct
+//
+function out=$MODELNAME$DiscountedImpulseObjectiveFunction($JUMPTIME$,$LRDEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$)
+% returns the impulse Hamiltonian value for $MODELNAME$
+$INFODETAILS$
+	
+$PARAMETERVALUES$
+	
+if $JUMPVAR$
+	% impulse variable consists of left side state and right side costate values
+	$LRDEPENDENTVAR2L$
+	$LRDEPENDENTVAR2R$
+	
+	$IMPULSECONTROL$=$MODELNAME$OptimalImpulseControl($JUMPTIME$,$LRDEPENDENTVAR$,$PARVAR$,$ARCVAR$,$JUMPVAR$);
+	
+	$DISCOUNTEDIMPULSEOBJECTIVEFUNCTION$
+else
+	out=0;
+end

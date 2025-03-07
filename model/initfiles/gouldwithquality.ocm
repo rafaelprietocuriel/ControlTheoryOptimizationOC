@@ -1,0 +1,53 @@
+Type
+standardmodel
+
+Description
+An extended version of the Gould model with quality and price as state variables
+
+Variable
+state::S,p,Q
+control::u,v,w
+
+Statedynamics
+ode::DS=((alpha*(kappa+u)*Q-beta*(1-Q))*(a-b*p-S)-(1-Q+delta))*S
+ode::Dp=v
+ode::DQ=w*(1-Q)
+
+Objective
+int::(Q*p-c)*S-e*u^2/2-f/2*v^2-g/2*w^2
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::p>=plb,1
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+CC2::ineq::w>=wlb
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+4::SC1
+5::SC1,CC1
+6::SC1,CC2
+7::SC1,CC1,CC2
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+4,5,6,7::p
+
+Parameter
+alpha::1
+c::1
+a::1
+b::1
+r::0.1
+delta::0.2
+e::1
+ulb::0
+f::1
+kappa::1
+plb::0
+beta::1
+wlb::0
+g::1

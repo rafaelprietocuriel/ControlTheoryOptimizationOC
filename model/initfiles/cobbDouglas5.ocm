@@ -1,0 +1,73 @@
+Type
+standardmodel
+
+Modelname
+cobbDouglas5
+
+Description
+Optimal scientific production over the life cycle, model 4: Cobb-Douglas 
+AB 20.04.19: cobbDouglas 1: created, linear P2(K)
+AB 29.04.19: cobbDouglas 2: Cobb-Douglas  also in P2(I,K) (OF)
+AB 29.04.19: cobbDouglas 3: Include s-shaped M effect in P1, P2
+AB 29.04.19: cobbDouglas 4: M effect weighting in costs
+AB 05.05.19: cobbDouglas 5: M effect in alpha1, beta1 and output of P2 (s-shaped)
+
+Variable
+state::K
+control::Ic
+
+Statedynamics 
+% Matthew Cobb-Douglas Function P1(K,I)=I^M(alpha1,K))*K^M(beta1,K))  
+ode::DK=Ic^((D1I+d1I)*(K+tau)^theta1I/(b1I+(K+tau)^theta1I)-d1I)*alpha1 *(K+tau)^((D1K+d1K)*(K+tau)^theta1K/(b1K+(K+tau)^theta1K)-d1K)*beta1-delta*K
+
+
+Objective
+int::((D2+d2)*(K+tau)^theta2/(b2+(K+tau)^theta2)-d2) * Ic^alpha2*(K+tau)^beta2 - (D3-(D3+d3)*(K+tau)^theta3/(b3+(K+tau)^theta3)-d3)*(c*Ic^2)*(1-Q)   
+						% Matthew weighted Cobb-Douglas function P2(K,I)=M(K)*I^alpha2*K^beta2
+						% M(K)*C(I,Q)  Matthew costs 
+Optimizationtype
+max
+
+Controlconstraint
+CC1::ineq::Ic>=IMin
+CC2::ineq::Ic<=IMax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Control
+0::Ic::implicit
+2::Ic::implicit
+
+Parameter
+r::0.05
+delta::0.1
+
+IMin::0
+IMax::1
+alpha1::0.5  % parameters of M1 (prod.fct for knowledge)
+beta1::0.5 
+b1I::1
+d1I::-0.5
+D1I::2
+delta::0.2
+theta1I::1
+b1K::1
+d1K::-0.5
+D1K::2
+theta1K::2
+alpha2::0.5  % parameters of M2 (prod.fct for reputation)
+beta2::0.5
+b2::500   
+d2::0
+D2::10
+theta2::5
+c::3
+b3::100   % parameters of M3 (cost weighting)
+d3::0
+D3::1.5
+theta3::2
+Q::0	% IQ (0...standard, 1...best)
+tau::1e-3

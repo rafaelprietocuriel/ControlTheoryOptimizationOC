@@ -1,0 +1,25 @@
+Type
+odemodel
+
+Modelname
+piw
+
+Description
+uncontrolled model for resurgent epidemics
+
+Variable
+state::P,I,W
+
+Dynamics
+ode::DP=upsilon*P-delta*I-mu*P
+ode::DI=alpha*I*(P-I-W)-(vartheta+delta+mu)*I
+ode::DW=eta*vartheta*I-(psi+mu)*W
+
+Parameter
+alpha::0.175
+upsilon::1/(70*365)
+mu::1/(70*365)
+delta::0.00225
+vartheta::1/10
+psi::0.0002
+eta::0.85

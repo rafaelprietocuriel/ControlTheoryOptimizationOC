@@ -1,0 +1,77 @@
+Type
+standardmodel
+
+Modelname
+cheatdelightlog
+
+Description
+Deviant quality model 
+
+Variable
+state::G,y
+control::u,p
+variationparameter::Delta
+
+Statedynamics
+ode::DG=(qtilde+Delta*(1-y))*u
+ode::Dy=-cheatflag*Delta*y*(a-b*p+(1+beta*log(Delta/qtilde+1)*(1-y))*G)
+
+Objective
+int::((p-c*(Delta+qtilde)^2/2)*(a-b*p+(1+beta*log(Delta/qtilde+1)*(1-y))*G)-h/2*u^2+k*cheatflag*sigma*Delta*log(y))*(1+sigma*(y-1))
+
+Salvagevalue
+func::theta*(1+beta*log(Delta/qtilde+1)*(1-y))*G
+
+Optimization
+type::max
+method::bvp
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::u>=umin
+CC2::ineq::p>=pmin
+CC3::ineq::a-b*p+(1+beta*log(Delta/qtilde+1)*(1-y))*G>=Smin
+CC4::ineq::p<=pmax
+CC5::ineq::u<=umax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC4
+5::CC5
+6::CC1,CC2
+7::CC2,CC5
+8::CC3,CC5
+9::CC4,CC5
+10::CC1,CC3
+
+Exogenousfunction
+%func1::(a+(1+beta*log(Delta/qtilde+1)*(1-y))*G)*((a+(1+beta*log(Delta/qtilde+1)*(1-y))*G)/b-p)-b/2*(((a+(1+beta*log(Delta/qtilde+1)*(1-y))*G)/b)^2-p^2)
+func1::b/2*((a+(1+beta*log(Delta/qtilde+1)*(1-y))*G)/b-p)^2
+%func2::0
+
+
+Parameter
+r::0
+a::10
+b::1
+beta::1
+c::10
+qtilde::1
+h::1
+theta::0.2
+Delta::1
+umin::0
+pmin::0
+Smin::0
+umax::10
+pmax::inf
+k::0
+cheatflag::1
+sigma::0
+
+% cheatflag: cheatflag*Delta = abs(Delta)
+% Delta < 0 cheating, k>=0, cheatflag=-1, sigma = 1
+% Delta > 0 delighting, k=0, cheatflag=1, sigma = 0
+% Delta=0 fair, cheatflag -1,1, sigma 0

@@ -1,0 +1,25 @@
+Type
+standarddiffmodel
+
+Description
+a model of moderation, simple one state model with indifference solutions
+
+Variable
+state::x
+control::u
+
+Statedynamics
+diff::x_tp1=u_tp1
+
+Objective
+expdisc::beta % expdisc, exponential discounting with discountrate 'rho'
+sum::log(A*x_t^alpha-u_tp1)
+
+Maptype
+implicit
+
+
+Parameter
+beta::-log(0.95)
+A::5
+alpha::0.34

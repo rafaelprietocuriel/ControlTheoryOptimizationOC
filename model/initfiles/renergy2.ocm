@@ -1,0 +1,46 @@
+Type
+standardmodel
+
+Description
+Optimal Control Models of Renewable Energy Production under Fluctuating Supply
+
+Variable
+state::Ks
+costate::lambda
+control::Is,Ef
+
+Statedynamics
+ode::DKs=Is-deltas*Ks
+
+Objective
+% the term kappa*Ef^2 is only introduced to derive the necessary optimality conditions automatically, even though the case of linear controls is not implemented up to now
+int::-Is*(b+c*Is)*(Ks+epsilon)^(-alpha)-pf*Ef-kappa*Ef^2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::Ef+(nu*sin(k*t*pi)^gamma+tau)*Ks*sigma>=E
+CC2::ineq::Ef>=0
+CC3::ineq::Is>=Isu
+
+ArcDefinition
+0::CC1
+1::CC2
+2::CC1,CC3
+3::CC2,CC3
+
+Parameter
+alpha::0.25
+b::0.6
+c::0.6
+pf::0.06
+deltas::0.03
+r::0.04
+Isu::0
+E::2000
+tau::0.79
+nu::4.56
+sigma::0.2
+k::1
+epsilon::1
+kappa::0
+gamma::2
+%Efl::0

@@ -1,0 +1,67 @@
+Type
+standardmodel
+
+Modelname
+nonlincapitalaccumulationi
+
+Description
+Two state capital accumulation with heterogeneous products: disruptive vs. non-disruptive goods
+
+Variable
+state::K1,K2
+control::I1,I2
+
+Statedynamics
+ode::DK2=I2-delta2*K2
+ode::DK1=I1-delta1*K1
+
+Objective
+int::alpha*K1-gamma1*alpha^2*K1^2+theta*beta*sqrt(K2)-gamma2*beta^2*K2-3*eta*alpha*beta^2*K1*K2-I1^2/2-I2^2/2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::I1>=low1
+CC2::ineq::I2>=low2
+CC3::ineq::I1+I2<=B1*K1+B2*K2
+
+% contains all combinations of constraints that have to be considered
+% Syntax: arcid::c1 c2
+% c1 and c2 are the numbers of constraints defined before
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC3
+4::CC1,CC2
+5::CC1,CC3
+6::CC2,CC3
+
+Salvagevalue
+func::tau*(K1+K2)
+
+Control
+0::I1,I2::implicit
+1::I2::implicit
+1::I1::explicit
+2::I1::implicit
+2::I2::explicit
+3::I1::explicit
+3::I2::implicit
+4::*::explicit
+5::*::explicit
+6::*::explicit
+
+Parameter
+r::0.1
+alpha::1
+beta::1
+delta1::0.1
+delta2::0.15
+eta::0.6
+gamma1::1
+gamma2::1
+theta::1.575
+low1::0
+low2::0
+B1::1
+B2::1
+tau::0

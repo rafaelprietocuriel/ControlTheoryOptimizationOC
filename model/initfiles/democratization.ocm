@@ -1,0 +1,47 @@
+Type
+standardmodel
+
+Modelname
+democratization
+
+Description
+model of institutional change
+
+Variable
+state::h,P
+control::E,Q
+
+Statedynamics
+ode::Dh=barh*E/P-(beta/(a+h)+delta)*h
+ode::DP=beta*P/(a+h)
+
+Objective
+expdisc::rho 
+int::log(px*(R-Q)+A*Q^alpha*(h*P)^(1-alpha)-E-s-phi*h*P)
+
+Salvagevalue
+func::p*h*P
+
+Controlconstraint % identifier has to contain an alphabetic character 
+CC1::ineq::E>=Emin
+CC2::ineq::Q<=R
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Parameter
+rho::0.03
+A::1
+alpha::0.5
+beta::1
+barh::1
+a::1
+delta:: 0.1
+phi::0.5
+p::1
+px::1
+R::10
+s::1
+Emin::0

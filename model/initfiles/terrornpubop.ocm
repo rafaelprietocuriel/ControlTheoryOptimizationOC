@@ -1,0 +1,33 @@
+Type
+standardmodel
+
+Description
+Two State terror model: terror and public opinion
+
+Variable
+independent::t
+state::T,P
+control::a % anti terror measure
+
+Statedynamics
+ode::DT=tau+k*T^alpha-mu*T-eta*a*T^beta*P^gamma
+ode::DP=delta*T-rho*a^2+kappa*(b-P)
+
+Objective
+expdisc::r % expdisc, exponential discounting with discountrate 'r'
+int::c*T+a^2/2
+
+Parameter
+r::0.04
+gamma::1
+alpha::0.8
+b::1
+beta::0.5
+c::1
+delta::0.25
+eta::1.75
+k::0.05
+kappa::0.0001
+mu::0.05
+tau::1e-5
+rho::1

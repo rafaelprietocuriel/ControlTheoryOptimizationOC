@@ -1,0 +1,18 @@
+//
+// impulsemodelSymbolicState.oct
+//
+function out=$MODELNAME$SymbolicState($ARCVAR$)
+% returns the symbolic expression of the state value in case of state constraints
+$INFODETAILS$
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICSTATEVALUE$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~($NUMBEROFARCS$-1)!
+$SYMBOLICSTATEVALUE$
+!ENDIF!

@@ -1,0 +1,54 @@
+Type
+standardmodel
+
+Description
+A Ramsey model with non-renewable resources. For an analytic analysis (for delta=0) see benchekrounwithagen2011
+
+Modelname
+ramseynrrst
+
+Variable
+state::K,S
+control::C,u
+
+Statedynamics
+ode::DK=K^alpha*(u*S)^alphaq-delta*K-C
+ode::DS=-u*S
+
+Objective
+expdisc::rho % expdisc, exponential discounting with discountrate 'rho'
+int::(C^(1-eta)-1)/(1-eta)-tau*S
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::C<=K^alpha*(u*S)^alphaq
+CC2::ineq::u>=ulow
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+
+Parameter
+rho::0.03
+alpha::0.3
+alphaq::0.7
+delta::0.0
+eta::0.5
+tau::0
+ulow::0
+epsilon1::0
+epsilon2::0
+epsilon::1
+
+% @Article{benchekrounwithagen2011,
+  % Title                    = {The optimal depletion of exhaustible resources: A complete characterization },
+  % Author                   = {H.~Benchekroun and C.~Withagen},
+  % Journal                  = {Resource and Energy Economics },
+  % Year                     = {2011},
+  % Number                   = {3},
+  % Pages                    = {612--636},
+  % Volume                   = {33},
+  % Abstract                 = {We provide the closed form solution to the Dasgupta–Heal–Solow–Stiglitz (DHSS) model. The \{DHSS\} model is based on the seminal articles Dasgupta and Heal (1974); Solow (1974) and Stiglitz (1974) and describes an economy with two assets, man-made capital and a nonrenewable resource stock. We explicitly characterize, for such an economy, the dynamics along the optimal trajectory of all the variables in the model and from all possible initial values of the stocks. We use the analytical solution to prove several properties of the optimal consumption path. In particular, we show that the initial consumption under a utilitarian criterion starts below the maximin rate of consumption if and only the resource is abundant enough and that under a utilitarian criterion, it is not necessarily the present generation that benefits most from a windfall of resources. },
+  % Doi                      = {http://dx.doi.org/10.1016/j.reseneeco.2011.01.005},
+  % Keywords                 = {Special functions}
+% }

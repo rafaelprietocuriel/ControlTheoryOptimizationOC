@@ -1,0 +1,36 @@
+Type
+standardmodel
+
+Description
+The Gould model applied to the problem of drug addiction
+
+Variable
+state::A
+control::u
+
+Statedynamics
+ode::DA=(alpha0*A-alpha1*T)^sigma*(a-A)-(delta+u)*A
+
+Objective
+int::-c*A-f/2*u^2
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulb
+
+ArcDefinition
+0::[]
+1::CC1
+
+Parameter
+alpha0::0.1
+alpha1::0.1
+a::1
+b::0.1
+r::0.05
+c::1
+d::1
+g::0.3
+f::1
+delta::0.5
+ulb::0
+sigma::1
+T::100

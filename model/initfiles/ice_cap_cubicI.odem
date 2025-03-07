@@ -1,0 +1,35 @@
+Type
+odemodel
+
+Description
+A Cubic Model for Ice Cap Size (heraldetal2013)
+
+Modelname
+ice_cap_cubicI
+
+Variable
+state::xs
+independent::t
+
+Dynamics
+ode::Dxs=(1-xs)*(Q-Q0+a*((xs-b)/c)^2)
+Parameter
+Q::1367/4
+Q0::355
+a::3
+b::0.89
+c::0.09
+
+
+% solar constant: 1367 W/m^2
+
+% @Article{heraldetal2013,
+  % author  = {Herald, Christopher M. and Kurita, Satoko and Telyakovskiy, Aleksey S.},
+  % title   = {Simple Climate Models to Illustrate How Bifurcations Can Alter Equilibria and Stability},
+  % journal = {Journal of Contemporary Water Research \& Education},
+  % year    = {2013},
+  % volume  = {152},
+  % number  = {1},
+  % pages   = {14-21},
+  % doi     = {10.1111/j.1936-704X.2013.03162.x},
+% }

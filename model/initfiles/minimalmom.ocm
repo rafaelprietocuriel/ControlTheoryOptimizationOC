@@ -1,0 +1,16 @@
+Modelname
+mom
+
+Variable
+state::x
+control::u
+
+Statedynamics
+ode::Dx=x-x^3+u
+
+Objective
+int::-(x^2+c*u^2)
+
+Parameter
+r::1
+c::1

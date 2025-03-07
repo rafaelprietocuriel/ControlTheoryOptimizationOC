@@ -1,0 +1,14 @@
+function arcinfo=$MODELNAME$ArcDiscretizationInfo($ARCVAR$)
+% contains general arc information of the actual model
+$INFODETAILS$
+	
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIER$
+		% general information for the discretization of each arc (in case
+		% that the SBVPOC Solver is used)
+		arcinfo.collocationmethod='g'; % possible collocation methods are 'Gaussian' (g) or 'Lobatto' (l)
+		arcinfo.numcollocationpoints=4; % number of collocation points
+	
+!ENDADDARCCASE!
+end

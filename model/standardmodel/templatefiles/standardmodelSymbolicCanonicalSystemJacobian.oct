@@ -1,0 +1,16 @@
+function out=$MODELNAME$SymbolicCanonicalSystemJacobian($ARCVAR$)
+% returns the symbolic expression for the Jacobian of the canonical system.
+$INFODETAILS$
+
+	
+!IF $NUMBEROFARCS$!
+switch $ARCVAR$
+!STARTADDARCCASE!
+	case $ARCIDENTIFIERCONTROL$	
+		$SYMBOLICCANONICALSYSTEMJACOBIAN$
+!ENDADDARCCASE!
+end
+!ENDIF!
+!IF ~$NUMBEROFARCS$!
+$SYMBOLICCANONICALSYSTEMJACOBIAN$
+!ENDIF!

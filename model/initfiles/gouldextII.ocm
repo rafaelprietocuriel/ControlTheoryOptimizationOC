@@ -1,0 +1,43 @@
+Type
+standardmodel
+
+Description
+An extended version of the Gould model
+
+Variable
+state::S,Q
+control::u,w
+
+Statedynamics
+ode::DS=((alpha*(kappa+u)*Q-beta*(1-Q))*(1-S/N)-1+Q-delta)*S
+ode::DQ=w*(1-Q)
+
+Objective
+int::Q*p*S-e*u^2/2-f0*w-f1*w^2/2
+
+Controlconstraint % identifier has to contain an alphabetic character
+CC1::ineq::u>=ulow
+CC2::ineq::w>=wlow
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+2,3::p
+
+Parameter
+r::0.03
+alpha::1
+beta::0.5
+kappa::0.035
+delta::0.05
+e::1
+f0::17
+f1::1
+ulow::0
+wlow::0
+p::1
+N::10

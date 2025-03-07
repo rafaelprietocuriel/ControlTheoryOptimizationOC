@@ -1,0 +1,43 @@
+Type
+standardmodel
+
+Modelname
+vanderpol
+
+Description
+van der Pol equation with control u 
+
+Variable
+state::x1,x2
+control::u
+
+Statedynamics
+ode::Dx1=f*x2
+ode::Dx2=a*x1+b*(c+d*x1^2)*x2+u
+
+Objective
+int::-u^2-x1^2-x2^2
+
+% Controlconstraint % identifier has to contain an alphabetic character 
+% CC1::ineq::u>=umin
+% CC2::ineq::u<=umax
+
+Stateconstraint % identifier::constrainttype::constraint,order
+SC1::ineq::x2>=x2min,1
+
+ArcDefinition
+0::[]
+1::SC1
+%2::CC2
+
+State % define the state variable(s) that are explicitly derived from the state constraints 
+1::x2
+
+Parameter
+r::0
+a::-1
+b::1
+c::1
+d::-1
+f::1
+x2min::-0.4

@@ -1,0 +1,124 @@
+function out=$MODELNAME$4Continuation()
+%
+% main function for the bvpcont saddle path continuation process
+$INFODETAILS$
+	
+out{1}=@dynamics;
+out{2}{1}=@jacobian;
+out{2}{2}=@parameterjacobian;
+!IF ~$ISAUTONOMOUS$!
+out{2}{3}=@derivativeindependent;
+!ENDIF!
+out{3}{1}=@hessian;
+out{3}{2}=@parameterhessian;
+out{5}{1}=@bcinitial;
+out{5}{2}=@bcend;
+out{6}{1}=@bcjacobianinitial;
+out{6}{2}=@bcjacobianend;
+% functions for hybrid structure and its discretization
+out{7}{1}=@hybridinfo;
+out{7}{2}=@domain;
+out{7}{3}=@guard;
+out{7}{4}=@reset;
+	
+out{11}=@plotcontinuation;
+out{12}=@testadmissibility;
+	
+out{20}=@datapath;
+out{21}=@saveintermediatefiles;
+	
+function dxdt=dynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+dxdt=$MODELNAME$Dynamics($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function J=jacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!IF ~$ISAUTONOMOUS$!
+	
+%--------------------------------------------------------------------------
+function J=derivativeindependent($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsDerivativeIndependent($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+!ENDIF!
+	
+%--------------------------------------------------------------------------
+function J=parameterjacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+J=$MODELNAME$DynamicsParameterJacobian($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function res=bcinitial($DEPENDENTVAR$a,targetcoordinate,initialstate,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$a(targetcoordinate,1)-initialstate;
+	
+%--------------------------------------------------------------------------
+function res=bcend($DEPENDENTVAR$b,targetcoordinate,endstate,$PARVAR$,$ARCVAR$)
+res=$DEPENDENTVAR$b(targetcoordinate,end)-endstate;
+	
+%--------------------------------------------------------------------------
+function val=guard($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,switchtimes,$ARCVAR$,edge,arc)
+% condition on the (continuous) variables (states, costates) when a
+% switching from $ARCVAR$1 to $ARCVAR$2 takes place. edge=[$ARCVAR$1 $ARCVAR$2]
+% this condition determines the switching time
+if isempty(edge)
+	val=[];
+else
+	val=$MODELNAME$UserAdmissible(switchtimes(arc),$DEPENDENTVAR$a(:,arc+1),$PARVAR$,edge(2,arc));	
+end	
+
+%--------------------------------------------------------------------------
+function val=reset($DEPENDENTVAR$a,$DEPENDENTVAR$b,$PARVAR$,freepar,$ARCVAR$,edge,arc)
+%transformation of the (continuous) variables (states, costates) when
+%switching from $ARCVAR$1 to $ARCVAR$2. edge=[$ARCVAR$1 $ARCVAR$2] 
+
+if isempty(edge)
+	val=[];
+else
+	val=$DEPENDENTVAR$a(:,arc+1)-$DEPENDENTVAR$b(:,arc);
+end
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianinitial($DEPENDENTVAR$a,freepar,$ARCVAR$,targetcoordinate,continuationvector)
+Ja=[];
+Jb=[]; 
+Jpar=[];
+
+	
+%--------------------------------------------------------------------------
+function [Ja Jb Jpar]=bcjacobianend($DEPENDENTVAR$b,targetcoordinate,endstate,$PARVAR$,$ARCVAR$)
+Ja=[];
+Jb=[]; 
+Jpar=[];
+
+%--------------------------------------------------------------------------
+function infoH=hybridinfo()
+
+infoH.arcarg=$ARCARGUMENT$; % replaces name of arcnum arcidentifier
+infoH.edge=$EDGES$; % each row represents a possible transition between the states of the hybrid system  
+
+%--------------------------------------------------------------------------
+function infoD=domain($ARCVAR$)
+% returns general information about the domain for each arc
+infoD=$MODELNAME$ArcInfo($ARCVAR$);
+	
+%--------------------------------------------------------------------------
+function h=plotcontinuation($INDEPENDENT$,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent)
+h=$MODELNAME$PlotContinuation($INDEPENDENT$,$DEPENDENTVAR$,modelpar,$ARCVAR$,freepar,tangent);
+	
+%--------------------------------------------------------------------------
+function [out labelS]=testadmissibility($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$)
+	
+out=$MODELNAME$UserAdmissible($INDEPENDENT$,$DEPENDENTVAR$,$PARVAR$,$ARCVAR$);
+	
+!FOR COUNTER=1:$NUMBEROFARCS$!
+labelS(COUNTER).$ARCVAR$=!EVAL(COUNTER-1)!;
+labelS(COUNTER).info='';
+!ENDFOR!
+	
+%--------------------------------------------------------------------------
+function pathname=datapath()
+	
+pathname=getocmatfolder('userdata','$MODELTYPE$','$MODELNAME$');
+	
+%--------------------------------------------------------------------------
+function [resultfile,globalvarfile]=saveintermediatefiles()
+	
+resultfile='SaveIntermediateResults';
+globalvarfile='SaveIntermediateResultsGlobalVariable';

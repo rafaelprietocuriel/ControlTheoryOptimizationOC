@@ -1,0 +1,26 @@
+//
+// odemodelSymbolicEquilibriumEquation.odet
+//
+// Template file for the ODEs of a odemodel
+// this file is used for the automatic file generation
+// empty lines and lines starting with // are ignored 
+// terms between $...$ are variables which are replaced during file generation
+// terms between !...! are commands for the file generation, possible commands are 
+// !IF ...!,!ENDIF! ... corresponds to a usual if clause
+// !STARTADDARCCASE!,!ENDADDARCCASE!, lines between these commands are repeated in a 
+// switch case statement for any specific arc
+// a tabulator is interpreted as an empty line in the corresponding generated file
+
+function out=$MODELNAME$SymbolicEquilibriumEquation($ARCVAR$,$SUBSFLAG$)
+% returns expression for the ODEs of $MODELNAME$
+$INFODETAILS$
+
+	
+$SYMBOLICDYNAMICS$
+
+!IF $EXOGENOUSFUNCTIONNUM$!
+if $SUBSFLAG$
+	$EXOGENOUSFUNCTION$=$MODELNAME$SymbolicExogenousFunction($ARCVAR$,$SUBSFLAG$);
+	$SYMBOLICEXOGENOUSFUNCTIONNAMESUBSTITUTION$
+end
+!ENDIF!

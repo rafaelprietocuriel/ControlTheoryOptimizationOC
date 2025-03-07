@@ -1,0 +1,25 @@
+Type  
+staticoptmodel
+
+Modelname
+onestate
+
+Description
+example for static optimization with multiple solutions
+
+Variable
+state::x
+
+Objective
+func::-(a*x^4+b*x^3+c*x^2+d*x+e)
+
+Optimization
+type::max
+method::statgrad
+
+Parameter
+a::1/4
+b::1/6
+c::-1/4
+d::2
+e::-1

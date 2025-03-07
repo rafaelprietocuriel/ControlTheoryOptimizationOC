@@ -1,0 +1,25 @@
+Type
+odemodel
+
+Modelname
+ecodiscow
+
+Description
+metronomic chemotherapy with constant controls from schaettlerledzewicz2015 p. 254ff
+
+Variable
+state::k,c
+
+Dynamics
+ode::Dk=A*k^alpha-((1-alpha-beta)/(1-alpha)*gh+beta/(1-alpha)*ge)*k-c
+ode::Dc=gamma^(-1)*(alpha*A*k^(alpha-1)-rho-gamma*((1-alpha-beta)/(1-alpha)*gh+beta/(1-alpha)*ge))*c
+
+
+Parameter
+gamma::2
+rho::0.03
+beta::0.5
+gh::0.02
+ge::0
+alpha::0.3
+A::1

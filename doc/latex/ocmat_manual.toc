@@ -1,0 +1,69 @@
+\contentsline {chapter}{Preface}{v}{chapter*.2}%
+\contentsline {part}{I\hspace {1em}Standard Optimal Control Model}{vii}{part.1}%
+\contentsline {chapter}{Introduction}{ix}{chapter*.3}%
+\contentsline {section}{\numberline {0.1}First Steps for Installation}{x}{section.0.1}%
+\contentsline {section}{\numberline {0.2}Model Class}{x}{section.0.2}%
+\contentsline {chapter}{\numberline {1}Basic Model}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Initialization}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Initialization File}{1}{subsection.1.1.1}%
+\contentsline {paragraph}{Variable}{2}{section*.6}%
+\contentsline {paragraph}{Statedynamics}{2}{section*.7}%
+\contentsline {paragraph}{Objective}{2}{section*.8}%
+\contentsline {paragraph}{Parameter}{3}{section*.9}%
+\contentsline {subsection}{\numberline {1.1.2}Processing the Initialization File}{3}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Generating the Model Files}{4}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}Model Instance}{5}{subsection.1.1.4}%
+\contentsline {subsection}{\numberline {1.1.5}Retrieving Model Information}{5}{subsection.1.1.5}%
+\contentsline {section}{\numberline {1.2}Numerical Analysis}{6}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Equilibria}{6}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Saddle-path}{8}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Detection of an Indifference Threshold}{9}{subsection.1.2.3}%
+\contentsline {chapter}{\numberline {2}Higher Dimensional Models}{15}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Initialization}{15}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Numerical Analysis}{17}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Equilibria}{17}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Saddle-path}{19}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Calculation of an Indifference Threshold Curve}{24}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Initialization and Numerical analysis of model CRM}{33}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Selected Commands}{41}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Initialization}{41}{section.3.1}%
+\contentsline {paragraph}{Example}{41}{section*.22}%
+\contentsline {paragraph}{Example}{44}{section*.25}%
+\contentsline {section}{\numberline {3.2}Numerical Analysis}{51}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Equilibrium ('dynprimitive')}{51}{subsection.3.2.1}%
+\contentsline {paragraph}{Example}{52}{section*.32}%
+\contentsline {paragraph}{Example}{57}{section*.34}%
+\contentsline {subsection}{\numberline {3.2.2}Saddle-Path ('ocasymptotic')}{61}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Indifference Threshold}{68}{subsection.3.2.3}%
+\contentsline {paragraph}{Example}{70}{section*.42}%
+\contentsline {section}{\numberline {3.3}General Commands}{70}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Auxiliary Tools}{70}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Option Handling}{72}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Plotting Commands}{74}{section.3.4}%
+\contentsline {paragraph}{Example}{76}{section*.46}%
+\contentsline {chapter}{\numberline {4}Miscellaneous}{85}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Implicit Optimal Control Values}{85}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Non-autonomous Problem}{85}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Pure State Constraints}{85}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Diverging Solutions}{85}{section.4.4}%
+\contentsline {section}{\numberline {4.5}\texttt {MATCONT}\ Interface}{85}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Periodic Solutions}{85}{section.4.6}%
+\contentsline {section}{\numberline {4.7}BVP\ Bifurcations}{85}{section.4.7}%
+\contentsline {chapter}{\numberline {A}Options}{87}{appendix.A}%
+\contentsline {section}{\numberline {A.1}\lstinline +INIT+}{87}{section.A.1}%
+\contentsline {section}{\numberline {A.2}\lstinline +OCCONTARG+}{87}{section.A.2}%
+\contentsline {section}{\numberline {A.3}\lstinline +GENERAL+}{88}{section.A.3}%
+\contentsline {section}{\numberline {A.4}\lstinline +NEWTON+}{89}{section.A.4}%
+\contentsline {section}{\numberline {A.5}\lstinline +SBVPOC+}{89}{section.A.5}%
+\contentsline {section}{\numberline {A.6}\lstinline +ODE+, \lstinline +BVP+, \lstinline +EP+}{89}{section.A.6}%
+\contentsline {section}{\numberline {A.7}\lstinline +MATCONT+}{90}{section.A.7}%
+\contentsline {chapter}{\numberline {B}Class Design}{91}{appendix.B}%
+\contentsline {section}{\numberline {B.1}Model class}{91}{section.B.1}%
+\contentsline {subsection}{\numberline {B.1.1}Standard Model Class (\lstinline +stdocmodel+)}{91}{subsection.B.1.1}%
+\contentsline {section}{\numberline {B.2}Solution classes}{92}{section.B.2}%
+\contentsline {subsection}{\numberline {B.2.1}Time path (\lstinline +octrajectory+)}{92}{subsection.B.2.1}%
+\contentsline {subsubsection}{Arcdependent size of ODE}{94}{section*.55}%
+\contentsline {subsection}{\numberline {B.2.2}Dynamic primitives (\lstinline +dynprimitive+)}{95}{subsection.B.2.2}%
+\contentsline {part}{II\hspace {1em}Discrete Optimal Control Model}{97}{part.2}%
+\contentsline {chapter}{\numberline {C}Introduction}{99}{appendix.C}%
+\contentsline {section}{\numberline {C.1}Model Class}{100}{section.C.1}%

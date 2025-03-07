@@ -1,0 +1,50 @@
+Type
+standardmodel
+
+Variable
+state::v1x0,v1x1,v1x2,v2x0,v2x1,v2x2
+control::k1,k2
+
+Statedynamics
+ode::Dv1x0 = (n1-beta11*v1x0-beta21*v2x0)*v1x0+1/4*D1*N^2/L^2*(2*v1x1+2*L/D1/N*gamma1*v1x0*k1-2*v1x0)
+ode::Dv1x1=(n1-beta11*v1x1-beta21*v2x1)*v1x1+D1*N^2/(2*L)^2*(v1x0-2*v1x1+v1x2)
+ode::Dv1x2 = (n1-beta11*v1x2-beta21*v2x2)*v1x2+1/4*D1*N^2/L^2*(2*v1x1-2*v1x2)
+ode::Dv2x0 = (n2-beta22*v2x0-beta12*v1x0)*v2x0+1/4*D2*N^2/L^2*(2*v2x1+2*L/D2/N*gamma2*v2x0*k2-2*v2x0)
+ode::Dv2x1=(n2-beta22*v2x1-beta12*v1x1)*v2x1+D2*N^2/(2*L)^2*(v2x0-2*v2x1+v2x2)
+ode::Dv2x2 = (n2-beta22*v2x2-beta12*v1x2)*v2x2+1/4*D2*N^2/L^2*(2*v2x1-2*v2x2)
+
+Objective
+expdisc::rho
+int::p1*v1x0*k1-c1*k1^2+p2*v2x0*k2-c2*k2^2
+
+Controlconstraint
+CC1::ineq::k1>=k1low
+CC2::ineq::k2>=k2low
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+3::CC1,CC2
+
+
+Parameter
+rho::0.03
+beta11::0.8
+beta21::1
+beta12::1
+beta22::0.5
+c1::0.1
+c2::0.1
+gamma1::0.1
+gamma2::0.1
+p1::10
+p2::10
+n1::1
+n2::1
+k1low::0
+k2low::0
+D1::0.5
+D2::0.5
+L::20
+N::2

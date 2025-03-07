@@ -1,0 +1,46 @@
+ Type
+standardmodel
+
+Description
+Optimal scientific production over the life cycle, version 2: S-shaped Matthew (30.03.19)
+AB 30.03.19: created
+scienceS, adapted by DG (theta)
+AB 07.04.19: generalized M. fct with parameters b,d,D (replaces a), and theta
+
+Variable
+state::K
+control::Inv  
+
+Statedynamics
+% ode::DK=Inv-delta*K+a*K^theta/(1+K^theta)-d      % g(K)=1; (replaced M(K)=2K^2/(1+K^2) - 1)
+ode::DK=Inv-delta*K+(D+d)*K^theta/(b+K^theta)-d      % g(K)=1; M(K)=(d+D)*K^theta/(b+K^theta)-d
+
+Objective
+int::K-c*Inv^2   % P(K)=K
+
+Controlconstraint
+CC1::ineq::Inv >= IMin
+CC2::ineq::Inv <= IMax
+
+ArcDefinition
+0::[]
+1::CC1
+2::CC2
+
+Salvagevalue
+0
+
+Optimizationtype
+max
+
+Parameter
+r::0.03
+delta::0.2 % assumption (corresponds to delta1=0.2 in paper)
+% a::2
+b::1   % new
+c::0.5 % ***  % corresponds to d1; paper: 0.5, 2.8, 3
+d::1 % was 1.5
+D::1 % D:=a-d
+theta::2   % was 1
+IMin::0
+IMax::1  %% check  -- 2
