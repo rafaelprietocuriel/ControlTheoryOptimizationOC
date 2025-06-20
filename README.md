@@ -1,5 +1,5 @@
 # The Mexican dilemma between social and security
-Code created to run in Matlab to obtain the best possible policy strategies to reduce cartel violence and cartel harm.
+Code created to run in Matlab to obtain the best possible policy strategies to reduce cartel violence and cartel harm. Alternative models (including a model for cartel participation, cartel reaction, shocks and fragmentation) are available in the folder "Alternative Models" based in RStudio.
 
 #### software
 Matlab R2007b and newer
